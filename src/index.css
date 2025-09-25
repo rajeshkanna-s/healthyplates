@@ -141,11 +141,11 @@
 
   /* Health Card Styles */
   .card-health {
-    @apply bg-card rounded-2xl shadow-soft hover:shadow-card transition-all duration-300 border border-border/50 hover:border-primary/20;
+    @apply bg-card rounded-2xl shadow-health hover:shadow-health-lg transition-all duration-300 border border-border/50 hover:border-primary/20;
   }
 
   .card-product {
-    @apply bg-gradient-to-br from-background to-muted/30 rounded-xl shadow-soft hover:shadow-card transition-all duration-300 border border-border/30 hover:border-primary/30 hover:scale-[1.02];
+    @apply bg-gradient-to-br from-background to-muted/30 rounded-xl shadow-health hover:shadow-health-lg transition-all duration-300 border border-border/30 hover:border-primary/30 hover:scale-[1.02];
   }
 
   /* Health-themed Text Styles */
