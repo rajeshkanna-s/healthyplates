@@ -77,9 +77,9 @@ const Contact = () => {
     },
     {
       icon: MapPin,
-      title: "Visit Us",
+      title: "Location",
       details: "123 Health Street, Wellness City, WC 12345",
-      description: "Come visit our wellness center",
+      description: "Our location for reference",
       action: "#map"
     }
   ];
@@ -128,11 +128,11 @@ const Contact = () => {
                 </div>
               ))}
 
-              {/* Office Hours */}
+              {/* Contact Hours */}
               <div className="card-health p-6">
                 <h3 className="font-semibold text-foreground mb-4 flex items-center">
                   <Clock className="h-5 w-5 mr-2 text-health" />
-                  Office Hours
+                  Contact Hours
                 </h3>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
@@ -234,7 +234,7 @@ const Contact = () => {
         <div className="mt-16">
           <div className="card-health overflow-hidden">
             <div className="bg-gradient-health p-6">
-              <h2 className="text-2xl font-semibold text-white mb-2">Visit Our Wellness Center</h2>
+              <h2 className="text-2xl font-semibold text-white mb-2">Our Location</h2>
               <p className="text-white/90">
                 123 Health Street, Wellness City, WC 12345
               </p>
