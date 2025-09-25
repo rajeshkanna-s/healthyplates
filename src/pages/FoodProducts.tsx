@@ -1,111 +1,74 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Filter, Star, Heart, AlertCircle, CheckCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 const FoodProducts = () => {
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [foodProducts, setFoodProducts] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const categories = [
-    { value: 'all', label: 'All Categories' },
-    { value: 'fruits', label: 'Fruits' },
-    { value: 'vegetables', label: 'Vegetables' },
-    { value: 'nuts', label: 'Nuts & Seeds' },
-    { value: 'spices', label: 'Spices' },
-    { value: 'grains', label: 'Grains' },
-    { value: 'oils', label: 'Oils' },
-  ];
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-  const foodProducts = [
-    {
-      id: 1,
-      name: "Almonds",
-      category: "nuts",
-      image: "🌰",
-      purpose: "Improves memory and provides energy",
-      advantages: ["Rich in Vitamin E", "High protein content", "Good source of healthy fats", "Supports heart health"],
-      disadvantages: ["Can cause allergies in some people", "High in calories", "May cause digestive issues if consumed in excess"],
-      medicinalBenefits: "Boosts brain health, helps in heart health, strengthens bones, improves skin health",
-      rating: 4.9,
-      origin: "Mediterranean region"
-    },
-    {
-      id: 2,
-      name: "Spinach",
-      category: "vegetables",
-      image: "🥬",
-      purpose: "Rich in iron and supports blood circulation",
-      advantages: ["High in iron and folate", "Rich in antioxidants", "Low in calories", "Supports eye health"],
-      disadvantages: ["Contains oxalates", "May interfere with blood thinners", "Can cause kidney stones in sensitive individuals"],
-      medicinalBenefits: "Prevents anemia, boosts immunity, improves vision, supports bone health",
-      rating: 4.8,
-      origin: "Central and Western Asia"
-    },
-    {
-      id: 3,
-      name: "Mango",
-      category: "fruits",
-      image: "🥭",
-      purpose: "Provides vitamins and natural sweetness",
-      advantages: ["Rich in Vitamin C", "Good source of fiber", "Contains antioxidants", "Supports immune system"],
-      disadvantages: ["High in natural sugars", "May cause allergic reactions", "Can spike blood sugar levels"],
-      medicinalBenefits: "Boosts immunity, improves digestion, supports eye health, enhances skin health",
-      rating: 4.7,
-      origin: "South Asia"
-    },
-    {
-      id: 4,
-      name: "Turmeric",
-      category: "spices",
-      image: "🧄",
-      purpose: "Natural anti-inflammatory and immunity booster",
-      advantages: ["Strong anti-inflammatory properties", "Rich in curcumin", "Antioxidant effects", "Supports joint health"],
-      disadvantages: ["May interact with medications", "Can cause stomach upset", "May increase bleeding risk"],
-      medicinalBenefits: "Reduces inflammation, heals wounds, boosts immunity, supports liver health",
-      rating: 4.9,
-      origin: "Southeast Asia"
-    },
-    {
-      id: 5,
-      name: "Quinoa",
-      category: "grains",
-      image: "🌾",
-      purpose: "Complete protein source and gluten-free grain",
-      advantages: ["Complete protein profile", "Gluten-free", "High in fiber", "Rich in minerals"],
-      disadvantages: ["Contains saponins", "May cause digestive issues", "Higher cost than regular grains"],
-      medicinalBenefits: "Supports muscle building, aids digestion, helps control blood sugar, supports heart health",
-      rating: 4.6,
-      origin: "Andes Mountains"
-    },
-    {
-      id: 6,
-      name: "Coconut Oil",
-      category: "oils",
-      image: "🥥",
-      purpose: "Healthy cooking oil with antimicrobial properties",
-      advantages: ["Contains MCTs", "Antimicrobial properties", "Stable at high temperatures", "Supports metabolism"],
-      disadvantages: ["High in saturated fat", "May raise cholesterol", "High in calories"],
-      medicinalBenefits: "Boosts metabolism, moisturizes skin, supports brain health, has antimicrobial effects",
-      rating: 4.5,
-      origin: "Tropical regions"
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      
+      // Fetch categories
+      const { data: categoriesData, error: categoriesError } = await supabase
+        .from('categories')
+        .select('*')
+        .eq('type', 'food_product')
+        .order('name');
+
+      if (categoriesError) throw categoriesError;
+
+      // Fetch food products
+      const { data: productsData, error: productsError } = await supabase
+        .from('food_products')
+        .select(`
+          *,
+          categories(*)
+        `)
+        .order('name');
+
+      if (productsError) throw productsError;
+
+      setCategories([{ id: 'all', name: 'All Categories' }, ...(categoriesData || [])]);
+      setFoodProducts(productsData || []);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to load food products data.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
 
   const filteredProducts = foodProducts.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          product.purpose.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+    const matchesCategory = selectedCategory === 'all' || product.categories?.id === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
-  const getCategoryBadge = (category: string) => {
-    switch (category) {
+  const getCategoryBadge = (categoryName: string) => {
+    switch (categoryName?.toLowerCase()) {
       case 'fruits': return 'badge-fruits';
       case 'vegetables': return 'badge-vegetables';
-      case 'nuts': return 'badge-proteins';
+      case 'nuts & seeds': return 'badge-proteins';
       case 'spices': return 'badge-grains';
       case 'grains': return 'badge-grains';
       case 'oils': return 'badge-grains';
@@ -144,8 +107,8 @@ const FoodProducts = () => {
               </SelectTrigger>
               <SelectContent>
                 {categories.map((category) => (
-                  <SelectItem key={category.value} value={category.value}>
-                    {category.label}
+                  <SelectItem key={category.id} value={category.id}>
+                    {category.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -154,15 +117,33 @@ const FoodProducts = () => {
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProducts.map((product) => (
-            <div key={product.id} className="card-product p-6 group">
-              <div className="flex items-start justify-between mb-4">
-                <div className="text-4xl">{product.image}</div>
-                <Badge className={getCategoryBadge(product.category)}>
-                  {product.category.charAt(0).toUpperCase() + product.category.slice(1)}
-                </Badge>
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="card-product p-6 animate-pulse">
+                <div className="h-16 bg-muted rounded mb-4"></div>
+                <div className="h-6 bg-muted rounded mb-2"></div>
+                <div className="h-4 bg-muted rounded mb-4"></div>
+                <div className="h-20 bg-muted rounded"></div>
               </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredProducts.map((product) => (
+              <div key={product.id} className="card-product p-6 group">
+                <div className="flex items-start justify-between mb-4">
+                  {product.image_url ? (
+                    <img src={product.image_url} alt={product.name} className="w-16 h-16 object-cover rounded-lg" />
+                  ) : (
+                    <div className="w-16 h-16 bg-gradient-health rounded-lg flex items-center justify-center text-white text-2xl">
+                      🥗
+                    </div>
+                  )}
+                  <Badge className={getCategoryBadge(product.categories?.name)}>
+                    {product.categories?.name || 'Unknown'}
+                  </Badge>
+                </div>
 
               <h3 className="text-xl font-semibold text-foreground mb-2 group-hover:text-health transition-colors">
                 {product.name}
@@ -234,9 +215,10 @@ const FoodProducts = () => {
               <Button className="w-full btn-health">
                 View Details
               </Button>
-            </div>
-          ))}
-        </div>
+                </div>
+              ))}
+          </div>
+        )}
 
         {filteredProducts.length === 0 && (
           <div className="text-center py-12">

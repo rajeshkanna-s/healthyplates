@@ -14,6 +14,283 @@ export type Database = {
   }
   public: {
     Tables: {
+      blogs: {
+        Row: {
+          author_name: string | null
+          category: string | null
+          content: string
+          cover_image_url: string | null
+          created_at: string
+          excerpt: string | null
+          id: string
+          status: string | null
+          tags: string[] | null
+          title: string
+          updated_at: string
+          views_count: number | null
+        }
+        Insert: {
+          author_name?: string | null
+          category?: string | null
+          content: string
+          cover_image_url?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          status?: string | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          views_count?: number | null
+        }
+        Update: {
+          author_name?: string | null
+          category?: string | null
+          content?: string
+          cover_image_url?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          status?: string | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          views_count?: number | null
+        }
+        Relationships: []
+      }
+      categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      disease_foods: {
+        Row: {
+          benefits: string
+          created_at: string
+          disease_id: string | null
+          food_name: string
+          frequency: string | null
+          how_much: string | null
+          id: string
+          preparation_method: string | null
+          updated_at: string
+        }
+        Insert: {
+          benefits: string
+          created_at?: string
+          disease_id?: string | null
+          food_name: string
+          frequency?: string | null
+          how_much?: string | null
+          id?: string
+          preparation_method?: string | null
+          updated_at?: string
+        }
+        Update: {
+          benefits?: string
+          created_at?: string
+          disease_id?: string | null
+          food_name?: string
+          frequency?: string | null
+          how_much?: string | null
+          id?: string
+          preparation_method?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "disease_foods_disease_id_fkey"
+            columns: ["disease_id"]
+            isOneToOne: false
+            referencedRelation: "diseases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      diseases: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          symptoms: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          symptoms?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          symptoms?: string[] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      faqs: {
+        Row: {
+          answer: string
+          category: string | null
+          created_at: string
+          id: string
+          is_featured: boolean | null
+          keywords: string[] | null
+          question: string
+          updated_at: string
+          views_count: number | null
+        }
+        Insert: {
+          answer: string
+          category?: string | null
+          created_at?: string
+          id?: string
+          is_featured?: boolean | null
+          keywords?: string[] | null
+          question: string
+          updated_at?: string
+          views_count?: number | null
+        }
+        Update: {
+          answer?: string
+          category?: string | null
+          created_at?: string
+          id?: string
+          is_featured?: boolean | null
+          keywords?: string[] | null
+          question?: string
+          updated_at?: string
+          views_count?: number | null
+        }
+        Relationships: []
+      }
+      food_products: {
+        Row: {
+          advantages: string[] | null
+          category_id: string | null
+          created_at: string
+          disadvantages: string[] | null
+          id: string
+          image_url: string | null
+          is_indian: boolean | null
+          medicinal_benefits: string | null
+          name: string
+          origin: string | null
+          purpose: string
+          rating: number | null
+          region: string | null
+          updated_at: string
+        }
+        Insert: {
+          advantages?: string[] | null
+          category_id?: string | null
+          created_at?: string
+          disadvantages?: string[] | null
+          id?: string
+          image_url?: string | null
+          is_indian?: boolean | null
+          medicinal_benefits?: string | null
+          name: string
+          origin?: string | null
+          purpose: string
+          rating?: number | null
+          region?: string | null
+          updated_at?: string
+        }
+        Update: {
+          advantages?: string[] | null
+          category_id?: string | null
+          created_at?: string
+          disadvantages?: string[] | null
+          id?: string
+          image_url?: string | null
+          is_indian?: boolean | null
+          medicinal_benefits?: string | null
+          name?: string
+          origin?: string | null
+          purpose?: string
+          rating?: number | null
+          region?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "food_products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      food_timing: {
+        Row: {
+          benefits: string
+          created_at: string
+          description: string | null
+          how_much: string | null
+          id: string
+          image_url: string | null
+          meal_time: string
+          name: string
+          preparation_tips: string | null
+          updated_at: string
+        }
+        Insert: {
+          benefits: string
+          created_at?: string
+          description?: string | null
+          how_much?: string | null
+          id?: string
+          image_url?: string | null
+          meal_time: string
+          name: string
+          preparation_tips?: string | null
+          updated_at?: string
+        }
+        Update: {
+          benefits?: string
+          created_at?: string
+          description?: string | null
+          how_much?: string | null
+          id?: string
+          image_url?: string | null
+          meal_time?: string
+          name?: string
+          preparation_tips?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
@@ -40,6 +317,89 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      self_care_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      self_care_procedures: {
+        Row: {
+          benefits: string[] | null
+          category_id: string | null
+          created_at: string
+          description: string | null
+          duration: string | null
+          frequency: string | null
+          id: string
+          image_url: string | null
+          ingredients: string[] | null
+          precautions: string[] | null
+          steps: string[]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          benefits?: string[] | null
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          duration?: string | null
+          frequency?: string | null
+          id?: string
+          image_url?: string | null
+          ingredients?: string[] | null
+          precautions?: string[] | null
+          steps: string[]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          benefits?: string[] | null
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          duration?: string | null
+          frequency?: string | null
+          id?: string
+          image_url?: string | null
+          ingredients?: string[] | null
+          precautions?: string[] | null
+          steps?: string[]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "self_care_procedures_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "self_care_categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
