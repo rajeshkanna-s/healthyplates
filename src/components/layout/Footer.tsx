@@ -1,0 +1,126 @@
+import { Link } from 'react-router-dom';
+import { Leaf, Mail, Phone, MapPin, Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+
+const Footer = () => {
+  return (
+    <footer className="bg-gradient-subtle border-t border-border/50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Brand Section */}
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <div className="bg-gradient-health p-2 rounded-lg shadow-md">
+                <Leaf className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-foreground">HealthyPlates</h3>
+                <p className="text-sm text-muted-foreground">Eat Smart, Live Healthy</p>
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Your trusted source for healthy eating, nutrition tips, and wellness guidance. 
+              Discover the power of natural foods for a healthier lifestyle.
+            </p>
+            <div className="flex space-x-2">
+              <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                <Facebook className="h-4 w-4" />
+              </Button>
+              <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                <Twitter className="h-4 w-4" />
+              </Button>
+              <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                <Instagram className="h-4 w-4" />
+              </Button>
+              <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                <Youtube className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div className="space-y-4">
+            <h4 className="text-lg font-semibold text-foreground">Quick Links</h4>
+            <nav className="flex flex-col space-y-2">
+              <Link to="/food-products" className="text-sm text-muted-foreground hover:text-health transition-colors">
+                Food Products
+              </Link>
+              <Link to="/foods" className="text-sm text-muted-foreground hover:text-health transition-colors">
+                Meal Timing
+              </Link>
+              <Link to="/disease" className="text-sm text-muted-foreground hover:text-health transition-colors">
+                Disease Guide
+              </Link>
+              <Link to="/self-care" className="text-sm text-muted-foreground hover:text-health transition-colors">
+                Self-Care
+              </Link>
+              <Link to="/blog" className="text-sm text-muted-foreground hover:text-health transition-colors">
+                Health Blog
+              </Link>
+            </nav>
+          </div>
+
+          {/* Contact Info */}
+          <div className="space-y-4">
+            <h4 className="text-lg font-semibold text-foreground">Contact Info</h4>
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2">
+                <Mail className="h-4 w-4 text-health" />
+                <span className="text-sm text-muted-foreground">info@healthyplates.com</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Phone className="h-4 w-4 text-health" />
+                <span className="text-sm text-muted-foreground">+1 (555) 123-4567</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <MapPin className="h-4 w-4 text-health" />
+                <span className="text-sm text-muted-foreground">123 Health Street, Wellness City</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Newsletter */}
+          <div className="space-y-4">
+            <h4 className="text-lg font-semibold text-foreground">Newsletter</h4>
+            <p className="text-sm text-muted-foreground">
+              Subscribe to get weekly health tips and nutrition insights delivered to your inbox.
+            </p>
+            <div className="space-y-2">
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                className="text-sm"
+              />
+              <Button className="w-full btn-health text-sm">
+                Subscribe
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="mt-8 pt-8 border-t border-border/50">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <p className="text-sm text-muted-foreground">
+              © 2024 HealthyPlates. All rights reserved.
+            </p>
+            <div className="flex space-x-6">
+              <Link to="/privacy" className="text-sm text-muted-foreground hover:text-health transition-colors">
+                Privacy Policy
+              </Link>
+              <Link to="/terms" className="text-sm text-muted-foreground hover:text-health transition-colors">
+                Terms of Service
+              </Link>
+              <Link to="/sitemap" className="text-sm text-muted-foreground hover:text-health transition-colors">
+                Sitemap
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;
