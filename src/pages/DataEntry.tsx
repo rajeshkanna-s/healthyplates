@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Save, X, Upload, Image } from 'lucide-react';
+import { Plus, Edit, Trash2, Save, X, Upload, Image, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -9,14 +9,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Switch } from '@/components/ui/switch';
+import type { User } from '@supabase/supabase-js';
 
 const DataEntry = () => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('food-products');
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const [categories, setCategories] = useState<any[]>([]);
   const [selfCareCategories, setSelfCareCategories] = useState<any[]>([]);
   const [diseases, setDiseases] = useState<any[]>([]);
@@ -32,6 +36,27 @@ const DataEntry = () => {
   const [diseaseFoods, setDiseaseFoods] = useState<any[]>([]);
   const [selfCareProcedures, setSelfCareProcedures] = useState<any[]>([]);
   const [blogs, setBlogs] = useState<any[]>([]);
+
+  useEffect(() => {
+    // Check authentication
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user ?? null);
+      setAuthLoading(false);
+    };
+
+    getSession();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user ?? null);
+        setAuthLoading(false);
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     fetchInitialData();
@@ -157,6 +182,15 @@ const DataEntry = () => {
   };
 
   const handleSave = async () => {
+    if (!user) {
+      toast({ 
+        title: "Authentication Required", 
+        description: "Please sign in to add or edit data", 
+        variant: "destructive" 
+      });
+      return;
+    }
+
     try {
       let table = '';
       let data = { ...formData };
@@ -1061,6 +1095,38 @@ const DataEntry = () => {
     }
   };
 
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-subtle py-8 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-subtle py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Alert className="mb-8">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              <div className="space-y-4">
+                <p className="font-medium">Authentication Required</p>
+                <p>You need to be signed in to access the data entry portal. Please sign in with your account to manage content.</p>
+                <Button onClick={() => window.location.href = '/auth'} className="mt-4">
+                  Go to Sign In
+                </Button>
+              </div>
+            </AlertDescription>
+          </Alert>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-subtle py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1069,6 +1135,18 @@ const DataEntry = () => {
           <p className="text-muted-foreground">
             Manage all your website content from this comprehensive data entry interface.
           </p>
+          <div className="mt-4 flex items-center gap-4">
+            <Badge variant="outline" className="text-green-600">
+              Signed in as {user.email}
+            </Badge>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => supabase.auth.signOut()}
+            >
+              Sign Out
+            </Button>
+          </div>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
