@@ -565,6 +565,28 @@ const Admin = () => {
     );
   }
 
+  // Extra safety: only this admin email can access
+  if (user && user.email !== 'durbinyarul@gmail.com') {
+    return (
+      <div className="min-h-screen bg-gradient-subtle flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <Card className="max-w-md w-full">
+          <CardHeader className="text-center">
+            <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
+            <CardTitle>Access Denied</CardTitle>
+            <CardDescription>
+              This page is restricted to the admin account only.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="text-center">
+            <Button onClick={async () => { await supabase.auth.signOut(); window.location.href = '/' }} className="w-full">
+              Logout
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-subtle">
       <div className="container mx-auto py-8 px-4">
