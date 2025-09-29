@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Save, X, Upload } from 'lucide-react';
+import { Plus, Edit, Trash2, Save, X, Upload, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -8,13 +8,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { Switch } from '@/components/ui/switch';
+import type { User } from '@supabase/supabase-js';
 
 const Admin = () => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('food-products');
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const [categories, setCategories] = useState<any[]>([]);
   const [selfCareCategories, setSelfCareCategories] = useState<any[]>([]);
   const [diseases, setDiseases] = useState<any[]>([]);
@@ -30,6 +36,27 @@ const Admin = () => {
   const [diseaseFoods, setDiseaseFoods] = useState<any[]>([]);
   const [selfCareProcedures, setSelfCareProcedures] = useState<any[]>([]);
   const [blogs, setBlogs] = useState<any[]>([]);
+
+  useEffect(() => {
+    // Check authentication
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user ?? null);
+      setAuthLoading(false);
+    };
+
+    getSession();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user ?? null);
+        setAuthLoading(false);
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     fetchInitialData();
@@ -155,9 +182,25 @@ const Admin = () => {
   };
 
   const handleSave = async () => {
+    if (!user) {
+      toast({ 
+        title: "Authentication Required", 
+        description: "Please sign in to add or edit data", 
+        variant: "destructive" 
+      });
+      return;
+    }
+
     try {
       let table = '';
       let data = { ...formData };
+      
+      // Remove timestamps and id for inserts
+      if (!isEditing) {
+        delete data.id;
+        delete data.created_at;
+        delete data.updated_at;
+      }
       
       switch (activeTab) {
         case 'food-products':
@@ -229,287 +272,318 @@ const Admin = () => {
   };
 
   const renderFoodProductForm = () => (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="name">Name</Label>
-          <Input
-            id="name"
-            value={formData.name || ''}
-            onChange={(e) => handleInputChange('name', e.target.value)}
-            placeholder="Food product name"
-          />
+    <Card>
+      <CardHeader>
+        <CardTitle>{isEditing ? 'Edit Food Product' : 'Add New Food Product'}</CardTitle>
+        <CardDescription>Manage food products in your database</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="name">Product Name *</Label>
+            <Input
+              id="name"
+              value={formData.name || ''}
+              onChange={(e) => handleInputChange('name', e.target.value)}
+              placeholder="Enter food product name"
+              required
+            />
+          </div>
+          <div>
+            <Label htmlFor="category">Category</Label>
+            <Select value={formData.category_id || ''} onValueChange={(value) => handleInputChange('category_id', value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.filter(c => c.type === 'food_product').map((category) => (
+                  <SelectItem key={category.id} value={category.id}>
+                    {category.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
+        
         <div>
-          <Label htmlFor="category">Category</Label>
-          <Select value={formData.category_id || ''} onValueChange={(value) => handleInputChange('category_id', value)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select category" />
-            </SelectTrigger>
-            <SelectContent>
-              {categories.filter(c => c.type === 'food_product').map((category) => (
-                <SelectItem key={category.id} value={category.id}>
-                  {category.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-      
-      <div>
-        <Label htmlFor="purpose">Purpose</Label>
-        <Textarea
-          id="purpose"
-          value={formData.purpose || ''}
-          onChange={(e) => handleInputChange('purpose', e.target.value)}
-          placeholder="Purpose of this food product"
-        />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="advantages">Advantages (comma-separated)</Label>
+          <Label htmlFor="purpose">Purpose *</Label>
           <Textarea
-            id="advantages"
-            value={formData.advantages?.join(', ') || ''}
-            onChange={(e) => handleArrayInputChange('advantages', e.target.value)}
-            placeholder="Advantage 1, Advantage 2, Advantage 3"
+            id="purpose"
+            value={formData.purpose || ''}
+            onChange={(e) => handleInputChange('purpose', e.target.value)}
+            placeholder="Describe the purpose and benefits of this food product"
+            required
           />
         </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="advantages">Advantages (comma-separated)</Label>
+            <Textarea
+              id="advantages"
+              value={formData.advantages?.join(', ') || ''}
+              onChange={(e) => handleArrayInputChange('advantages', e.target.value)}
+              placeholder="High in fiber, Rich in vitamins, Antioxidant properties"
+            />
+          </div>
+          <div>
+            <Label htmlFor="disadvantages">Disadvantages (comma-separated)</Label>
+            <Textarea
+              id="disadvantages"
+              value={formData.disadvantages?.join(', ') || ''}
+              onChange={(e) => handleArrayInputChange('disadvantages', e.target.value)}
+              placeholder="High in calories, May cause allergies"
+            />
+          </div>
+        </div>
+
         <div>
-          <Label htmlFor="disadvantages">Disadvantages (comma-separated)</Label>
+          <Label htmlFor="medicinal_benefits">Medicinal Benefits</Label>
           <Textarea
-            id="disadvantages"
-            value={formData.disadvantages?.join(', ') || ''}
-            onChange={(e) => handleArrayInputChange('disadvantages', e.target.value)}
-            placeholder="Disadvantage 1, Disadvantage 2"
+            id="medicinal_benefits"
+            value={formData.medicinal_benefits || ''}
+            onChange={(e) => handleInputChange('medicinal_benefits', e.target.value)}
+            placeholder="Describe any medicinal properties or health benefits"
           />
         </div>
-      </div>
 
-      <div>
-        <Label htmlFor="medicinal_benefits">Medicinal Benefits</Label>
-        <Textarea
-          id="medicinal_benefits"
-          value={formData.medicinal_benefits || ''}
-          onChange={(e) => handleInputChange('medicinal_benefits', e.target.value)}
-          placeholder="Medicinal benefits description"
-        />
-      </div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div>
+            <Label htmlFor="rating">Rating (0-5)</Label>
+            <Input
+              id="rating"
+              type="number"
+              min="0"
+              max="5"
+              step="0.1"
+              value={formData.rating || ''}
+              onChange={(e) => handleInputChange('rating', parseFloat(e.target.value))}
+            />
+          </div>
+          <div>
+            <Label htmlFor="origin">Origin</Label>
+            <Input
+              id="origin"
+              value={formData.origin || ''}
+              onChange={(e) => handleInputChange('origin', e.target.value)}
+              placeholder="e.g., India, Mediterranean"
+            />
+          </div>
+          <div>
+            <Label htmlFor="region">Region</Label>
+            <Input
+              id="region"
+              value={formData.region || ''}
+              onChange={(e) => handleInputChange('region', e.target.value)}
+              placeholder="Specific region"
+            />
+          </div>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="is_indian"
+              checked={formData.is_indian || false}
+              onCheckedChange={(checked) => handleInputChange('is_indian', checked)}
+            />
+            <Label htmlFor="is_indian">Indian Origin</Label>
+          </div>
+        </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-          <Label htmlFor="rating">Rating (0-5)</Label>
-          <Input
-            id="rating"
-            type="number"
-            min="0"
-            max="5"
-            step="0.1"
-            value={formData.rating || ''}
-            onChange={(e) => handleInputChange('rating', parseFloat(e.target.value))}
-          />
-        </div>
-        <div>
-          <Label htmlFor="origin">Origin</Label>
-          <Input
-            id="origin"
-            value={formData.origin || ''}
-            onChange={(e) => handleInputChange('origin', e.target.value)}
-            placeholder="Origin location"
-          />
-        </div>
         <div>
           <Label htmlFor="image_url">Image URL</Label>
           <Input
             id="image_url"
             value={formData.image_url || ''}
             onChange={(e) => handleInputChange('image_url', e.target.value)}
-            placeholder="Image URL"
+            placeholder="https://example.com/image.jpg"
           />
         </div>
-      </div>
-    </div>
+
+        <div className="flex gap-2 pt-4">
+          <Button onClick={handleSave}>
+            <Save className="w-4 h-4 mr-2" />
+            {isEditing ? 'Update' : 'Save'}
+          </Button>
+          <Button variant="outline" onClick={resetForm}>
+            <X className="w-4 h-4 mr-2" />
+            Cancel
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 
-  const renderFoodTimingForm = () => (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  const renderBlogForm = () => (
+    <Card>
+      <CardHeader>
+        <CardTitle>{isEditing ? 'Edit Blog Post' : 'Add New Blog Post'}</CardTitle>
+        <CardDescription>Manage blog posts for your website</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="title">Blog Title *</Label>
+            <Input
+              id="title"
+              value={formData.title || ''}
+              onChange={(e) => handleInputChange('title', e.target.value)}
+              placeholder="Enter blog title"
+              required
+            />
+          </div>
+          <div>
+            <Label htmlFor="category">Category</Label>
+            <Input
+              id="category"
+              value={formData.category || ''}
+              onChange={(e) => handleInputChange('category', e.target.value)}
+              placeholder="Blog category"
+            />
+          </div>
+        </div>
+
         <div>
-          <Label htmlFor="name">Food Name</Label>
-          <Input
-            id="name"
-            value={formData.name || ''}
-            onChange={(e) => handleInputChange('name', e.target.value)}
-            placeholder="Food name"
+          <Label htmlFor="excerpt">Excerpt</Label>
+          <Textarea
+            id="excerpt"
+            value={formData.excerpt || ''}
+            onChange={(e) => handleInputChange('excerpt', e.target.value)}
+            placeholder="Brief description of the blog post"
           />
         </div>
+
         <div>
-          <Label htmlFor="meal_time">Meal Time</Label>
-          <Select value={formData.meal_time || ''} onValueChange={(value) => handleInputChange('meal_time', value)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select meal time" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="morning">Morning</SelectItem>
-              <SelectItem value="afternoon">Afternoon</SelectItem>
-              <SelectItem value="evening">Evening</SelectItem>
-              <SelectItem value="snacks">Snacks</SelectItem>
-              <SelectItem value="dinner">Dinner</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      <div>
-        <Label htmlFor="benefits">Benefits</Label>
-        <Textarea
-          id="benefits"
-          value={formData.benefits || ''}
-          onChange={(e) => handleInputChange('benefits', e.target.value)}
-          placeholder="Benefits of eating this food at this time"
-        />
-      </div>
-
-      <div>
-        <Label htmlFor="description">Description</Label>
-        <Textarea
-          id="description"
-          value={formData.description || ''}
-          onChange={(e) => handleInputChange('description', e.target.value)}
-          placeholder="Food description"
-        />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="how_much">How Much</Label>
-          <Input
-            id="how_much"
-            value={formData.how_much || ''}
-            onChange={(e) => handleInputChange('how_much', e.target.value)}
-            placeholder="Recommended amount"
+          <Label htmlFor="content">Content *</Label>
+          <Textarea
+            id="content"
+            value={formData.content || ''}
+            onChange={(e) => handleInputChange('content', e.target.value)}
+            placeholder="Write your blog content here..."
+            className="min-h-[200px]"
+            required
           />
         </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="author_name">Author Name</Label>
+            <Input
+              id="author_name"
+              value={formData.author_name || 'HealthyPlates Team'}
+              onChange={(e) => handleInputChange('author_name', e.target.value)}
+              placeholder="Author name"
+            />
+          </div>
+          <div>
+            <Label htmlFor="cover_image_url">Cover Image URL</Label>
+            <Input
+              id="cover_image_url"
+              value={formData.cover_image_url || ''}
+              onChange={(e) => handleInputChange('cover_image_url', e.target.value)}
+              placeholder="https://example.com/image.jpg"
+            />
+          </div>
+        </div>
+
         <div>
-          <Label htmlFor="image_url">Image URL</Label>
+          <Label htmlFor="tags">Tags (comma-separated)</Label>
           <Input
-            id="image_url"
-            value={formData.image_url || ''}
-            onChange={(e) => handleInputChange('image_url', e.target.value)}
-            placeholder="Image URL"
+            id="tags"
+            value={formData.tags?.join(', ') || ''}
+            onChange={(e) => handleArrayInputChange('tags', e.target.value)}
+            placeholder="health, nutrition, wellness"
           />
         </div>
-      </div>
 
-      <div>
-        <Label htmlFor="preparation_tips">Preparation Tips</Label>
-        <Textarea
-          id="preparation_tips"
-          value={formData.preparation_tips || ''}
-          onChange={(e) => handleInputChange('preparation_tips', e.target.value)}
-          placeholder="Tips for preparation"
-        />
-      </div>
-    </div>
+        <div className="flex gap-2 pt-4">
+          <Button onClick={handleSave}>
+            <Save className="w-4 h-4 mr-2" />
+            {isEditing ? 'Update' : 'Save'}
+          </Button>
+          <Button variant="outline" onClick={resetForm}>
+            <X className="w-4 h-4 mr-2" />
+            Cancel
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 
   const renderForm = () => {
     switch (activeTab) {
       case 'food-products':
         return renderFoodProductForm();
-      case 'food-timing':
-        return renderFoodTimingForm();
-      case 'disease-foods':
-        return (
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="disease">Disease</Label>
-                <Select value={formData.disease_id || ''} onValueChange={(value) => handleInputChange('disease_id', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select disease" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {diseases.map((disease) => (
-                      <SelectItem key={disease.id} value={disease.id}>
-                        {disease.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="food_name">Food Name</Label>
-                <Input
-                  id="food_name"
-                  value={formData.food_name || ''}
-                  onChange={(e) => handleInputChange('food_name', e.target.value)}
-                  placeholder="Recommended food"
-                />
-              </div>
-            </div>
-            
-            <div>
-              <Label htmlFor="benefits">Benefits</Label>
-              <Textarea
-                id="benefits"
-                value={formData.benefits || ''}
-                onChange={(e) => handleInputChange('benefits', e.target.value)}
-                placeholder="Benefits for this disease"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <Label htmlFor="how_much">How Much</Label>
-                <Input
-                  id="how_much"
-                  value={formData.how_much || ''}
-                  onChange={(e) => handleInputChange('how_much', e.target.value)}
-                  placeholder="Recommended amount"
-                />
-              </div>
-              <div>
-                <Label htmlFor="frequency">Frequency</Label>
-                <Select value={formData.frequency || ''} onValueChange={(value) => handleInputChange('frequency', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select frequency" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="daily">Daily</SelectItem>
-                    <SelectItem value="weekly">Weekly</SelectItem>
-                    <SelectItem value="as_needed">As Needed</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="preparation_method">Preparation Method</Label>
-                <Input
-                  id="preparation_method"
-                  value={formData.preparation_method || ''}
-                  onChange={(e) => handleInputChange('preparation_method', e.target.value)}
-                  placeholder="How to prepare"
-                />
-              </div>
-            </div>
-          </div>
-        );
-      // Add more form cases for other tabs...
+      case 'blogs':
+        return renderBlogForm();
       default:
-        return <div>Form not implemented for this tab yet.</div>;
+        return (
+          <Card>
+            <CardContent className="p-6">
+              <p className="text-muted-foreground">Form for {activeTab} coming soon...</p>
+            </CardContent>
+          </Card>
+        );
     }
   };
 
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-subtle flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-subtle flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <Card className="max-w-md w-full">
+          <CardHeader className="text-center">
+            <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
+            <CardTitle>Admin Access Required</CardTitle>
+            <CardDescription>
+              You need to be logged in as an admin to access this page.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="text-center">
+            <Button onClick={() => window.location.href = '/auth'} className="w-full">
+              Go to Admin Login
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => window.location.href = '/'} 
+              className="w-full mt-2"
+            >
+              Back to Home
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-subtle py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-hero mb-6">Admin Panel</h1>
-          <p className="text-lg text-muted-foreground">
-            Manage all content for the HealthyPlates website
-          </p>
+    <div className="min-h-screen bg-gradient-subtle">
+      <div className="container mx-auto py-8 px-4">
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">Admin Panel</h1>
+            <p className="text-muted-foreground mt-2">Manage all content and data</p>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={async () => {
+                await supabase.auth.signOut();
+                window.location.href = '/';
+              }}
+            >
+              Logout
+            </Button>
+          </div>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -521,118 +595,117 @@ const Admin = () => {
             <TabsTrigger value="blogs">Blogs</TabsTrigger>
           </TabsList>
 
-          <div className="mt-8">
+          <div className="mt-8 space-y-8">
             {/* Form Section */}
-            <div className="card-health p-6 mb-8">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold">
-                  {isEditing ? 'Edit' : 'Add New'} {activeTab.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                </h2>
-                <div className="space-x-2">
-                  <Button onClick={handleSave} className="btn-health">
-                    <Save className="w-4 h-4 mr-2" />
-                    Save
-                  </Button>
-                  {isEditing && (
-                    <Button variant="outline" onClick={resetForm}>
-                      <X className="w-4 h-4 mr-2" />
-                      Cancel
-                    </Button>
-                  )}
-                </div>
-              </div>
-              
-              {renderForm()}
-            </div>
+            {renderForm()}
 
             {/* Data Table */}
-            <div className="card-health p-6">
-              <h3 className="text-lg font-semibold mb-4">Current Data</h3>
-              
-              <TabsContent value="food-products" className="mt-0">
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Category</TableHead>
-                        <TableHead>Purpose</TableHead>
-                        <TableHead>Rating</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {foodProducts.map((product) => (
-                        <TableRow key={product.id}>
-                          <TableCell className="font-medium">{product.name}</TableCell>
-                          <TableCell>
-                            <Badge>{product.categories?.name}</Badge>
-                          </TableCell>
-                          <TableCell className="max-w-xs truncate">{product.purpose}</TableCell>
-                          <TableCell>{product.rating}</TableCell>
-                          <TableCell>
-                            <div className="space-x-2">
-                              <Button size="sm" variant="outline" onClick={() => handleEdit(product)}>
-                                <Edit className="w-3 h-3" />
-                              </Button>
-                              <Button 
-                                size="sm" 
-                                variant="destructive" 
-                                onClick={() => handleDelete(product.id, 'food_products')}
-                              >
-                                <Trash2 className="w-3 h-3" />
-                              </Button>
-                            </div>
-                          </TableCell>
+            <Card>
+              <CardHeader>
+                <CardTitle>Current Data</CardTitle>
+                <CardDescription>View and manage existing records</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <TabsContent value="food-products" className="mt-0">
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Name</TableHead>
+                          <TableHead>Category</TableHead>
+                          <TableHead>Purpose</TableHead>
+                          <TableHead>Rating</TableHead>
+                          <TableHead>Actions</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </TabsContent>
+                      </TableHeader>
+                      <TableBody>
+                        {foodProducts.map((product) => (
+                          <TableRow key={product.id}>
+                            <TableCell className="font-medium">{product.name}</TableCell>
+                            <TableCell>
+                              <Badge>{product.categories?.name}</Badge>
+                            </TableCell>
+                            <TableCell className="max-w-xs truncate">{product.purpose}</TableCell>
+                            <TableCell>{product.rating}</TableCell>
+                            <TableCell>
+                              <div className="space-x-2">
+                                <Button size="sm" variant="outline" onClick={() => handleEdit(product)}>
+                                  <Edit className="w-3 h-3" />
+                                </Button>
+                                <Button 
+                                  size="sm" 
+                                  variant="destructive" 
+                                  onClick={() => handleDelete(product.id, 'food_products')}
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </TabsContent>
 
-              <TabsContent value="food-timing" className="mt-0">
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Meal Time</TableHead>
-                        <TableHead>Benefits</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {foodTimings.map((timing) => (
-                        <TableRow key={timing.id}>
-                          <TableCell className="font-medium">{timing.name}</TableCell>
-                          <TableCell>
-                            <Badge>{timing.meal_time}</Badge>
-                          </TableCell>
-                          <TableCell className="max-w-xs truncate">{timing.benefits}</TableCell>
-                          <TableCell>
-                            <div className="space-x-2">
-                              <Button size="sm" variant="outline" onClick={() => handleEdit(timing)}>
-                                <Edit className="w-3 h-3" />
-                              </Button>
-                              <Button 
-                                size="sm" 
-                                variant="destructive" 
-                                onClick={() => handleDelete(timing.id, 'food_timing')}
-                              >
-                                <Trash2 className="w-3 h-3" />
-                              </Button>
-                            </div>
-                          </TableCell>
+                <TabsContent value="blogs" className="mt-0">
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Title</TableHead>
+                          <TableHead>Category</TableHead>
+                          <TableHead>Author</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Actions</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </TabsContent>
+                      </TableHeader>
+                      <TableBody>
+                        {blogs.map((blog) => (
+                          <TableRow key={blog.id}>
+                            <TableCell className="font-medium">{blog.title}</TableCell>
+                            <TableCell>
+                              <Badge>{blog.category}</Badge>
+                            </TableCell>
+                            <TableCell>{blog.author_name}</TableCell>
+                            <TableCell>
+                              <Badge variant={blog.status === 'published' ? 'default' : 'secondary'}>
+                                {blog.status}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <div className="space-x-2">
+                                <Button size="sm" variant="outline" onClick={() => handleEdit(blog)}>
+                                  <Edit className="w-3 h-3" />
+                                </Button>
+                                <Button 
+                                  size="sm" 
+                                  variant="destructive" 
+                                  onClick={() => handleDelete(blog.id, 'blogs')}
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </TabsContent>
 
-              {/* Add more tab contents for other tables... */}
-            </div>
+                {/* Placeholder for other tabs */}
+                <TabsContent value="food-timing" className="mt-0">
+                  <p className="text-muted-foreground">Food timing data management coming soon...</p>
+                </TabsContent>
+                <TabsContent value="disease-foods" className="mt-0">
+                  <p className="text-muted-foreground">Disease foods data management coming soon...</p>
+                </TabsContent>
+                <TabsContent value="self-care" className="mt-0">
+                  <p className="text-muted-foreground">Self care data management coming soon...</p>
+                </TabsContent>
+              </CardContent>
+            </Card>
           </div>
         </Tabs>
       </div>
