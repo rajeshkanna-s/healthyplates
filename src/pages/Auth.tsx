@@ -52,6 +52,18 @@ const Auth = () => {
     setLoading(true);
 
     try {
+      // First update the admin password to ensure it matches
+      const response = await fetch('/functions/v1/update-admin-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        console.warn('Password sync failed, but continuing with login attempt');
+      }
+
       // Check hardcoded admin credentials
       if (formData.email !== 'durbinyarul@gmail.com' || formData.password !== 'durbinyarul@6890') {
         throw new Error('Invalid admin credentials');
