@@ -604,7 +604,6 @@ const Admin = () => {
                           <TableHead>Name</TableHead>
                           <TableHead>Category</TableHead>
                           <TableHead>Purpose</TableHead>
-                          <TableHead>Rating</TableHead>
                           <TableHead>Actions</TableHead>
                         </TableRow>
                       </TableHeader>
@@ -616,7 +615,6 @@ const Admin = () => {
                               <Badge>{product.categories?.name}</Badge>
                             </TableCell>
                             <TableCell className="max-w-xs truncate">{product.purpose}</TableCell>
-                            <TableCell>{product.rating}</TableCell>
                             <TableCell>
                               <div className="space-x-2">
                                 <Button size="sm" variant="outline" onClick={() => handleEdit(product)}>

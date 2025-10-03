@@ -206,7 +206,6 @@ export type Database = {
           name: string
           origin: string | null
           purpose: string
-          rating: number | null
           region: string | null
           updated_at: string
         }
@@ -222,7 +221,6 @@ export type Database = {
           name: string
           origin?: string | null
           purpose: string
-          rating?: number | null
           region?: string | null
           updated_at?: string
         }
@@ -238,7 +236,6 @@ export type Database = {
           name?: string
           origin?: string | null
           purpose?: string
-          rating?: number | null
           region?: string | null
           updated_at?: string
         }
