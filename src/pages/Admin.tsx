@@ -133,7 +133,15 @@ const Admin = () => {
   };
 
   const handleEdit = (item: any) => {
-    setFormData(item);
+    // Clean the data for editing - remove nested objects and keep only IDs
+    const cleanedData = { ...item };
+    
+    // Remove nested objects that come from joins
+    delete cleanedData.categories;
+    delete cleanedData.diseases;
+    delete cleanedData.self_care_categories;
+    
+    setFormData(cleanedData);
     setIsEditing(true);
     setEditingId(item.id);
   };
@@ -183,11 +191,16 @@ const Admin = () => {
       let table = '';
       let data = { ...formData };
       
-      // Remove timestamps and id for inserts
+      // Clean up data - remove any nested objects and timestamps
+      delete data.categories;
+      delete data.diseases;
+      delete data.self_care_categories;
+      delete data.created_at;
+      delete data.updated_at;
+      
+      // Remove id for inserts
       if (!isEditing) {
         delete data.id;
-        delete data.created_at;
-        delete data.updated_at;
       }
       
       switch (activeTab) {
