@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Star, Leaf, Heart, Shield } from 'lucide-react';
+import { Leaf, Heart, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
@@ -10,8 +10,6 @@ const TopProducts = () => {
       name: "Organic Almonds",
       category: "Nuts",
       benefits: ["Brain Health", "Heart Health", "Energy Boost"],
-      rating: 4.9,
-      reviews: 127,
       image: "🌰",
       description: "Rich in Vitamin E, healthy fats, and protein for optimal brain function and heart health.",
       medicinalUse: "Improves memory, reduces cholesterol, strengthens bones",
@@ -104,23 +102,6 @@ const TopProducts = () => {
                 {product.name}
               </h3>
 
-              <div className="flex items-center mb-3">
-                <div className="flex items-center space-x-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`w-4 h-4 ${
-                        i < Math.floor(product.rating)
-                          ? 'text-yellow-400 fill-current'
-                          : 'text-gray-300'
-                      }`}
-                    />
-                  ))}
-                </div>
-                <span className="text-sm text-muted-foreground ml-2">
-                  {product.rating} ({product.reviews} reviews)
-                </span>
-              </div>
 
               <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
                 {product.description}

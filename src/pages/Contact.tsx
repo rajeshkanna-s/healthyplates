@@ -75,13 +75,6 @@ const Contact = () => {
       description: "Quick support via WhatsApp messenger",
       action: "https://wa.me/15551234567"
     },
-    {
-      icon: MapPin,
-      title: "Location",
-      details: "123 Health Street, Wellness City, WC 12345",
-      description: "Our location for reference",
-      action: "#map"
-    }
   ];
 
   return (
@@ -230,26 +223,6 @@ const Contact = () => {
           </div>
         </div>
 
-        {/* Map Section */}
-        <div className="mt-16">
-          <div className="card-health overflow-hidden">
-            <div className="bg-gradient-health p-6">
-              <h2 className="text-2xl font-semibold text-white mb-2">Our Location</h2>
-              <p className="text-white/90">
-                123 Health Street, Wellness City, WC 12345
-              </p>
-            </div>
-            <div className="h-64 bg-muted flex items-center justify-center">
-              <div className="text-center">
-                <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">Interactive map would be embedded here</p>
-                <p className="text-sm text-muted-foreground mt-2">
-                  Google Maps integration coming soon
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

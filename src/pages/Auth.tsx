@@ -22,29 +22,11 @@ const Auth = () => {
   });
 
   useEffect(() => {
-    // Check if user is already logged in
-    const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        setUser(session.user);
-        // Redirect to data entry page if already authenticated
-        window.location.href = '/admin';
-      }
-    };
-
-    getSession();
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (session?.user) {
-          setUser(session.user);
-          window.location.href = '/admin';
-        }
-      }
-    );
-
-    return () => subscription.unsubscribe();
+    // Check if user is already logged in from localStorage
+    const adminLoggedIn = localStorage.getItem('admin_logged_in');
+    if (adminLoggedIn === 'true') {
+      window.location.href = '/admin';
+    }
   }, []);
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -52,23 +34,31 @@ const Auth = () => {
     setLoading(true);
 
     try {
-      // Check hardcoded admin credentials first
-      if (formData.email !== 'durbinyarul@gmail.com' || formData.password !== 'durbinyarul@6890') {
+      // Base64 encoded credentials
+      const ADMIN_EMAIL_ENCODED = 'ZHVyYmlueWFydWxAZ21haWwuY29t';
+      const ADMIN_PASSWORD_ENCODED = 'ZHVyYmlueWFydWxANjg5MA==';
+      
+      // Encode user input
+      const emailEncoded = btoa(formData.email);
+      const passwordEncoded = btoa(formData.password);
+      
+      // Compare encoded credentials
+      if (emailEncoded !== ADMIN_EMAIL_ENCODED || passwordEncoded !== ADMIN_PASSWORD_ENCODED) {
         throw new Error('Invalid admin credentials');
       }
 
-
-      const { error } = await supabase.auth.signInWithPassword({
-        email: formData.email,
-        password: formData.password,
-      });
-
-      if (error) throw error;
-
+      // If credentials match, set login state and redirect
+      localStorage.setItem('admin_logged_in', 'true');
+      setUser({ email: formData.email } as any);
       toast({
         title: "Success",
-        description: "Admin signed in successfully!",
+        description: "Admin logged in successfully!",
       });
+      
+      // Redirect to admin page
+      setTimeout(() => {
+        window.location.href = '/admin';
+      }, 500);
     } catch (error: any) {
       toast({
         title: "Error",

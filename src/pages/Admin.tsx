@@ -38,24 +38,12 @@ const Admin = () => {
   const [blogs, setBlogs] = useState<any[]>([]);
 
   useEffect(() => {
-    // Check authentication
-    const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
-      setAuthLoading(false);
-    };
-
-    getSession();
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setUser(session?.user ?? null);
-        setAuthLoading(false);
-      }
-    );
-
-    return () => subscription.unsubscribe();
+    // Check if admin is logged in from localStorage
+    const adminLoggedIn = localStorage.getItem('admin_logged_in');
+    if (adminLoggedIn === 'true') {
+      setUser({ email: 'durbinyarul@gmail.com' } as any);
+    }
+    setAuthLoading(false);
   }, []);
 
   useEffect(() => {
@@ -565,27 +553,10 @@ const Admin = () => {
     );
   }
 
-  // Extra safety: only this admin email can access
-  if (user && user.email !== 'durbinyarul@gmail.com') {
-    return (
-      <div className="min-h-screen bg-gradient-subtle flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <Card className="max-w-md w-full">
-          <CardHeader className="text-center">
-            <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
-            <CardTitle>Access Denied</CardTitle>
-            <CardDescription>
-              This page is restricted to the admin account only.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="text-center">
-            <Button onClick={async () => { await supabase.auth.signOut(); window.location.href = '/' }} className="w-full">
-              Logout
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  const handleLogout = () => {
+    localStorage.removeItem('admin_logged_in');
+    window.location.href = '/';
+  };
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
@@ -598,10 +569,7 @@ const Admin = () => {
           <div className="flex gap-2">
             <Button
               variant="outline"
-              onClick={async () => {
-                await supabase.auth.signOut();
-                window.location.href = '/';
-              }}
+              onClick={handleLogout}
             >
               Logout
             </Button>
