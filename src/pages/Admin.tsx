@@ -223,45 +223,53 @@ const Admin = () => {
 
       if (isEditing) {
         let error;
+        let updatedRows: any[] | null = null;
         switch (table) {
-          case 'food_products':
-            ({ error } = await supabase.from('food_products').update(data).eq('id', editingId));
-            break;
-          case 'food_timing':
-            ({ error } = await supabase.from('food_timing').update(data).eq('id', editingId));
-            break;
-          case 'disease_foods':
-            ({ error } = await supabase.from('disease_foods').update(data).eq('id', editingId));
-            break;
-          case 'self_care_procedures':
-            ({ error } = await supabase.from('self_care_procedures').update(data).eq('id', editingId));
-            break;
-          case 'blogs':
-            ({ error } = await supabase.from('blogs').update(data).eq('id', editingId));
-            break;
+          case 'food_products': {
+            const { data: u, error: e } = await supabase.from('food_products').update(data).eq('id', editingId).select();
+            updatedRows = u; error = e; break; }
+          case 'food_timing': {
+            const { data: u, error: e } = await supabase.from('food_timing').update(data).eq('id', editingId).select();
+            updatedRows = u; error = e; break; }
+          case 'disease_foods': {
+            const { data: u, error: e } = await supabase.from('disease_foods').update(data).eq('id', editingId).select();
+            updatedRows = u; error = e; break; }
+          case 'self_care_procedures': {
+            const { data: u, error: e } = await supabase.from('self_care_procedures').update(data).eq('id', editingId).select();
+            updatedRows = u; error = e; break; }
+          case 'blogs': {
+            const { data: u, error: e } = await supabase.from('blogs').update(data).eq('id', editingId).select();
+            updatedRows = u; error = e; break; }
         }
         if (error) throw error;
+        if (!updatedRows || updatedRows.length === 0) {
+          throw new Error('Update failed due to permissions. Please ensure you are authenticated.');
+        }
         toast({ title: "Success", description: "Item updated successfully" });
       } else {
         let error;
+        let insertedRows: any[] | null = null;
         switch (table) {
-          case 'food_products':
-            ({ error } = await supabase.from('food_products').insert(data));
-            break;
-          case 'food_timing':
-            ({ error } = await supabase.from('food_timing').insert(data));
-            break;
-          case 'disease_foods':
-            ({ error } = await supabase.from('disease_foods').insert(data));
-            break;
-          case 'self_care_procedures':
-            ({ error } = await supabase.from('self_care_procedures').insert(data));
-            break;
-          case 'blogs':
-            ({ error } = await supabase.from('blogs').insert(data));
-            break;
+          case 'food_products': {
+            const { data: i, error: e } = await supabase.from('food_products').insert(data).select();
+            insertedRows = i; error = e; break; }
+          case 'food_timing': {
+            const { data: i, error: e } = await supabase.from('food_timing').insert(data).select();
+            insertedRows = i; error = e; break; }
+          case 'disease_foods': {
+            const { data: i, error: e } = await supabase.from('disease_foods').insert(data).select();
+            insertedRows = i; error = e; break; }
+          case 'self_care_procedures': {
+            const { data: i, error: e } = await supabase.from('self_care_procedures').insert(data).select();
+            insertedRows = i; error = e; break; }
+          case 'blogs': {
+            const { data: i, error: e } = await supabase.from('blogs').insert(data).select();
+            insertedRows = i; error = e; break; }
         }
         if (error) throw error;
+        if (!insertedRows || insertedRows.length === 0) {
+          throw new Error('Create failed due to permissions. Please ensure you are authenticated.');
+        }
         toast({ title: "Success", description: "Item created successfully" });
       }
 
@@ -473,10 +481,11 @@ const Admin = () => {
                 <SelectValue placeholder="Select meal time" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Breakfast">Breakfast</SelectItem>
-                <SelectItem value="Lunch">Lunch</SelectItem>
-                <SelectItem value="Dinner">Dinner</SelectItem>
-                <SelectItem value="Snacks">Snacks</SelectItem>
+                <SelectItem value="morning">Morning</SelectItem>
+                <SelectItem value="afternoon">Afternoon</SelectItem>
+                <SelectItem value="evening">Evening</SelectItem>
+                <SelectItem value="dinner">Dinner</SelectItem>
+                <SelectItem value="snacks">Snacks</SelectItem>
               </SelectContent>
             </Select>
           </div>
