@@ -305,27 +305,6 @@ const Admin = () => {
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="advantages">Advantages (comma-separated)</Label>
-            <Textarea
-              id="advantages"
-              value={formData.advantages?.join(', ') || ''}
-              onChange={(e) => handleArrayInputChange('advantages', e.target.value)}
-              placeholder="High in fiber, Rich in vitamins, Antioxidant properties"
-            />
-          </div>
-          <div>
-            <Label htmlFor="disadvantages">Disadvantages (comma-separated)</Label>
-            <Textarea
-              id="disadvantages"
-              value={formData.disadvantages?.join(', ') || ''}
-              onChange={(e) => handleArrayInputChange('disadvantages', e.target.value)}
-              placeholder="High in calories, May cause allergies"
-            />
-          </div>
-        </div>
-
         <div>
           <Label htmlFor="medicinal_benefits">Medicinal Benefits</Label>
           <Textarea
@@ -334,47 +313,6 @@ const Admin = () => {
             onChange={(e) => handleInputChange('medicinal_benefits', e.target.value)}
             placeholder="Describe any medicinal properties or health benefits"
           />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div>
-            <Label htmlFor="rating">Rating (0-5)</Label>
-            <Input
-              id="rating"
-              type="number"
-              min="0"
-              max="5"
-              step="0.1"
-              value={formData.rating || ''}
-              onChange={(e) => handleInputChange('rating', parseFloat(e.target.value))}
-            />
-          </div>
-          <div>
-            <Label htmlFor="origin">Origin</Label>
-            <Input
-              id="origin"
-              value={formData.origin || ''}
-              onChange={(e) => handleInputChange('origin', e.target.value)}
-              placeholder="e.g., India, Mediterranean"
-            />
-          </div>
-          <div>
-            <Label htmlFor="region">Region</Label>
-            <Input
-              id="region"
-              value={formData.region || ''}
-              onChange={(e) => handleInputChange('region', e.target.value)}
-              placeholder="Specific region"
-            />
-          </div>
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="is_indian"
-              checked={formData.is_indian || false}
-              onCheckedChange={(checked) => handleInputChange('is_indian', checked)}
-            />
-            <Label htmlFor="is_indian">Indian Origin</Label>
-          </div>
         </div>
 
         <div>
@@ -497,20 +435,341 @@ const Admin = () => {
     </Card>
   );
 
+  const renderFoodTimingForm = () => (
+    <Card>
+      <CardHeader>
+        <CardTitle>{isEditing ? 'Edit Food' : 'Add New Food'}</CardTitle>
+        <CardDescription>Manage foods by meal timing</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="name">Food Name *</Label>
+            <Input
+              id="name"
+              value={formData.name || ''}
+              onChange={(e) => handleInputChange('name', e.target.value)}
+              placeholder="Enter food name"
+              required
+            />
+          </div>
+          <div>
+            <Label htmlFor="meal_time">Meal Time *</Label>
+            <Select value={formData.meal_time || ''} onValueChange={(value) => handleInputChange('meal_time', value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select meal time" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Breakfast">Breakfast</SelectItem>
+                <SelectItem value="Lunch">Lunch</SelectItem>
+                <SelectItem value="Dinner">Dinner</SelectItem>
+                <SelectItem value="Snacks">Snacks</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        
+        <div>
+          <Label htmlFor="benefits">Benefits *</Label>
+          <Textarea
+            id="benefits"
+            value={formData.benefits || ''}
+            onChange={(e) => handleInputChange('benefits', e.target.value)}
+            placeholder="Describe the health benefits"
+            required
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="description">Description</Label>
+          <Textarea
+            id="description"
+            value={formData.description || ''}
+            onChange={(e) => handleInputChange('description', e.target.value)}
+            placeholder="Detailed description"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="how_much">How Much</Label>
+            <Input
+              id="how_much"
+              value={formData.how_much || ''}
+              onChange={(e) => handleInputChange('how_much', e.target.value)}
+              placeholder="e.g., 1 cup, 50g"
+            />
+          </div>
+          <div>
+            <Label htmlFor="preparation_tips">Preparation Tips</Label>
+            <Input
+              id="preparation_tips"
+              value={formData.preparation_tips || ''}
+              onChange={(e) => handleInputChange('preparation_tips', e.target.value)}
+              placeholder="Quick preparation tips"
+            />
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="image_url">Image URL</Label>
+          <Input
+            id="image_url"
+            value={formData.image_url || ''}
+            onChange={(e) => handleInputChange('image_url', e.target.value)}
+            placeholder="https://example.com/image.jpg"
+          />
+        </div>
+
+        <div className="flex gap-2 pt-4">
+          <Button onClick={handleSave}>
+            <Save className="w-4 h-4 mr-2" />
+            {isEditing ? 'Update' : 'Save'}
+          </Button>
+          <Button variant="outline" onClick={resetForm}>
+            <X className="w-4 h-4 mr-2" />
+            Cancel
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  const renderDiseaseFoodForm = () => (
+    <Card>
+      <CardHeader>
+        <CardTitle>{isEditing ? 'Edit Disease Food' : 'Add New Disease Food'}</CardTitle>
+        <CardDescription>Manage foods for specific diseases</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="food_name">Food Name *</Label>
+            <Input
+              id="food_name"
+              value={formData.food_name || ''}
+              onChange={(e) => handleInputChange('food_name', e.target.value)}
+              placeholder="Enter food name"
+              required
+            />
+          </div>
+          <div>
+            <Label htmlFor="disease_id">Disease *</Label>
+            <Select value={formData.disease_id || ''} onValueChange={(value) => handleInputChange('disease_id', value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select disease" />
+              </SelectTrigger>
+              <SelectContent>
+                {diseases.map((disease) => (
+                  <SelectItem key={disease.id} value={disease.id}>
+                    {disease.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        
+        <div>
+          <Label htmlFor="benefits">Benefits *</Label>
+          <Textarea
+            id="benefits"
+            value={formData.benefits || ''}
+            onChange={(e) => handleInputChange('benefits', e.target.value)}
+            placeholder="Describe how this food helps with the disease"
+            required
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="how_much">How Much</Label>
+            <Input
+              id="how_much"
+              value={formData.how_much || ''}
+              onChange={(e) => handleInputChange('how_much', e.target.value)}
+              placeholder="Recommended quantity"
+            />
+          </div>
+          <div>
+            <Label htmlFor="frequency">Frequency</Label>
+            <Input
+              id="frequency"
+              value={formData.frequency || ''}
+              onChange={(e) => handleInputChange('frequency', e.target.value)}
+              placeholder="How often to consume"
+            />
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="preparation_method">Preparation Method</Label>
+          <Textarea
+            id="preparation_method"
+            value={formData.preparation_method || ''}
+            onChange={(e) => handleInputChange('preparation_method', e.target.value)}
+            placeholder="How to prepare this food"
+          />
+        </div>
+
+        <div className="flex gap-2 pt-4">
+          <Button onClick={handleSave}>
+            <Save className="w-4 h-4 mr-2" />
+            {isEditing ? 'Update' : 'Save'}
+          </Button>
+          <Button variant="outline" onClick={resetForm}>
+            <X className="w-4 h-4 mr-2" />
+            Cancel
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  const renderSelfCareForm = () => (
+    <Card>
+      <CardHeader>
+        <CardTitle>{isEditing ? 'Edit Self Care Procedure' : 'Add New Self Care Procedure'}</CardTitle>
+        <CardDescription>Manage self care procedures and remedies</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="title">Title *</Label>
+            <Input
+              id="title"
+              value={formData.title || ''}
+              onChange={(e) => handleInputChange('title', e.target.value)}
+              placeholder="Procedure title"
+              required
+            />
+          </div>
+          <div>
+            <Label htmlFor="category_id">Category *</Label>
+            <Select value={formData.category_id || ''} onValueChange={(value) => handleInputChange('category_id', value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                {selfCareCategories.map((category) => (
+                  <SelectItem key={category.id} value={category.id}>
+                    {category.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        
+        <div>
+          <Label htmlFor="description">Description</Label>
+          <Textarea
+            id="description"
+            value={formData.description || ''}
+            onChange={(e) => handleInputChange('description', e.target.value)}
+            placeholder="Brief description"
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="steps">Steps (comma-separated) *</Label>
+          <Textarea
+            id="steps"
+            value={formData.steps?.join(', ') || ''}
+            onChange={(e) => handleArrayInputChange('steps', e.target.value)}
+            placeholder="Step 1, Step 2, Step 3"
+            required
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="benefits">Benefits (comma-separated)</Label>
+          <Textarea
+            id="benefits"
+            value={formData.benefits?.join(', ') || ''}
+            onChange={(e) => handleArrayInputChange('benefits', e.target.value)}
+            placeholder="Benefit 1, Benefit 2, Benefit 3"
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="ingredients">Ingredients (comma-separated)</Label>
+          <Textarea
+            id="ingredients"
+            value={formData.ingredients?.join(', ') || ''}
+            onChange={(e) => handleArrayInputChange('ingredients', e.target.value)}
+            placeholder="Ingredient 1, Ingredient 2"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <Label htmlFor="duration">Duration</Label>
+            <Input
+              id="duration"
+              value={formData.duration || ''}
+              onChange={(e) => handleInputChange('duration', e.target.value)}
+              placeholder="e.g., 30 minutes"
+            />
+          </div>
+          <div>
+            <Label htmlFor="frequency">Frequency</Label>
+            <Input
+              id="frequency"
+              value={formData.frequency || ''}
+              onChange={(e) => handleInputChange('frequency', e.target.value)}
+              placeholder="e.g., Daily"
+            />
+          </div>
+          <div>
+            <Label htmlFor="image_url">Image URL</Label>
+            <Input
+              id="image_url"
+              value={formData.image_url || ''}
+              onChange={(e) => handleInputChange('image_url', e.target.value)}
+              placeholder="https://example.com/image.jpg"
+            />
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="precautions">Precautions (comma-separated)</Label>
+          <Textarea
+            id="precautions"
+            value={formData.precautions?.join(', ') || ''}
+            onChange={(e) => handleArrayInputChange('precautions', e.target.value)}
+            placeholder="Precaution 1, Precaution 2"
+          />
+        </div>
+
+        <div className="flex gap-2 pt-4">
+          <Button onClick={handleSave}>
+            <Save className="w-4 h-4 mr-2" />
+            {isEditing ? 'Update' : 'Save'}
+          </Button>
+          <Button variant="outline" onClick={resetForm}>
+            <X className="w-4 h-4 mr-2" />
+            Cancel
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
   const renderForm = () => {
     switch (activeTab) {
       case 'food-products':
         return renderFoodProductForm();
+      case 'food-timing':
+        return renderFoodTimingForm();
+      case 'disease-foods':
+        return renderDiseaseFoodForm();
+      case 'self-care':
+        return renderSelfCareForm();
       case 'blogs':
         return renderBlogForm();
       default:
-        return (
-          <Card>
-            <CardContent className="p-6">
-              <p className="text-muted-foreground">Form for {activeTab} coming soon...</p>
-            </CardContent>
-          </Card>
-        );
+        return null;
     }
   };
 
@@ -682,15 +941,126 @@ const Admin = () => {
                   </div>
                 </TabsContent>
 
-                {/* Placeholder for other tabs */}
                 <TabsContent value="food-timing" className="mt-0">
-                  <p className="text-muted-foreground">Food timing data management coming soon...</p>
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Name</TableHead>
+                          <TableHead>Meal Time</TableHead>
+                          <TableHead>Benefits</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {foodTimings.map((food) => (
+                          <TableRow key={food.id}>
+                            <TableCell className="font-medium">{food.name}</TableCell>
+                            <TableCell>
+                              <Badge>{food.meal_time}</Badge>
+                            </TableCell>
+                            <TableCell className="max-w-xs truncate">{food.benefits}</TableCell>
+                            <TableCell>
+                              <div className="space-x-2">
+                                <Button size="sm" variant="outline" onClick={() => handleEdit(food)}>
+                                  <Edit className="w-3 h-3" />
+                                </Button>
+                                <Button 
+                                  size="sm" 
+                                  variant="destructive" 
+                                  onClick={() => handleDelete(food.id, 'food_timing')}
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
                 </TabsContent>
+
                 <TabsContent value="disease-foods" className="mt-0">
-                  <p className="text-muted-foreground">Disease foods data management coming soon...</p>
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Food Name</TableHead>
+                          <TableHead>Disease</TableHead>
+                          <TableHead>Benefits</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {diseaseFoods.map((food) => (
+                          <TableRow key={food.id}>
+                            <TableCell className="font-medium">{food.food_name}</TableCell>
+                            <TableCell>
+                              <Badge>{food.diseases?.name}</Badge>
+                            </TableCell>
+                            <TableCell className="max-w-xs truncate">{food.benefits}</TableCell>
+                            <TableCell>
+                              <div className="space-x-2">
+                                <Button size="sm" variant="outline" onClick={() => handleEdit(food)}>
+                                  <Edit className="w-3 h-3" />
+                                </Button>
+                                <Button 
+                                  size="sm" 
+                                  variant="destructive" 
+                                  onClick={() => handleDelete(food.id, 'disease_foods')}
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
                 </TabsContent>
+
                 <TabsContent value="self-care" className="mt-0">
-                  <p className="text-muted-foreground">Self care data management coming soon...</p>
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Title</TableHead>
+                          <TableHead>Category</TableHead>
+                          <TableHead>Duration</TableHead>
+                          <TableHead>Frequency</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {selfCareProcedures.map((procedure) => (
+                          <TableRow key={procedure.id}>
+                            <TableCell className="font-medium">{procedure.title}</TableCell>
+                            <TableCell>
+                              <Badge>{procedure.self_care_categories?.name}</Badge>
+                            </TableCell>
+                            <TableCell>{procedure.duration}</TableCell>
+                            <TableCell>{procedure.frequency}</TableCell>
+                            <TableCell>
+                              <div className="space-x-2">
+                                <Button size="sm" variant="outline" onClick={() => handleEdit(procedure)}>
+                                  <Edit className="w-3 h-3" />
+                                </Button>
+                                <Button 
+                                  size="sm" 
+                                  variant="destructive" 
+                                  onClick={() => handleDelete(procedure.id, 'self_care_procedures')}
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
                 </TabsContent>
               </CardContent>
             </Card>
