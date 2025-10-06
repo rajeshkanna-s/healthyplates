@@ -3,6 +3,7 @@ import { Search, Calendar, User, Eye, Tag } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -12,6 +13,7 @@ const Blog = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [blogs, setBlogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedBlog, setSelectedBlog] = useState<any>(null);
 
   const categories = [
     'all',
@@ -131,7 +133,10 @@ const Blog = () => {
 
         {/* Featured Post */}
         {!loading && filteredBlogs.length > 0 && (
-          <div className="card-health overflow-hidden mb-12">
+          <div 
+            className="card-health overflow-hidden mb-12 cursor-pointer"
+            onClick={() => setSelectedBlog(filteredBlogs[0])}
+          >
             <div className="md:flex">
               <div className="md:w-1/2">
                 {filteredBlogs[0].cover_image_url ? (
@@ -204,7 +209,11 @@ const Blog = () => {
         ) : filteredBlogs.length > 1 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredBlogs.slice(1).map((blog) => (
-              <article key={blog.id} className="card-health overflow-hidden group hover:scale-105 transition-all duration-200">
+              <article 
+                key={blog.id} 
+                className="card-health overflow-hidden group hover:scale-105 transition-all duration-200 cursor-pointer"
+                onClick={() => setSelectedBlog(blog)}
+              >
                 {blog.cover_image_url ? (
                   <img 
                     src={blog.cover_image_url} 
@@ -280,6 +289,73 @@ const Blog = () => {
             <p className="text-muted-foreground">We're working on creating amazing content for you.</p>
           </div>
         )}
+
+        {/* Detail Dialog */}
+        <Dialog open={!!selectedBlog} onOpenChange={() => setSelectedBlog(null)}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-bold">{selectedBlog?.title}</DialogTitle>
+            </DialogHeader>
+            {selectedBlog && (
+              <div className="space-y-6">
+                {selectedBlog.cover_image_url && (
+                  <img 
+                    src={selectedBlog.cover_image_url} 
+                    alt={selectedBlog.title}
+                    className="w-full h-96 object-contain rounded-lg bg-muted"
+                  />
+                )}
+
+                <div className="flex items-center gap-4 flex-wrap">
+                  {selectedBlog.category && (
+                    <Badge className={getCategoryColor(selectedBlog.category)}>
+                      {selectedBlog.category}
+                    </Badge>
+                  )}
+                  <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                    <User className="w-4 h-4" />
+                    <span>{selectedBlog.author_name}</span>
+                  </div>
+                  <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                    <Calendar className="w-4 h-4" />
+                    <span>{formatDate(selectedBlog.created_at)}</span>
+                  </div>
+                  <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                    <Eye className="w-4 h-4" />
+                    <span>{selectedBlog.views_count} views</span>
+                  </div>
+                </div>
+
+                {selectedBlog.excerpt && (
+                  <div className="bg-muted/50 rounded-lg p-4">
+                    <p className="text-base text-muted-foreground italic">{selectedBlog.excerpt}</p>
+                  </div>
+                )}
+
+                <div>
+                  <div 
+                    className="prose prose-lg max-w-none text-muted-foreground"
+                    dangerouslySetInnerHTML={{ __html: selectedBlog.content.replace(/\n/g, '<br />') }}
+                  />
+                </div>
+
+                {selectedBlog.tags && selectedBlog.tags.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-foreground mb-3">Tags</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedBlog.tags.map((tag: string, index: number) => (
+                        <Badge key={index} variant="outline" className="text-sm">
+                          <Tag className="w-3 h-3 mr-1" />
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

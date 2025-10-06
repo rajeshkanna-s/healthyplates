@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Clock, Utensils, Heart, Sparkles } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -8,6 +9,7 @@ const Foods = () => {
   const [selectedMealTime, setSelectedMealTime] = useState('morning');
   const [foods, setFoods] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedFood, setSelectedFood] = useState<any>(null);
 
   const mealTimes = [
     { id: 'morning', label: 'Morning', icon: '🌅', color: 'text-orange-500' },
@@ -100,7 +102,11 @@ const Foods = () => {
         ) : foods.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {foods.map((food) => (
-              <div key={food.id} className="card-health p-6 group hover:scale-105 transition-all duration-200">
+              <div 
+                key={food.id} 
+                className="card-health p-6 group hover:scale-105 transition-all duration-200 cursor-pointer"
+                onClick={() => setSelectedFood(food)}
+              >
                 {food.image_url ? (
                   <img 
                     src={food.image_url} 
@@ -170,6 +176,62 @@ const Foods = () => {
             <p className="text-muted-foreground">No foods available for this meal time yet.</p>
           </div>
         )}
+
+        {/* Detail Dialog */}
+        <Dialog open={!!selectedFood} onOpenChange={() => setSelectedFood(null)}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-bold">{selectedFood?.name}</DialogTitle>
+            </DialogHeader>
+            {selectedFood && (
+              <div className="space-y-6">
+                {selectedFood.image_url && (
+                  <img 
+                    src={selectedFood.image_url} 
+                    alt={selectedFood.name}
+                    className="w-full h-96 object-contain rounded-lg bg-muted"
+                  />
+                )}
+
+                <div>
+                  <h3 className="text-lg font-semibold text-foreground mb-2 flex items-center">
+                    <Heart className="w-5 h-5 mr-2 text-health" />
+                    Benefits
+                  </h3>
+                  <p className="text-base text-muted-foreground leading-relaxed">{selectedFood.benefits}</p>
+                </div>
+
+                {selectedFood.description && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-foreground mb-2 flex items-center">
+                      <Sparkles className="w-5 h-5 mr-2 text-health" />
+                      Description
+                    </h3>
+                    <p className="text-base text-muted-foreground leading-relaxed">{selectedFood.description}</p>
+                  </div>
+                )}
+
+                {selectedFood.how_much && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-foreground mb-2 flex items-center">
+                      <Clock className="w-5 h-5 mr-2 text-health" />
+                      Recommended Amount
+                    </h3>
+                    <p className="text-base text-muted-foreground">{selectedFood.how_much}</p>
+                  </div>
+                )}
+
+                {selectedFood.preparation_tips && (
+                  <div className="bg-muted/50 rounded-lg p-4">
+                    <p className="text-base text-muted-foreground">
+                      💡 <span className="font-semibold">Preparation Tips:</span> {selectedFood.preparation_tips}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

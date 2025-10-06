@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Search, Filter, Star, Heart, AlertCircle, CheckCircle } from 'lucide-react';
+import { Search, Filter, Star, Heart, AlertCircle, CheckCircle, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -14,6 +15,7 @@ const FoodProducts = () => {
   const [foodProducts, setFoodProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
   useEffect(() => {
     fetchData();
@@ -131,7 +133,11 @@ const FoodProducts = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredProducts.map((product) => (
-              <div key={product.id} className="card-product p-6 group">
+              <div 
+                key={product.id} 
+                className="card-product p-6 group cursor-pointer"
+                onClick={() => setSelectedProduct(product)}
+              >
                 <div className="flex items-start justify-between mb-4">
                   {product.image_url ? (
                     <img src={product.image_url} alt={product.name} className="w-16 h-16 object-cover rounded-lg" />
@@ -220,7 +226,91 @@ const FoodProducts = () => {
           </div>
         )}
 
-        {filteredProducts.length === 0 && (
+        {/* Detail Dialog */}
+        <Dialog open={!!selectedProduct} onOpenChange={() => setSelectedProduct(null)}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-bold">{selectedProduct?.name}</DialogTitle>
+            </DialogHeader>
+            {selectedProduct && (
+              <div className="space-y-6">
+                {selectedProduct.image_url && (
+                  <img 
+                    src={selectedProduct.image_url} 
+                    alt={selectedProduct.name}
+                    className="w-full h-96 object-contain rounded-lg bg-muted"
+                  />
+                )}
+                
+                <div className="flex items-center gap-4">
+                  <Badge className={getCategoryBadge(selectedProduct.categories?.name)}>
+                    {selectedProduct.categories?.name || 'Unknown'}
+                  </Badge>
+                  <div className="flex items-center space-x-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`w-5 h-5 ${
+                          i < Math.floor(selectedProduct.rating)
+                            ? 'text-yellow-400 fill-current'
+                            : 'text-gray-300'
+                        }`}
+                      />
+                    ))}
+                    <span className="text-sm text-muted-foreground ml-2">{selectedProduct.rating}</span>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">Purpose</h3>
+                  <p className="text-muted-foreground leading-relaxed">{selectedProduct.purpose}</p>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center">
+                    <CheckCircle className="w-5 h-5 mr-2 text-green-500" />
+                    Advantages
+                  </h3>
+                  <ul className="space-y-2">
+                    {selectedProduct.advantages?.map((advantage, index) => (
+                      <li key={index} className="flex items-start text-muted-foreground">
+                        <span className="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                        <span>{advantage}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center">
+                    <AlertCircle className="w-5 h-5 mr-2 text-orange-500" />
+                    Considerations
+                  </h3>
+                  <ul className="space-y-2">
+                    {selectedProduct.disadvantages?.map((disadvantage, index) => (
+                      <li key={index} className="flex items-start text-muted-foreground">
+                        <span className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                        <span>{disadvantage}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {selectedProduct.medicinalBenefits && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-foreground mb-2 flex items-center">
+                      <Heart className="w-5 h-5 mr-2 text-health" />
+                      Medicinal Benefits
+                    </h3>
+                    <p className="text-muted-foreground leading-relaxed">{selectedProduct.medicinalBenefits}</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {filteredProducts.length === 0 && !loading && (
           <div className="text-center py-12">
             <div className="text-6xl mb-4">🔍</div>
             <h3 className="text-xl font-semibold text-foreground mb-2">No products found</h3>
