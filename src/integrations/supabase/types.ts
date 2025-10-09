@@ -95,6 +95,7 @@ export type Database = {
           frequency: string | null
           how_much: string | null
           id: string
+          image_url: string | null
           preparation_method: string | null
           updated_at: string
         }
@@ -106,6 +107,7 @@ export type Database = {
           frequency?: string | null
           how_much?: string | null
           id?: string
+          image_url?: string | null
           preparation_method?: string | null
           updated_at?: string
         }
@@ -117,6 +119,7 @@ export type Database = {
           frequency?: string | null
           how_much?: string | null
           id?: string
+          image_url?: string | null
           preparation_method?: string | null
           updated_at?: string
         }

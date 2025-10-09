@@ -151,25 +151,9 @@ const FoodProducts = () => {
                   </Badge>
                 </div>
 
-              <h3 className="text-xl font-semibold text-foreground mb-2 group-hover:text-health transition-colors">
+              <h3 className="text-xl font-semibold text-foreground mb-3 group-hover:text-health transition-colors">
                 {product.name}
               </h3>
-
-              <div className="flex items-center mb-3">
-                <div className="flex items-center space-x-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`w-4 h-4 ${
-                        i < Math.floor(product.rating)
-                          ? 'text-yellow-400 fill-current'
-                          : 'text-gray-300'
-                      }`}
-                    />
-                  ))}
-                </div>
-                <span className="text-sm text-muted-foreground ml-2">{product.rating}</span>
-              </div>
 
               <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
                 <strong>Purpose:</strong> {product.purpose}
@@ -246,19 +230,6 @@ const FoodProducts = () => {
                   <Badge className={getCategoryBadge(selectedProduct.categories?.name)}>
                     {selectedProduct.categories?.name || 'Unknown'}
                   </Badge>
-                  <div className="flex items-center space-x-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-5 h-5 ${
-                          i < Math.floor(selectedProduct.rating)
-                            ? 'text-yellow-400 fill-current'
-                            : 'text-gray-300'
-                        }`}
-                      />
-                    ))}
-                    <span className="text-sm text-muted-foreground ml-2">{selectedProduct.rating}</span>
-                  </div>
                 </div>
 
                 <div>

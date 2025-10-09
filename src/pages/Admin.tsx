@@ -281,88 +281,79 @@ const Admin = () => {
   };
 
   const renderFoodProductForm = () => (
-    <Card className="border-2 border-primary/20">
-      <CardHeader className="bg-gradient-health/10">
-        <CardTitle className="text-xl">{isEditing ? 'Edit Food Product' : 'Add New Food Product'}</CardTitle>
-        <CardDescription>Fill in all required fields (*) to add a food product</CardDescription>
+    <Card className="max-w-3xl mx-auto">
+      <CardHeader className="pb-4">
+        <CardTitle className="text-lg">{isEditing ? 'Edit Food Product' : 'Add New Food Product'}</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6 pt-6">
-        <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
-          <h3 className="font-semibold text-sm text-muted-foreground">BASIC INFORMATION</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="name" className="text-sm font-medium">Product Name *</Label>
-              <Input
-                id="name"
-                value={formData.name || ''}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                placeholder="e.g., Fresh Spinach, Almonds"
-                required
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="category" className="text-sm font-medium">Category</Label>
-              <Select value={formData.category_id || ''} onValueChange={(value) => handleInputChange('category_id', value)}>
-                <SelectTrigger className="mt-1">
-                  <SelectValue placeholder="Select category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.filter(c => c.type === 'food_product').map((category) => (
-                    <SelectItem key={category.id} value={category.id}>
-                      {category.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
-
-        <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
-          <h3 className="font-semibold text-sm text-muted-foreground">DETAILS</h3>
-          <div>
-            <Label htmlFor="purpose" className="text-sm font-medium">Purpose *</Label>
-            <Textarea
-              id="purpose"
-              value={formData.purpose || ''}
-              onChange={(e) => handleInputChange('purpose', e.target.value)}
-              placeholder="Describe the main purpose and health benefits"
-              required
-              className="mt-1 min-h-[100px]"
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="medicinal_benefits" className="text-sm font-medium">Medicinal Benefits</Label>
-            <Textarea
-              id="medicinal_benefits"
-              value={formData.medicinal_benefits || ''}
-              onChange={(e) => handleInputChange('medicinal_benefits', e.target.value)}
-              placeholder="List any medicinal properties or therapeutic benefits"
-              className="mt-1 min-h-[100px]"
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="image_url" className="text-sm font-medium">Image URL</Label>
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-2 gap-3">
+          <div className="col-span-2 sm:col-span-1">
+            <Label htmlFor="name" className="text-xs">Product Name *</Label>
             <Input
-              id="image_url"
-              value={formData.image_url || ''}
-              onChange={(e) => handleInputChange('image_url', e.target.value)}
-              placeholder="https://example.com/image.jpg"
-              className="mt-1"
+              id="name"
+              value={formData.name || ''}
+              onChange={(e) => handleInputChange('name', e.target.value)}
+              placeholder="e.g., Fresh Spinach"
+              className="h-9 text-sm"
             />
+          </div>
+          <div className="col-span-2 sm:col-span-1">
+            <Label htmlFor="category" className="text-xs">Category</Label>
+            <Select value={formData.category_id || ''} onValueChange={(value) => handleInputChange('category_id', value)}>
+              <SelectTrigger className="h-9 text-sm">
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.filter(c => c.type === 'food_product').map((category) => (
+                  <SelectItem key={category.id} value={category.id}>
+                    {category.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
-        <div className="flex gap-3 pt-4 border-t">
-          <Button onClick={handleSave} className="flex-1 bg-gradient-health text-white">
-            <Save className="w-4 h-4 mr-2" />
-            {isEditing ? 'Update Product' : 'Create Product'}
+        <div>
+          <Label htmlFor="purpose" className="text-xs">Purpose *</Label>
+          <Textarea
+            id="purpose"
+            value={formData.purpose || ''}
+            onChange={(e) => handleInputChange('purpose', e.target.value)}
+            placeholder="Main purpose and health benefits"
+            className="min-h-[70px] text-sm"
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="medicinal_benefits" className="text-xs">Medicinal Benefits</Label>
+          <Textarea
+            id="medicinal_benefits"
+            value={formData.medicinal_benefits || ''}
+            onChange={(e) => handleInputChange('medicinal_benefits', e.target.value)}
+            placeholder="Medicinal properties"
+            className="min-h-[60px] text-sm"
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="image_url" className="text-xs">Image URL</Label>
+          <Input
+            id="image_url"
+            value={formData.image_url || ''}
+            onChange={(e) => handleInputChange('image_url', e.target.value)}
+            placeholder="https://example.com/image.jpg"
+            className="h-9 text-sm"
+          />
+        </div>
+
+        <div className="flex gap-2 pt-2">
+          <Button onClick={handleSave} className="flex-1 h-9 text-sm">
+            <Save className="w-3 h-3 mr-1" />
+            {isEditing ? 'Update' : 'Create'}
           </Button>
-          <Button variant="outline" onClick={resetForm} className="flex-1">
-            <X className="w-4 h-4 mr-2" />
+          <Button variant="outline" onClick={resetForm} className="flex-1 h-9 text-sm">
+            <X className="w-3 h-3 mr-1" />
             Cancel
           </Button>
         </div>
@@ -371,109 +362,86 @@ const Admin = () => {
   );
 
   const renderBlogForm = () => (
-    <Card className="border-2 border-primary/20">
-      <CardHeader className="bg-gradient-health/10">
-        <CardTitle className="text-xl">{isEditing ? 'Edit Blog Post' : 'Create New Blog Post'}</CardTitle>
-        <CardDescription>Share health tips and wellness insights with your audience</CardDescription>
+    <Card className="max-w-3xl mx-auto">
+      <CardHeader className="pb-4">
+        <CardTitle className="text-lg">{isEditing ? 'Edit Blog Post' : 'Create New Blog Post'}</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6 pt-6">
-        <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
-          <h3 className="font-semibold text-sm text-muted-foreground">BASIC INFORMATION</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="title" className="text-sm font-medium">Blog Title *</Label>
-              <Input
-                id="title"
-                value={formData.title || ''}
-                onChange={(e) => handleInputChange('title', e.target.value)}
-                placeholder="e.g., 10 Benefits of Green Tea"
-                required
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="category" className="text-sm font-medium">Category</Label>
-              <Input
-                id="category"
-                value={formData.category || ''}
-                onChange={(e) => handleInputChange('category', e.target.value)}
-                placeholder="e.g., Nutrition, Wellness"
-                className="mt-1"
-              />
-            </div>
-          </div>
-
-          <div>
-            <Label htmlFor="excerpt" className="text-sm font-medium">Excerpt (Brief Summary)</Label>
-            <Textarea
-              id="excerpt"
-              value={formData.excerpt || ''}
-              onChange={(e) => handleInputChange('excerpt', e.target.value)}
-              placeholder="Write a short summary that appears in blog listings"
-              className="mt-1 min-h-[80px]"
-            />
-          </div>
-        </div>
-
-        <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
-          <h3 className="font-semibold text-sm text-muted-foreground">CONTENT</h3>
-          <div>
-            <Label htmlFor="content" className="text-sm font-medium">Full Content *</Label>
-            <Textarea
-              id="content"
-              value={formData.content || ''}
-              onChange={(e) => handleInputChange('content', e.target.value)}
-              placeholder="Write your complete blog content here. Use line breaks for paragraphs."
-              className="min-h-[250px] mt-1"
-              required
-            />
-          </div>
-        </div>
-
-        <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
-          <h3 className="font-semibold text-sm text-muted-foreground">METADATA</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="author_name" className="text-sm font-medium">Author Name</Label>
-              <Input
-                id="author_name"
-                value={formData.author_name || 'HealthyPlates Team'}
-                onChange={(e) => handleInputChange('author_name', e.target.value)}
-                placeholder="Author name"
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="cover_image_url" className="text-sm font-medium">Cover Image URL</Label>
-              <Input
-                id="cover_image_url"
-                value={formData.cover_image_url || ''}
-                onChange={(e) => handleInputChange('cover_image_url', e.target.value)}
-                placeholder="https://example.com/blog-cover.jpg"
-                className="mt-1"
-              />
-            </div>
-          </div>
-
-          <div>
-            <Label htmlFor="tags" className="text-sm font-medium">Tags (comma-separated)</Label>
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-2 gap-3">
+          <div className="col-span-2 sm:col-span-1">
+            <Label htmlFor="title" className="text-xs">Blog Title *</Label>
             <Input
-              id="tags"
-              value={formData.tags?.join(', ') || ''}
-              onChange={(e) => handleArrayInputChange('tags', e.target.value)}
-              placeholder="health, nutrition, wellness, lifestyle"
-              className="mt-1"
+              id="title"
+              value={formData.title || ''}
+              onChange={(e) => handleInputChange('title', e.target.value)}
+              placeholder="e.g., Benefits of Green Tea"
+              className="h-9 text-sm"
+            />
+          </div>
+          <div className="col-span-2 sm:col-span-1">
+            <Label htmlFor="category" className="text-xs">Category</Label>
+            <Input
+              id="category"
+              value={formData.category || ''}
+              onChange={(e) => handleInputChange('category', e.target.value)}
+              placeholder="e.g., Nutrition"
+              className="h-9 text-sm"
             />
           </div>
         </div>
 
-        <div className="flex gap-3 pt-4 border-t">
-          <Button onClick={handleSave} className="flex-1 bg-gradient-health text-white">
-            <Save className="w-4 h-4 mr-2" />
-            {isEditing ? 'Update Blog' : 'Publish Blog'}
+        <div>
+          <Label htmlFor="excerpt" className="text-xs">Excerpt</Label>
+          <Textarea
+            id="excerpt"
+            value={formData.excerpt || ''}
+            onChange={(e) => handleInputChange('excerpt', e.target.value)}
+            placeholder="Brief summary"
+            className="min-h-[60px] text-sm"
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="content" className="text-xs">Full Content *</Label>
+          <Textarea
+            id="content"
+            value={formData.content || ''}
+            onChange={(e) => handleInputChange('content', e.target.value)}
+            placeholder="Complete blog content"
+            className="min-h-[150px] text-sm"
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div className="col-span-2 sm:col-span-1">
+            <Label htmlFor="author_name" className="text-xs">Author Name</Label>
+            <Input
+              id="author_name"
+              value={formData.author_name || 'HealthyPlates Team'}
+              onChange={(e) => handleInputChange('author_name', e.target.value)}
+              placeholder="Author name"
+              className="h-9 text-sm"
+            />
+          </div>
+          <div className="col-span-2 sm:col-span-1">
+            <Label htmlFor="cover_image_url" className="text-xs">Cover Image URL</Label>
+            <Input
+              id="cover_image_url"
+              value={formData.cover_image_url || ''}
+              onChange={(e) => handleInputChange('cover_image_url', e.target.value)}
+              placeholder="https://example.com/image.jpg"
+              className="h-9 text-sm"
+            />
+          </div>
+        </div>
+
+        <div className="flex gap-2 pt-2">
+          <Button onClick={handleSave} className="flex-1 h-9 text-sm">
+            <Save className="w-3 h-3 mr-1" />
+            {isEditing ? 'Update' : 'Create'}
           </Button>
-          <Button variant="outline" onClick={resetForm} className="flex-1">
-            <X className="w-4 h-4 mr-2" />
+          <Button variant="outline" onClick={resetForm} className="flex-1 h-9 text-sm">
+            <X className="w-3 h-3 mr-1" />
             Cancel
           </Button>
         </div>
@@ -482,27 +450,26 @@ const Admin = () => {
   );
 
   const renderFoodTimingForm = () => (
-    <Card>
-      <CardHeader>
-        <CardTitle>{isEditing ? 'Edit Food' : 'Add New Food'}</CardTitle>
-        <CardDescription>Manage foods by meal timing</CardDescription>
+    <Card className="max-w-3xl mx-auto">
+      <CardHeader className="pb-4">
+        <CardTitle className="text-lg">{isEditing ? 'Edit Food' : 'Add New Food'}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="name">Food Name *</Label>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="col-span-2 sm:col-span-1">
+            <Label htmlFor="name" className="text-xs">Food Name *</Label>
             <Input
               id="name"
               value={formData.name || ''}
               onChange={(e) => handleInputChange('name', e.target.value)}
               placeholder="Enter food name"
-              required
+              className="h-9 text-sm"
             />
           </div>
-          <div>
-            <Label htmlFor="meal_time">Meal Time *</Label>
+          <div className="col-span-2 sm:col-span-1">
+            <Label htmlFor="meal_time" className="text-xs">Meal Time *</Label>
             <Select value={formData.meal_time || ''} onValueChange={(value) => handleInputChange('meal_time', value)}>
-              <SelectTrigger>
+              <SelectTrigger className="h-9 text-sm">
                 <SelectValue placeholder="Select meal time" />
               </SelectTrigger>
               <SelectContent>
@@ -517,64 +484,68 @@ const Admin = () => {
         </div>
         
         <div>
-          <Label htmlFor="benefits">Benefits *</Label>
+          <Label htmlFor="benefits" className="text-xs">Benefits *</Label>
           <Textarea
             id="benefits"
             value={formData.benefits || ''}
             onChange={(e) => handleInputChange('benefits', e.target.value)}
-            placeholder="Describe the health benefits"
-            required
+            placeholder="Health benefits"
+            className="min-h-[70px] text-sm"
           />
         </div>
 
         <div>
-          <Label htmlFor="description">Description</Label>
+          <Label htmlFor="description" className="text-xs">Description</Label>
           <Textarea
             id="description"
             value={formData.description || ''}
             onChange={(e) => handleInputChange('description', e.target.value)}
             placeholder="Detailed description"
+            className="min-h-[60px] text-sm"
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="how_much">How Much</Label>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="col-span-2 sm:col-span-1">
+            <Label htmlFor="how_much" className="text-xs">How Much</Label>
             <Input
               id="how_much"
               value={formData.how_much || ''}
               onChange={(e) => handleInputChange('how_much', e.target.value)}
               placeholder="e.g., 1 cup, 50g"
+              className="h-9 text-sm"
             />
           </div>
-          <div>
-            <Label htmlFor="preparation_tips">Preparation Tips</Label>
+          <div className="col-span-2 sm:col-span-1">
+            <Label htmlFor="preparation_tips" className="text-xs">Preparation Tips</Label>
             <Input
               id="preparation_tips"
               value={formData.preparation_tips || ''}
               onChange={(e) => handleInputChange('preparation_tips', e.target.value)}
-              placeholder="Quick preparation tips"
+              placeholder="Quick tips"
+              className="h-9 text-sm"
             />
           </div>
         </div>
 
         <div>
-          <Label htmlFor="image_url">Image URL</Label>
+          <Label htmlFor="image_url" className="text-xs">Image URL</Label>
           <Input
             id="image_url"
             value={formData.image_url || ''}
             onChange={(e) => handleInputChange('image_url', e.target.value)}
             placeholder="https://example.com/image.jpg"
+            className="h-9 text-sm"
           />
         </div>
 
-        <div className="flex gap-2 pt-4">
-          <Button onClick={handleSave}>
-            <Save className="w-4 h-4 mr-2" />
-            {isEditing ? 'Update' : 'Save'}
+        <div className="flex gap-2 pt-2">
+          <Button onClick={handleSave} className="flex-1 h-9 text-sm">
+            <Save className="w-3 h-3 mr-1" />
+            {isEditing ? 'Update' : 'Create'}
           </Button>
-          <Button variant="outline" onClick={resetForm}>
-            <X className="w-4 h-4 mr-2" />
+          <Button variant="outline" onClick={resetForm} className="flex-1 h-9 text-sm">
+            <X className="w-3 h-3 mr-1" />
             Cancel
           </Button>
         </div>
@@ -583,27 +554,26 @@ const Admin = () => {
   );
 
   const renderDiseaseFoodForm = () => (
-    <Card>
-      <CardHeader>
-        <CardTitle>{isEditing ? 'Edit Disease Food' : 'Add New Disease Food'}</CardTitle>
-        <CardDescription>Manage foods for specific diseases</CardDescription>
+    <Card className="max-w-3xl mx-auto">
+      <CardHeader className="pb-4">
+        <CardTitle className="text-lg">{isEditing ? 'Edit Disease Food' : 'Add New Disease Food'}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="food_name">Food Name *</Label>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="col-span-2 sm:col-span-1">
+            <Label htmlFor="food_name" className="text-xs">Food Name *</Label>
             <Input
               id="food_name"
               value={formData.food_name || ''}
               onChange={(e) => handleInputChange('food_name', e.target.value)}
               placeholder="Enter food name"
-              required
+              className="h-9 text-sm"
             />
           </div>
-          <div>
-            <Label htmlFor="disease_id">Disease *</Label>
+          <div className="col-span-2 sm:col-span-1">
+            <Label htmlFor="disease_id" className="text-xs">Disease *</Label>
             <Select value={formData.disease_id || ''} onValueChange={(value) => handleInputChange('disease_id', value)}>
-              <SelectTrigger>
+              <SelectTrigger className="h-9 text-sm">
                 <SelectValue placeholder="Select disease" />
               </SelectTrigger>
               <SelectContent>
@@ -618,54 +588,68 @@ const Admin = () => {
         </div>
         
         <div>
-          <Label htmlFor="benefits">Benefits *</Label>
+          <Label htmlFor="benefits" className="text-xs">Benefits *</Label>
           <Textarea
             id="benefits"
             value={formData.benefits || ''}
             onChange={(e) => handleInputChange('benefits', e.target.value)}
-            placeholder="Describe how this food helps with the disease"
-            required
+            placeholder="How this food helps"
+            className="min-h-[70px] text-sm"
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="how_much">How Much</Label>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="col-span-2 sm:col-span-1">
+            <Label htmlFor="how_much" className="text-xs">How Much</Label>
             <Input
               id="how_much"
               value={formData.how_much || ''}
               onChange={(e) => handleInputChange('how_much', e.target.value)}
               placeholder="Recommended quantity"
+              className="h-9 text-sm"
             />
           </div>
-          <div>
-            <Label htmlFor="frequency">Frequency</Label>
+          <div className="col-span-2 sm:col-span-1">
+            <Label htmlFor="frequency" className="text-xs">Frequency</Label>
             <Input
               id="frequency"
               value={formData.frequency || ''}
               onChange={(e) => handleInputChange('frequency', e.target.value)}
-              placeholder="How often to consume"
+              placeholder="How often"
+              className="h-9 text-sm"
             />
           </div>
         </div>
 
         <div>
-          <Label htmlFor="preparation_method">Preparation Method</Label>
+          <Label htmlFor="preparation_method" className="text-xs">Preparation Method</Label>
           <Textarea
             id="preparation_method"
             value={formData.preparation_method || ''}
             onChange={(e) => handleInputChange('preparation_method', e.target.value)}
-            placeholder="How to prepare this food"
+            placeholder="How to prepare"
+            className="min-h-[60px] text-sm"
           />
         </div>
 
-        <div className="flex gap-2 pt-4">
-          <Button onClick={handleSave}>
-            <Save className="w-4 h-4 mr-2" />
-            {isEditing ? 'Update' : 'Save'}
+        <div>
+          <Label htmlFor="image_url" className="text-xs">Image URL</Label>
+          <Input
+            id="image_url"
+            value={formData.image_url || ''}
+            onChange={(e) => handleInputChange('image_url', e.target.value)}
+            placeholder="https://example.com/image.jpg"
+            className="h-9 text-sm"
+          />
+        </div>
+
+        <div className="flex gap-2 pt-2">
+          <Button onClick={handleSave} className="flex-1 h-9 text-sm">
+            <Save className="w-3 h-3 mr-1" />
+            {isEditing ? 'Update' : 'Create'}
           </Button>
-          <Button variant="outline" onClick={resetForm}>
-            <X className="w-4 h-4 mr-2" />
+          <Button variant="outline" onClick={resetForm} className="flex-1 h-9 text-sm">
+            <X className="w-3 h-3 mr-1" />
             Cancel
           </Button>
         </div>
@@ -674,27 +658,26 @@ const Admin = () => {
   );
 
   const renderSelfCareForm = () => (
-    <Card>
-      <CardHeader>
-        <CardTitle>{isEditing ? 'Edit Self Care Procedure' : 'Add New Self Care Procedure'}</CardTitle>
-        <CardDescription>Manage self care procedures and remedies</CardDescription>
+    <Card className="max-w-3xl mx-auto">
+      <CardHeader className="pb-4">
+        <CardTitle className="text-lg">{isEditing ? 'Edit Self Care Procedure' : 'Add New Self Care Procedure'}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="title">Title *</Label>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="col-span-2 sm:col-span-1">
+            <Label htmlFor="title" className="text-xs">Title *</Label>
             <Input
               id="title"
               value={formData.title || ''}
               onChange={(e) => handleInputChange('title', e.target.value)}
               placeholder="Procedure title"
-              required
+              className="h-9 text-sm"
             />
           </div>
-          <div>
-            <Label htmlFor="category_id">Category *</Label>
+          <div className="col-span-2 sm:col-span-1">
+            <Label htmlFor="category_id" className="text-xs">Category *</Label>
             <Select value={formData.category_id || ''} onValueChange={(value) => handleInputChange('category_id', value)}>
-              <SelectTrigger>
+              <SelectTrigger className="h-9 text-sm">
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
@@ -709,93 +692,101 @@ const Admin = () => {
         </div>
         
         <div>
-          <Label htmlFor="description">Description</Label>
+          <Label htmlFor="description" className="text-xs">Description</Label>
           <Textarea
             id="description"
             value={formData.description || ''}
             onChange={(e) => handleInputChange('description', e.target.value)}
             placeholder="Brief description"
+            className="min-h-[60px] text-sm"
           />
         </div>
 
         <div>
-          <Label htmlFor="steps">Steps (comma-separated) *</Label>
+          <Label htmlFor="steps" className="text-xs">Steps (comma-separated) *</Label>
           <Textarea
             id="steps"
             value={formData.steps?.join(', ') || ''}
             onChange={(e) => handleArrayInputChange('steps', e.target.value)}
             placeholder="Step 1, Step 2, Step 3"
-            required
+            className="min-h-[70px] text-sm"
           />
         </div>
 
-        <div>
-          <Label htmlFor="benefits">Benefits (comma-separated)</Label>
-          <Textarea
-            id="benefits"
-            value={formData.benefits?.join(', ') || ''}
-            onChange={(e) => handleArrayInputChange('benefits', e.target.value)}
-            placeholder="Benefit 1, Benefit 2, Benefit 3"
-          />
+        <div className="grid grid-cols-2 gap-3">
+          <div className="col-span-2">
+            <Label htmlFor="benefits" className="text-xs">Benefits (comma-separated)</Label>
+            <Textarea
+              id="benefits"
+              value={formData.benefits?.join(', ') || ''}
+              onChange={(e) => handleArrayInputChange('benefits', e.target.value)}
+              placeholder="Benefit 1, Benefit 2"
+              className="min-h-[60px] text-sm"
+            />
+          </div>
+          <div className="col-span-2">
+            <Label htmlFor="ingredients" className="text-xs">Ingredients (comma-separated)</Label>
+            <Textarea
+              id="ingredients"
+              value={formData.ingredients?.join(', ') || ''}
+              onChange={(e) => handleArrayInputChange('ingredients', e.target.value)}
+              placeholder="Ingredient 1, Ingredient 2"
+              className="min-h-[60px] text-sm"
+            />
+          </div>
         </div>
 
-        <div>
-          <Label htmlFor="ingredients">Ingredients (comma-separated)</Label>
-          <Textarea
-            id="ingredients"
-            value={formData.ingredients?.join(', ') || ''}
-            onChange={(e) => handleArrayInputChange('ingredients', e.target.value)}
-            placeholder="Ingredient 1, Ingredient 2"
-          />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-3">
           <div>
-            <Label htmlFor="duration">Duration</Label>
+            <Label htmlFor="duration" className="text-xs">Duration</Label>
             <Input
               id="duration"
               value={formData.duration || ''}
               onChange={(e) => handleInputChange('duration', e.target.value)}
-              placeholder="e.g., 30 minutes"
+              placeholder="30 minutes"
+              className="h-9 text-sm"
             />
           </div>
           <div>
-            <Label htmlFor="frequency">Frequency</Label>
+            <Label htmlFor="frequency" className="text-xs">Frequency</Label>
             <Input
               id="frequency"
               value={formData.frequency || ''}
               onChange={(e) => handleInputChange('frequency', e.target.value)}
-              placeholder="e.g., Daily"
+              placeholder="Daily"
+              className="h-9 text-sm"
             />
           </div>
           <div>
-            <Label htmlFor="image_url">Image URL</Label>
+            <Label htmlFor="image_url" className="text-xs">Image URL</Label>
             <Input
               id="image_url"
               value={formData.image_url || ''}
               onChange={(e) => handleInputChange('image_url', e.target.value)}
-              placeholder="https://example.com/image.jpg"
+              placeholder="Image URL"
+              className="h-9 text-sm"
             />
           </div>
         </div>
 
         <div>
-          <Label htmlFor="precautions">Precautions (comma-separated)</Label>
+          <Label htmlFor="precautions" className="text-xs">Precautions (comma-separated)</Label>
           <Textarea
             id="precautions"
             value={formData.precautions?.join(', ') || ''}
             onChange={(e) => handleArrayInputChange('precautions', e.target.value)}
             placeholder="Precaution 1, Precaution 2"
+            className="min-h-[60px] text-sm"
           />
         </div>
 
-        <div className="flex gap-2 pt-4">
-          <Button onClick={handleSave}>
-            <Save className="w-4 h-4 mr-2" />
-            {isEditing ? 'Update' : 'Save'}
+        <div className="flex gap-2 pt-2">
+          <Button onClick={handleSave} className="flex-1 h-9 text-sm">
+            <Save className="w-3 h-3 mr-1" />
+            {isEditing ? 'Update' : 'Create'}
           </Button>
-          <Button variant="outline" onClick={resetForm}>
-            <X className="w-4 h-4 mr-2" />
+          <Button variant="outline" onClick={resetForm} className="flex-1 h-9 text-sm">
+            <X className="w-3 h-3 mr-1" />
             Cancel
           </Button>
         </div>

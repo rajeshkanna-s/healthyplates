@@ -192,6 +192,13 @@ const Diseases = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {diseaseFoods.map((item) => (
                   <div key={item.id} className="card-health p-6 group hover:scale-105 transition-all duration-200">
+                    {item.image_url && (
+                      <img 
+                        src={item.image_url} 
+                        alt={item.food_name}
+                        className="w-full h-48 object-cover rounded-lg mb-4"
+                      />
+                    )}
                     <div className="flex items-start justify-between mb-4">
                       <h3 className="text-lg font-semibold text-foreground group-hover:text-health transition-colors">
                         {item.food_name}
