@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Mail, Phone, MapPin, Clock, Send, MessageSquare } from 'lucide-react';
+import { Mail, Phone, Clock, Send, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import emailjs from '@emailjs/browser';
 
 const Contact = () => {
   const { toast } = useToast();
@@ -24,7 +25,7 @@ const Contact = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Basic validation
@@ -37,43 +38,63 @@ const Contact = () => {
       return;
     }
 
-    // Here you would typically send the form data to your backend
-    toast({
-      title: "Message Sent!",
-      description: "Thank you for contacting us. We'll get back to you soon.",
-    });
+    try {
+      // Send email using EmailJS
+      await emailjs.send(
+        'service_f07gds7',
+        'template_2x0nf7w',
+        {
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject || 'No subject',
+          message: formData.message,
+        },
+        'YOUR_PUBLIC_KEY' // Replace with your EmailJS public key
+      );
 
-    // Reset form
-    setFormData({
-      name: '',
-      mobile: '',
-      email: '',
-      subject: '',
-      message: ''
-    });
+      toast({
+        title: "Message Sent!",
+        description: "Thank you for contacting us. We'll get back to you soon.",
+      });
+
+      // Reset form
+      setFormData({
+        name: '',
+        mobile: '',
+        email: '',
+        subject: '',
+        message: ''
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again later.",
+        variant: "destructive"
+      });
+    }
   };
 
   const contactInfo = [
     {
       icon: Mail,
       title: "Email Us",
-      details: "info@healthyplates.com",
+      details: "healthyplates@gmail.com",
       description: "Send us an email and we'll respond within 24 hours",
-      action: "mailto:info@healthyplates.com"
+      action: "mailto:healthyplates@gmail.com"
     },
     {
       icon: Phone,
       title: "Call Us",
-      details: "+1 (555) 123-4567",
+      details: "+91 8667454755",
       description: "Speak directly with our health experts",
-      action: "tel:+15551234567"
+      action: "tel:+918667454755"
     },
     {
       icon: MessageSquare,
       title: "WhatsApp",
-      details: "+1 (555) 123-4567",
+      details: "+91 8667454755",
       description: "Quick support via WhatsApp messenger",
-      action: "https://wa.me/15551234567"
+      action: "https://wa.me/918667454755"
     },
   ];
 
