@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Leaf, Mail, Phone, MapPin, Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
+import { Leaf, Mail, Phone, Instagram, Youtube, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -24,17 +24,20 @@ const Footer = () => {
               Discover the power of natural foods for a healthier lifestyle.
             </p>
             <div className="flex space-x-2">
-              <Button variant="outline" size="sm" className="h-8 w-8 p-0">
-                <Facebook className="h-4 w-4" />
+              <Button variant="outline" size="sm" className="h-8 w-8 p-0" asChild>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+                  <Instagram className="h-4 w-4" />
+                </a>
               </Button>
-              <Button variant="outline" size="sm" className="h-8 w-8 p-0">
-                <Twitter className="h-4 w-4" />
+              <Button variant="outline" size="sm" className="h-8 w-8 p-0" asChild>
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer">
+                  <Youtube className="h-4 w-4" />
+                </a>
               </Button>
-              <Button variant="outline" size="sm" className="h-8 w-8 p-0">
-                <Instagram className="h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="sm" className="h-8 w-8 p-0">
-                <Youtube className="h-4 w-4" />
+              <Button variant="outline" size="sm" className="h-8 w-8 p-0" asChild>
+                <a href="https://wa.me/" target="_blank" rel="noopener noreferrer">
+                  <MessageCircle className="h-4 w-4" />
+                </a>
               </Button>
             </div>
           </div>
@@ -67,15 +70,11 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4 text-health" />
-                <span className="text-sm text-muted-foreground">info@healthyplates.com</span>
+                <span className="text-sm text-muted-foreground">healthyplates@gmail.com</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Phone className="h-4 w-4 text-health" />
-                <span className="text-sm text-muted-foreground">+1 (555) 123-4567</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <MapPin className="h-4 w-4 text-health" />
-                <span className="text-sm text-muted-foreground">123 Health Street, Wellness City</span>
+                <span className="text-sm text-muted-foreground">+91 8667454755</span>
               </div>
             </div>
           </div>
@@ -101,21 +100,13 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="mt-8 pt-8 border-t border-border/50">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          <div className="text-center space-y-2">
             <p className="text-sm text-muted-foreground">
-              © 2024 HealthyPlates. All rights reserved.
+              © 2025 HealthyPlates.in, All rights reserved.
             </p>
-            <div className="flex space-x-6">
-              <Link to="/privacy" className="text-sm text-muted-foreground hover:text-health transition-colors">
-                Privacy Policy
-              </Link>
-              <Link to="/terms" className="text-sm text-muted-foreground hover:text-health transition-colors">
-                Terms of Service
-              </Link>
-              <Link to="/sitemap" className="text-sm text-muted-foreground hover:text-health transition-colors">
-                Sitemap
-              </Link>
-            </div>
+            <p className="text-xs text-muted-foreground">
+              Developed by RAJESHKANNA S
+            </p>
           </div>
         </div>
       </div>

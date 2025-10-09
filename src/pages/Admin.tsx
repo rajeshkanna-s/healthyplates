@@ -281,77 +281,87 @@ const Admin = () => {
   };
 
   const renderFoodProductForm = () => (
-    <Card>
-      <CardHeader>
-        <CardTitle>{isEditing ? 'Edit Food Product' : 'Add New Food Product'}</CardTitle>
-        <CardDescription>Manage food products in your database</CardDescription>
+    <Card className="border-2 border-primary/20">
+      <CardHeader className="bg-gradient-health/10">
+        <CardTitle className="text-xl">{isEditing ? 'Edit Food Product' : 'Add New Food Product'}</CardTitle>
+        <CardDescription>Fill in all required fields (*) to add a food product</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <CardContent className="space-y-6 pt-6">
+        <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
+          <h3 className="font-semibold text-sm text-muted-foreground">BASIC INFORMATION</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="name" className="text-sm font-medium">Product Name *</Label>
+              <Input
+                id="name"
+                value={formData.name || ''}
+                onChange={(e) => handleInputChange('name', e.target.value)}
+                placeholder="e.g., Fresh Spinach, Almonds"
+                required
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="category" className="text-sm font-medium">Category</Label>
+              <Select value={formData.category_id || ''} onValueChange={(value) => handleInputChange('category_id', value)}>
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.filter(c => c.type === 'food_product').map((category) => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
+          <h3 className="font-semibold text-sm text-muted-foreground">DETAILS</h3>
           <div>
-            <Label htmlFor="name">Product Name *</Label>
-            <Input
-              id="name"
-              value={formData.name || ''}
-              onChange={(e) => handleInputChange('name', e.target.value)}
-              placeholder="Enter food product name"
+            <Label htmlFor="purpose" className="text-sm font-medium">Purpose *</Label>
+            <Textarea
+              id="purpose"
+              value={formData.purpose || ''}
+              onChange={(e) => handleInputChange('purpose', e.target.value)}
+              placeholder="Describe the main purpose and health benefits"
               required
+              className="mt-1 min-h-[100px]"
             />
           </div>
+
           <div>
-            <Label htmlFor="category">Category</Label>
-            <Select value={formData.category_id || ''} onValueChange={(value) => handleInputChange('category_id', value)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select category" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.filter(c => c.type === 'food_product').map((category) => (
-                  <SelectItem key={category.id} value={category.id}>
-                    {category.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Label htmlFor="medicinal_benefits" className="text-sm font-medium">Medicinal Benefits</Label>
+            <Textarea
+              id="medicinal_benefits"
+              value={formData.medicinal_benefits || ''}
+              onChange={(e) => handleInputChange('medicinal_benefits', e.target.value)}
+              placeholder="List any medicinal properties or therapeutic benefits"
+              className="mt-1 min-h-[100px]"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="image_url" className="text-sm font-medium">Image URL</Label>
+            <Input
+              id="image_url"
+              value={formData.image_url || ''}
+              onChange={(e) => handleInputChange('image_url', e.target.value)}
+              placeholder="https://example.com/image.jpg"
+              className="mt-1"
+            />
           </div>
         </div>
-        
-        <div>
-          <Label htmlFor="purpose">Purpose *</Label>
-          <Textarea
-            id="purpose"
-            value={formData.purpose || ''}
-            onChange={(e) => handleInputChange('purpose', e.target.value)}
-            placeholder="Describe the purpose and benefits of this food product"
-            required
-          />
-        </div>
 
-        <div>
-          <Label htmlFor="medicinal_benefits">Medicinal Benefits</Label>
-          <Textarea
-            id="medicinal_benefits"
-            value={formData.medicinal_benefits || ''}
-            onChange={(e) => handleInputChange('medicinal_benefits', e.target.value)}
-            placeholder="Describe any medicinal properties or health benefits"
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="image_url">Image URL</Label>
-          <Input
-            id="image_url"
-            value={formData.image_url || ''}
-            onChange={(e) => handleInputChange('image_url', e.target.value)}
-            placeholder="https://example.com/image.jpg"
-          />
-        </div>
-
-        <div className="flex gap-2 pt-4">
-          <Button onClick={handleSave}>
+        <div className="flex gap-3 pt-4 border-t">
+          <Button onClick={handleSave} className="flex-1 bg-gradient-health text-white">
             <Save className="w-4 h-4 mr-2" />
-            {isEditing ? 'Update' : 'Save'}
+            {isEditing ? 'Update Product' : 'Create Product'}
           </Button>
-          <Button variant="outline" onClick={resetForm}>
+          <Button variant="outline" onClick={resetForm} className="flex-1">
             <X className="w-4 h-4 mr-2" />
             Cancel
           </Button>
@@ -361,93 +371,108 @@ const Admin = () => {
   );
 
   const renderBlogForm = () => (
-    <Card>
-      <CardHeader>
-        <CardTitle>{isEditing ? 'Edit Blog Post' : 'Add New Blog Post'}</CardTitle>
-        <CardDescription>Manage blog posts for your website</CardDescription>
+    <Card className="border-2 border-primary/20">
+      <CardHeader className="bg-gradient-health/10">
+        <CardTitle className="text-xl">{isEditing ? 'Edit Blog Post' : 'Create New Blog Post'}</CardTitle>
+        <CardDescription>Share health tips and wellness insights with your audience</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <CardContent className="space-y-6 pt-6">
+        <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
+          <h3 className="font-semibold text-sm text-muted-foreground">BASIC INFORMATION</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="title" className="text-sm font-medium">Blog Title *</Label>
+              <Input
+                id="title"
+                value={formData.title || ''}
+                onChange={(e) => handleInputChange('title', e.target.value)}
+                placeholder="e.g., 10 Benefits of Green Tea"
+                required
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="category" className="text-sm font-medium">Category</Label>
+              <Input
+                id="category"
+                value={formData.category || ''}
+                onChange={(e) => handleInputChange('category', e.target.value)}
+                placeholder="e.g., Nutrition, Wellness"
+                className="mt-1"
+              />
+            </div>
+          </div>
+
           <div>
-            <Label htmlFor="title">Blog Title *</Label>
-            <Input
-              id="title"
-              value={formData.title || ''}
-              onChange={(e) => handleInputChange('title', e.target.value)}
-              placeholder="Enter blog title"
+            <Label htmlFor="excerpt" className="text-sm font-medium">Excerpt (Brief Summary)</Label>
+            <Textarea
+              id="excerpt"
+              value={formData.excerpt || ''}
+              onChange={(e) => handleInputChange('excerpt', e.target.value)}
+              placeholder="Write a short summary that appears in blog listings"
+              className="mt-1 min-h-[80px]"
+            />
+          </div>
+        </div>
+
+        <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
+          <h3 className="font-semibold text-sm text-muted-foreground">CONTENT</h3>
+          <div>
+            <Label htmlFor="content" className="text-sm font-medium">Full Content *</Label>
+            <Textarea
+              id="content"
+              value={formData.content || ''}
+              onChange={(e) => handleInputChange('content', e.target.value)}
+              placeholder="Write your complete blog content here. Use line breaks for paragraphs."
+              className="min-h-[250px] mt-1"
               required
             />
           </div>
+        </div>
+
+        <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
+          <h3 className="font-semibold text-sm text-muted-foreground">METADATA</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="author_name" className="text-sm font-medium">Author Name</Label>
+              <Input
+                id="author_name"
+                value={formData.author_name || 'HealthyPlates Team'}
+                onChange={(e) => handleInputChange('author_name', e.target.value)}
+                placeholder="Author name"
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="cover_image_url" className="text-sm font-medium">Cover Image URL</Label>
+              <Input
+                id="cover_image_url"
+                value={formData.cover_image_url || ''}
+                onChange={(e) => handleInputChange('cover_image_url', e.target.value)}
+                placeholder="https://example.com/blog-cover.jpg"
+                className="mt-1"
+              />
+            </div>
+          </div>
+
           <div>
-            <Label htmlFor="category">Category</Label>
+            <Label htmlFor="tags" className="text-sm font-medium">Tags (comma-separated)</Label>
             <Input
-              id="category"
-              value={formData.category || ''}
-              onChange={(e) => handleInputChange('category', e.target.value)}
-              placeholder="Blog category"
+              id="tags"
+              value={formData.tags?.join(', ') || ''}
+              onChange={(e) => handleArrayInputChange('tags', e.target.value)}
+              placeholder="health, nutrition, wellness, lifestyle"
+              className="mt-1"
             />
           </div>
         </div>
 
-        <div>
-          <Label htmlFor="excerpt">Excerpt</Label>
-          <Textarea
-            id="excerpt"
-            value={formData.excerpt || ''}
-            onChange={(e) => handleInputChange('excerpt', e.target.value)}
-            placeholder="Brief description of the blog post"
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="content">Content *</Label>
-          <Textarea
-            id="content"
-            value={formData.content || ''}
-            onChange={(e) => handleInputChange('content', e.target.value)}
-            placeholder="Write your blog content here..."
-            className="min-h-[200px]"
-            required
-          />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="author_name">Author Name</Label>
-            <Input
-              id="author_name"
-              value={formData.author_name || 'HealthyPlates Team'}
-              onChange={(e) => handleInputChange('author_name', e.target.value)}
-              placeholder="Author name"
-            />
-          </div>
-          <div>
-            <Label htmlFor="cover_image_url">Cover Image URL</Label>
-            <Input
-              id="cover_image_url"
-              value={formData.cover_image_url || ''}
-              onChange={(e) => handleInputChange('cover_image_url', e.target.value)}
-              placeholder="https://example.com/image.jpg"
-            />
-          </div>
-        </div>
-
-        <div>
-          <Label htmlFor="tags">Tags (comma-separated)</Label>
-          <Input
-            id="tags"
-            value={formData.tags?.join(', ') || ''}
-            onChange={(e) => handleArrayInputChange('tags', e.target.value)}
-            placeholder="health, nutrition, wellness"
-          />
-        </div>
-
-        <div className="flex gap-2 pt-4">
-          <Button onClick={handleSave}>
+        <div className="flex gap-3 pt-4 border-t">
+          <Button onClick={handleSave} className="flex-1 bg-gradient-health text-white">
             <Save className="w-4 h-4 mr-2" />
-            {isEditing ? 'Update' : 'Save'}
+            {isEditing ? 'Update Blog' : 'Publish Blog'}
           </Button>
-          <Button variant="outline" onClick={resetForm}>
+          <Button variant="outline" onClick={resetForm} className="flex-1">
             <X className="w-4 h-4 mr-2" />
             Cancel
           </Button>

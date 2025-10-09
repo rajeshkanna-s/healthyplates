@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -14,6 +15,7 @@ const SelfCare = () => {
   const [selectedCategory, setSelectedCategory] = useState('skin-care');
   const [procedures, setProcedures] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedProcedure, setSelectedProcedure] = useState<any>(null);
 
   const categories = [
     { value: 'skin-care', label: 'Skin Care', icon: Sparkles, color: 'text-pink-500' },
@@ -130,7 +132,11 @@ const SelfCare = () => {
             {filteredProcedures.map((procedure) => {
               const Icon = getCategoryIcon(selectedCategory);
               return (
-                <article key={procedure.id} className="card-health overflow-hidden group hover:scale-105 transition-all duration-200">
+                <article 
+                  key={procedure.id} 
+                  className="card-health overflow-hidden group hover:scale-105 transition-all duration-200 cursor-pointer"
+                  onClick={() => setSelectedProcedure(procedure)}
+                >
                   {procedure.image_url ? (
                     <img
                       src={procedure.image_url}
@@ -193,6 +199,93 @@ const SelfCare = () => {
             <p className="text-muted-foreground">Try adjusting your search or select a different category.</p>
           </div>
         )}
+
+        {/* Full View Dialog */}
+        <Dialog open={!!selectedProcedure} onOpenChange={() => setSelectedProcedure(null)}>
+          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-2xl">{selectedProcedure?.title}</DialogTitle>
+            </DialogHeader>
+            {selectedProcedure && (
+              <div className="space-y-6">
+                {selectedProcedure.image_url && (
+                  <img
+                    src={selectedProcedure.image_url}
+                    alt={selectedProcedure.title}
+                    className="w-full h-96 object-cover rounded-lg"
+                  />
+                )}
+                
+                <div>
+                  <Badge className="bg-gradient-health text-white mb-4">
+                    {selectedProcedure.self_care_categories?.name || selectedCategory}
+                  </Badge>
+                  {selectedProcedure.duration && (
+                    <p className="text-sm text-muted-foreground mb-2">
+                      <strong>Duration:</strong> {selectedProcedure.duration}
+                    </p>
+                  )}
+                  {selectedProcedure.frequency && (
+                    <p className="text-sm text-muted-foreground mb-4">
+                      <strong>Frequency:</strong> {selectedProcedure.frequency}
+                    </p>
+                  )}
+                </div>
+
+                {selectedProcedure.description && (
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Description</h3>
+                    <p className="text-muted-foreground">{selectedProcedure.description}</p>
+                  </div>
+                )}
+
+                {selectedProcedure.ingredients && selectedProcedure.ingredients.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Ingredients</h3>
+                    <ul className="list-disc list-inside space-y-1">
+                      {selectedProcedure.ingredients.map((ingredient: string, index: number) => (
+                        <li key={index} className="text-muted-foreground">{ingredient}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {selectedProcedure.steps && selectedProcedure.steps.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Steps</h3>
+                    <ol className="list-decimal list-inside space-y-2">
+                      {selectedProcedure.steps.map((step: string, index: number) => (
+                        <li key={index} className="text-muted-foreground">{step}</li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+
+                {selectedProcedure.benefits && selectedProcedure.benefits.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Benefits</h3>
+                    <ul className="list-disc list-inside space-y-1">
+                      {selectedProcedure.benefits.map((benefit: string, index: number) => (
+                        <li key={index} className="text-muted-foreground">{benefit}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {selectedProcedure.precautions && selectedProcedure.precautions.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2 text-orange-600">Precautions</h3>
+                    <ul className="list-disc list-inside space-y-1">
+                      {selectedProcedure.precautions.map((precaution: string, index: number) => (
+                        <li key={index} className="text-muted-foreground">{precaution}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
