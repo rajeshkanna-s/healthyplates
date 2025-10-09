@@ -53,8 +53,7 @@ const Contact = () => {
           email: formData.email,
           subject: formData.subject || 'No subject',
           message: formData.message,
-        },
-        'YOUR_PUBLIC_KEY' // Replace with your EmailJS public key
+        }
       );
 
       toast({
