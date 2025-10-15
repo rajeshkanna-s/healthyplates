@@ -329,13 +329,14 @@ const Blog = () => {
                     <Button
                       variant="secondary"
                       size="sm"
-                      className="h-8 w-8 p-0 bg-background/90 hover:bg-background shadow-lg"
+                      className="h-9 px-3 bg-white/95 hover:bg-white shadow-lg border border-border/50 flex items-center gap-2"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleShare(blog);
                       }}
                     >
-                      <Share2 className="w-4 h-4" />
+                      <Share2 className="w-4 h-4 text-foreground" />
+                      <span className="text-sm font-medium text-foreground">Share</span>
                     </Button>
                   </div>
                 </div>

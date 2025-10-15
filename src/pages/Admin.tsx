@@ -13,6 +13,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Switch } from '@/components/ui/switch';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import type { User } from '@supabase/supabase-js';
 
 const Admin = () => {
@@ -409,12 +410,10 @@ const Admin = () => {
 
         <div>
           <Label htmlFor="content" className="text-xs">Full Content *</Label>
-          <Textarea
-            id="content"
+          <RichTextEditor
             value={formData.content || ''}
-            onChange={(e) => handleInputChange('content', e.target.value)}
-            placeholder="Complete blog content"
-            className="min-h-[150px] text-sm"
+            onChange={(value) => handleInputChange('content', value)}
+            placeholder="Write your blog content with rich formatting..."
           />
         </div>
 

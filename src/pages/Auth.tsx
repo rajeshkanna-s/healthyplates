@@ -34,16 +34,12 @@ const Auth = () => {
     setLoading(true);
 
     try {
-      // Base64 encoded credentials
-      const ADMIN_EMAIL_ENCODED = 'ZHVyYmlueWFydWxAZ21haWwuY29t';
-      const ADMIN_PASSWORD_ENCODED = 'ZHVyYmlueWFydWxANjg5MA==';
+      // Direct credential validation
+      const ADMIN_EMAIL = 'durbinyarul@gmail.com';
+      const ADMIN_PASSWORD = 'durbinyarul@6890';
       
-      // Encode user input
-      const emailEncoded = btoa(formData.email);
-      const passwordEncoded = btoa(formData.password);
-      
-      // Compare encoded credentials
-      if (emailEncoded !== ADMIN_EMAIL_ENCODED || passwordEncoded !== ADMIN_PASSWORD_ENCODED) {
+      // Compare credentials
+      if (formData.email !== ADMIN_EMAIL || formData.password !== ADMIN_PASSWORD) {
         throw new Error('Invalid admin credentials');
       }
 
