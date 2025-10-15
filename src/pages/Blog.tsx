@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Calendar, Tag, Share2, ArrowLeft, Clock } from 'lucide-react';
+import { Search, Calendar, Tag, Share2, ArrowLeft, Clock, Printer } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -103,6 +103,10 @@ const Blog = () => {
     });
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   if (selectedBlog) {
     return (
       <div className="min-h-screen bg-gradient-subtle">
@@ -117,15 +121,26 @@ const Blog = () => {
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Blog
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleShare(selectedBlog)}
-              className="flex items-center gap-2"
-            >
-              <Share2 className="w-4 h-4" />
-              Share Link
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handlePrint}
+                className="flex items-center gap-2"
+              >
+                <Printer className="w-4 h-4" />
+                Print/Save PDF
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleShare(selectedBlog)}
+                className="flex items-center gap-2"
+              >
+                <Share2 className="w-4 h-4" />
+                Share Link
+              </Button>
+            </div>
           </div>
         </div>
 

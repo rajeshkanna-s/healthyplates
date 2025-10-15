@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, Sparkles, Clock, Share2 } from 'lucide-react';
+import { ArrowLeft, Heart, Sparkles, Clock, Share2, Printer } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -47,6 +47,10 @@ const FoodDetail = () => {
     });
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-subtle py-12">
@@ -86,15 +90,26 @@ const FoodDetail = () => {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Foods
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleShare}
-            className="flex items-center gap-2"
-          >
-            <Share2 className="w-4 h-4" />
-            Share Link
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handlePrint}
+              className="flex items-center gap-2"
+            >
+              <Printer className="w-4 h-4" />
+              Print/Save PDF
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleShare}
+              className="flex items-center gap-2"
+            >
+              <Share2 className="w-4 h-4" />
+              Share Link
+            </Button>
+          </div>
         </div>
       </div>
 

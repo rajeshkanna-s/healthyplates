@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, AlertTriangle, Clock, ChefHat, Share2 } from 'lucide-react';
+import { ArrowLeft, Heart, AlertTriangle, Clock, ChefHat, Share2, Printer } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
@@ -60,6 +60,10 @@ const DiseaseDetail = () => {
     });
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   const getFrequencyColor = (frequency: string) => {
     switch (frequency?.toLowerCase()) {
       case 'daily': return 'bg-green-100 text-green-800';
@@ -106,15 +110,26 @@ const DiseaseDetail = () => {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Diseases
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleShare}
-            className="flex items-center gap-2"
-          >
-            <Share2 className="w-4 h-4" />
-            Share Link
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handlePrint}
+              className="flex items-center gap-2"
+            >
+              <Printer className="w-4 h-4" />
+              Print/Save PDF
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleShare}
+              className="flex items-center gap-2"
+            >
+              <Share2 className="w-4 h-4" />
+              Share Link
+            </Button>
+          </div>
         </div>
       </div>
 
