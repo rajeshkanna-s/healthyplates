@@ -201,12 +201,15 @@ export type Database = {
           advantages: string[] | null
           category_id: string | null
           created_at: string
+          description: string | null
           disadvantages: string[] | null
           id: string
           image_url: string | null
           is_indian: boolean | null
+          key_ingredients: string[] | null
           medicinal_benefits: string | null
           name: string
+          nutrition_facts: Json | null
           origin: string | null
           purpose: string
           region: string | null
@@ -216,12 +219,15 @@ export type Database = {
           advantages?: string[] | null
           category_id?: string | null
           created_at?: string
+          description?: string | null
           disadvantages?: string[] | null
           id?: string
           image_url?: string | null
           is_indian?: boolean | null
+          key_ingredients?: string[] | null
           medicinal_benefits?: string | null
           name: string
+          nutrition_facts?: Json | null
           origin?: string | null
           purpose: string
           region?: string | null
@@ -231,12 +237,15 @@ export type Database = {
           advantages?: string[] | null
           category_id?: string | null
           created_at?: string
+          description?: string | null
           disadvantages?: string[] | null
           id?: string
           image_url?: string | null
           is_indian?: boolean | null
+          key_ingredients?: string[] | null
           medicinal_benefits?: string | null
           name?: string
+          nutrition_facts?: Json | null
           origin?: string | null
           purpose?: string
           region?: string | null

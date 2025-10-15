@@ -253,68 +253,124 @@ const FoodProducts = () => {
 
         {/* Detail Dialog */}
         <Dialog open={!!selectedProduct} onOpenChange={() => setSelectedProduct(null)}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="text-2xl font-bold">{selectedProduct?.name}</DialogTitle>
-            </DialogHeader>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             {selectedProduct && (
               <div className="space-y-6">
+                {/* Product Header */}
+                <div>
+                  <h1 className="text-3xl font-bold text-foreground mb-2">{selectedProduct.name}</h1>
+                </div>
+
+                {/* Product Image */}
                 {selectedProduct.image_url && (
-                  <img 
-                    src={selectedProduct.image_url} 
-                    alt={selectedProduct.name}
-                    className="w-full h-96 object-contain rounded-lg bg-muted"
-                  />
+                  <div className="w-full max-w-md">
+                    <img 
+                      src={selectedProduct.image_url} 
+                      alt={selectedProduct.name}
+                      className="w-full h-auto rounded-lg object-cover"
+                    />
+                  </div>
                 )}
-                
-                <div className="flex items-center gap-4">
-                  <Badge className={getCategoryBadge(selectedProduct.categories?.name)}>
-                    {selectedProduct.categories?.name || 'Unknown'}
-                  </Badge>
-                </div>
 
-                <div>
-                  <h3 className="text-lg font-semibold text-foreground mb-2">Purpose</h3>
-                  <p className="text-muted-foreground leading-relaxed">{selectedProduct.purpose}</p>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center">
-                    <CheckCircle className="w-5 h-5 mr-2 text-green-500" />
-                    Advantages
-                  </h3>
-                  <ul className="space-y-2">
-                    {selectedProduct.advantages?.map((advantage, index) => (
-                      <li key={index} className="flex items-start text-muted-foreground">
-                        <span className="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                        <span>{advantage}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center">
-                    <AlertCircle className="w-5 h-5 mr-2 text-orange-500" />
-                    Considerations
-                  </h3>
-                  <ul className="space-y-2">
-                    {selectedProduct.disadvantages?.map((disadvantage, index) => (
-                      <li key={index} className="flex items-start text-muted-foreground">
-                        <span className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                        <span>{disadvantage}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {selectedProduct.medicinalBenefits && (
+                {/* Description */}
+                {selectedProduct.description && (
                   <div>
-                    <h3 className="text-lg font-semibold text-foreground mb-2 flex items-center">
-                      <Heart className="w-5 h-5 mr-2 text-health" />
-                      Medicinal Benefits
+                    <h3 className="text-lg font-semibold text-foreground mb-2">Description</h3>
+                    <p className="text-muted-foreground leading-relaxed">{selectedProduct.description}</p>
+                  </div>
+                )}
+
+                {/* Key Ingredients */}
+                {selectedProduct.key_ingredients && selectedProduct.key_ingredients.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-foreground mb-3">Key Ingredients</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedProduct.key_ingredients.map((ingredient, index) => (
+                        <Badge key={index} variant="secondary" className="bg-muted text-foreground px-3 py-1.5">
+                          {ingredient}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Nutrition Facts */}
+                {selectedProduct.nutrition_facts && Object.keys(selectedProduct.nutrition_facts).length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-foreground mb-3">Nutrition Facts (per serving)</h3>
+                    <div className="bg-muted/30 rounded-lg p-4 space-y-2">
+                      {selectedProduct.nutrition_facts.calories && (
+                        <div className="flex justify-between">
+                          <span className="font-medium">Calories:</span>
+                          <span className="text-muted-foreground">{selectedProduct.nutrition_facts.calories}</span>
+                        </div>
+                      )}
+                      {selectedProduct.nutrition_facts.protein && (
+                        <div className="flex justify-between">
+                          <span className="font-medium">Protein:</span>
+                          <span className="text-muted-foreground">{selectedProduct.nutrition_facts.protein}</span>
+                        </div>
+                      )}
+                      {selectedProduct.nutrition_facts.carbs && (
+                        <div className="flex justify-between">
+                          <span className="font-medium">Carbs:</span>
+                          <span className="text-muted-foreground">{selectedProduct.nutrition_facts.carbs}</span>
+                        </div>
+                      )}
+                      {selectedProduct.nutrition_facts.fat && (
+                        <div className="flex justify-between">
+                          <span className="font-medium">Fat:</span>
+                          <span className="text-muted-foreground">{selectedProduct.nutrition_facts.fat}</span>
+                        </div>
+                      )}
+                      {selectedProduct.nutrition_facts.fiber && (
+                        <div className="flex justify-between">
+                          <span className="font-medium">Fiber:</span>
+                          <span className="text-muted-foreground">{selectedProduct.nutrition_facts.fiber}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Health Benefits (Advantages) */}
+                {selectedProduct.advantages && selectedProduct.advantages.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-foreground mb-3">Health Benefits</h3>
+                    <ul className="space-y-2">
+                      {selectedProduct.advantages.map((advantage, index) => (
+                        <li key={index} className="flex items-start text-muted-foreground">
+                          <Heart className="w-5 h-5 mr-2 mt-0.5 text-primary flex-shrink-0" />
+                          <span>{advantage}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Considerations */}
+                {selectedProduct.disadvantages && selectedProduct.disadvantages.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center">
+                      <AlertCircle className="w-5 h-5 mr-2 text-orange-500" />
+                      Considerations
                     </h3>
-                    <p className="text-muted-foreground leading-relaxed">{selectedProduct.medicinalBenefits}</p>
+                    <ul className="space-y-2">
+                      {selectedProduct.disadvantages.map((disadvantage, index) => (
+                        <li key={index} className="flex items-start text-muted-foreground">
+                          <span className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                          <span>{disadvantage}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Medicinal Benefits */}
+                {selectedProduct.medicinal_benefits && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-foreground mb-2">Medicinal Benefits</h3>
+                    <p className="text-muted-foreground leading-relaxed">{selectedProduct.medicinal_benefits}</p>
                   </div>
                 )}
               </div>

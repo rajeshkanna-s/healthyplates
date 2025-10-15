@@ -316,14 +316,93 @@ const Admin = () => {
         </div>
 
         <div>
-          <Label htmlFor="purpose" className="text-xs">Purpose *</Label>
+          <Label htmlFor="description" className="text-xs">Description *</Label>
+          <Textarea
+            id="description"
+            value={formData.description || ''}
+            onChange={(e) => handleInputChange('description', e.target.value)}
+            placeholder="Detailed product description"
+            className="min-h-[70px] text-sm"
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="purpose" className="text-xs">Purpose</Label>
           <Textarea
             id="purpose"
             value={formData.purpose || ''}
             onChange={(e) => handleInputChange('purpose', e.target.value)}
             placeholder="Main purpose and health benefits"
-            className="min-h-[70px] text-sm"
+            className="min-h-[60px] text-sm"
           />
+        </div>
+
+        <div>
+          <Label htmlFor="key_ingredients" className="text-xs">Key Ingredients (comma separated)</Label>
+          <Input
+            id="key_ingredients"
+            value={Array.isArray(formData.key_ingredients) ? formData.key_ingredients.join(', ') : ''}
+            onChange={(e) => handleInputChange('key_ingredients', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
+            placeholder="e.g., Fresh Avocado, Vitamin K, Folate, Vitamin C"
+            className="h-9 text-sm"
+          />
+        </div>
+
+        <div className="border rounded-lg p-4 space-y-3">
+          <Label className="text-xs font-semibold">Nutrition Facts (per serving)</Label>
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+            <div>
+              <Label htmlFor="calories" className="text-xs">Calories</Label>
+              <Input
+                id="calories"
+                type="number"
+                value={formData.nutrition_facts?.calories || ''}
+                onChange={(e) => handleInputChange('nutrition_facts', { ...(formData.nutrition_facts || {}), calories: e.target.value })}
+                placeholder="160"
+                className="h-8 text-sm"
+              />
+            </div>
+            <div>
+              <Label htmlFor="protein" className="text-xs">Protein (g)</Label>
+              <Input
+                id="protein"
+                value={formData.nutrition_facts?.protein || ''}
+                onChange={(e) => handleInputChange('nutrition_facts', { ...(formData.nutrition_facts || {}), protein: e.target.value })}
+                placeholder="2g"
+                className="h-8 text-sm"
+              />
+            </div>
+            <div>
+              <Label htmlFor="carbs" className="text-xs">Carbs (g)</Label>
+              <Input
+                id="carbs"
+                value={formData.nutrition_facts?.carbs || ''}
+                onChange={(e) => handleInputChange('nutrition_facts', { ...(formData.nutrition_facts || {}), carbs: e.target.value })}
+                placeholder="9g"
+                className="h-8 text-sm"
+              />
+            </div>
+            <div>
+              <Label htmlFor="fat" className="text-xs">Fat (g)</Label>
+              <Input
+                id="fat"
+                value={formData.nutrition_facts?.fat || ''}
+                onChange={(e) => handleInputChange('nutrition_facts', { ...(formData.nutrition_facts || {}), fat: e.target.value })}
+                placeholder="15g"
+                className="h-8 text-sm"
+              />
+            </div>
+            <div>
+              <Label htmlFor="fiber" className="text-xs">Fiber (g)</Label>
+              <Input
+                id="fiber"
+                value={formData.nutrition_facts?.fiber || ''}
+                onChange={(e) => handleInputChange('nutrition_facts', { ...(formData.nutrition_facts || {}), fiber: e.target.value })}
+                placeholder="7g"
+                className="h-8 text-sm"
+              />
+            </div>
+          </div>
         </div>
 
         <div>
