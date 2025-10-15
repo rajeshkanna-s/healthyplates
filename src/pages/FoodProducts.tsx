@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search, Filter, Star, Heart, AlertCircle, CheckCircle, X, Package } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 const FoodProducts = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -146,7 +148,7 @@ const FoodProducts = () => {
                   {/* Product Image */}
                   <div 
                     className="w-full md:w-64 h-48 relative overflow-hidden cursor-pointer"
-                    onClick={() => setSelectedProduct(product)}
+                    onClick={() => navigate(`/food-products/${product.id}`)}
                   >
                     {product.image_url ? (
                       <img 
@@ -181,9 +183,9 @@ const FoodProducts = () => {
                       </div>
                       <Button 
                         className="btn-health ml-4 flex-shrink-0"
-                        onClick={() => setSelectedProduct(product)}
+                        onClick={() => navigate(`/food-products/${product.id}`)}
                       >
-                        Add Now
+                        Full View
                       </Button>
                     </div>
 
@@ -238,7 +240,7 @@ const FoodProducts = () => {
                         )}
                       </div>
                       <button
-                        onClick={() => setSelectedProduct(product)}
+                        onClick={() => navigate(`/food-products/${product.id}`)}
                         className="text-primary hover:text-primary-dark font-medium hover:underline"
                       >
                         View Details →

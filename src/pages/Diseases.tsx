@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search, Heart, AlertTriangle, Clock, ChefHat } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -7,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 const Diseases = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDisease, setSelectedDisease] = useState('');
@@ -281,7 +283,7 @@ const Diseases = () => {
                 {filteredDiseases.map((disease) => (
                   <button
                     key={disease.id}
-                    onClick={() => setSelectedDisease(disease.id)}
+                    onClick={() => navigate(`/diseases/${disease.id}`)}
                     className="card-health p-6 text-left group hover:scale-105 transition-all duration-200"
                   >
                     <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-health transition-colors">

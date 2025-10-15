@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Clock, Utensils, Heart, Sparkles } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 const Foods = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [selectedMealTime, setSelectedMealTime] = useState('morning');
   const [foods, setFoods] = useState<any[]>([]);
@@ -105,7 +107,7 @@ const Foods = () => {
               <div 
                 key={food.id} 
                 className="card-health p-6 group hover:scale-105 transition-all duration-200 cursor-pointer"
-                onClick={() => setSelectedFood(food)}
+                onClick={() => navigate(`/foods/${food.id}`)}
               >
                 {food.image_url ? (
                   <img 

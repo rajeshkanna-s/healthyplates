@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search, Sparkles, Heart, Dumbbell } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -10,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const SelfCare = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('skin-care');
@@ -135,7 +137,7 @@ const SelfCare = () => {
                 <article 
                   key={procedure.id} 
                   className="card-health overflow-hidden group hover:scale-105 transition-all duration-200 cursor-pointer"
-                  onClick={() => setSelectedProcedure(procedure)}
+                  onClick={() => navigate(`/self-care/${procedure.id}`)}
                 >
                   {procedure.image_url ? (
                     <img
