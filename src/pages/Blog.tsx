@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Calendar, User, Tag, Share2, Twitter, Facebook, Linkedin, Copy, ArrowLeft, Clock } from 'lucide-react';
+import { Search, Calendar, Tag, Share2, ArrowLeft, Clock } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -94,159 +94,153 @@ const Blog = () => {
     return `${minutes} min read`;
   };
 
-  const handleShare = (platform: string, blog: any) => {
-    const url = window.location.href;
-    const text = `Check out this article: ${blog.title}`;
-    
-    switch (platform) {
-      case 'twitter':
-        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
-        break;
-      case 'facebook':
-        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
-        break;
-      case 'linkedin':
-        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
-        break;
-      case 'copy':
-        navigator.clipboard.writeText(url);
-        toast({
-          title: "Link copied!",
-          description: "Blog link has been copied to clipboard."
-        });
-        break;
-    }
-    setShowShareMenu(null);
+  const handleShare = (blog: any) => {
+    const url = `${window.location.origin}/blog`;
+    navigator.clipboard.writeText(url);
+    toast({
+      title: "Link copied!",
+      description: "Blog link has been copied to clipboard."
+    });
   };
 
   if (selectedBlog) {
     return (
-      <div className="min-h-screen bg-background">
-        {/* Blog Detail View */}
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <Button
-            variant="ghost"
-            onClick={() => setSelectedBlog(null)}
-            className="mb-6"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Blog
-          </Button>
+      <div className="min-h-screen bg-gradient-subtle">
+        {/* Header */}
+        <div className="bg-card border-b border-border/50 sticky top-0 z-10 backdrop-blur-sm bg-card/80">
+          <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+            <Button
+              variant="ghost"
+              onClick={() => setSelectedBlog(null)}
+              className="hover:bg-accent"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Blog
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleShare(selectedBlog)}
+              className="flex items-center gap-2"
+            >
+              <Share2 className="w-4 h-4" />
+              Share Link
+            </Button>
+          </div>
+        </div>
 
-          <article>
-            {/* Cover Image */}
-            {selectedBlog.cover_image_url && (
-              <div className="mb-8 rounded-2xl overflow-hidden">
-                <img 
-                  src={selectedBlog.cover_image_url} 
-                  alt={selectedBlog.title}
-                  className="w-full h-[400px] object-cover"
-                />
-              </div>
-            )}
+        {/* Blog Content */}
+        <article className="max-w-4xl mx-auto px-6 py-12">
+          {/* Cover Image */}
+          {selectedBlog.cover_image_url && (
+            <div className="mb-12 rounded-3xl overflow-hidden shadow-health-lg">
+              <img 
+                src={selectedBlog.cover_image_url} 
+                alt={selectedBlog.title}
+                className="w-full h-[500px] object-cover"
+              />
+            </div>
+          )}
 
-            {/* Category Badge */}
-            {selectedBlog.category && (
-              <Badge className={`${getCategoryColor(selectedBlog.category)} mb-4 border`}>
+          {/* Category Badge */}
+          {selectedBlog.category && (
+            <div className="mb-6">
+              <Badge className={`${getCategoryColor(selectedBlog.category)} border text-sm px-4 py-1.5`}>
                 {selectedBlog.category.split('-').map((word: string) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
               </Badge>
-            )}
+            </div>
+          )}
 
-            {/* Title */}
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
-              {selectedBlog.title}
-            </h1>
+          {/* Title */}
+          <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-8 leading-tight tracking-tight">
+            {selectedBlog.title}
+          </h1>
 
-            {/* Excerpt */}
-            {selectedBlog.excerpt && (
-              <p className="text-xl text-muted-foreground mb-6 leading-relaxed italic">
-                {selectedBlog.excerpt}
-              </p>
-            )}
+          {/* Excerpt */}
+          {selectedBlog.excerpt && (
+            <p className="text-2xl text-muted-foreground mb-10 leading-relaxed font-light italic border-l-4 border-primary pl-6 py-2">
+              {selectedBlog.excerpt}
+            </p>
+          )}
 
-            {/* Meta Info */}
-            <div className="flex items-center gap-6 mb-6 pb-6 border-b border-border flex-wrap">
-              <div className="flex items-center gap-2">
-                <div className="w-10 h-10 rounded-full bg-gradient-health flex items-center justify-center text-white font-semibold">
-                  {selectedBlog.author_name?.charAt(0) || 'H'}
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-foreground">{selectedBlog.author_name}</p>
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3" />
-                      {formatDate(selectedBlog.created_at)}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {estimateReadTime(selectedBlog.content)}
-                    </span>
-                  </div>
-                </div>
+          {/* Meta Info */}
+          <div className="flex items-center gap-6 mb-12 pb-8 border-b-2 border-border flex-wrap">
+            <div className="flex items-center gap-3">
+              <div className="w-14 h-14 rounded-full bg-gradient-health flex items-center justify-center text-white font-bold text-xl shadow-health">
+                {selectedBlog.author_name?.charAt(0) || 'H'}
               </div>
-
-              {/* Share Buttons */}
-              <div className="ml-auto flex items-center gap-2">
-                <span className="text-sm text-muted-foreground mr-2">Share:</span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 w-8 p-0"
-                  onClick={() => handleShare('twitter', selectedBlog)}
-                >
-                  <Twitter className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 w-8 p-0"
-                  onClick={() => handleShare('facebook', selectedBlog)}
-                >
-                  <Facebook className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 w-8 p-0"
-                  onClick={() => handleShare('linkedin', selectedBlog)}
-                >
-                  <Linkedin className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 w-8 p-0"
-                  onClick={() => handleShare('copy', selectedBlog)}
-                >
-                  <Copy className="w-4 h-4" />
-                </Button>
+              <div>
+                <p className="text-base font-semibold text-foreground">{selectedBlog.author_name}</p>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
+                  <span className="flex items-center gap-1.5">
+                    <Calendar className="w-4 h-4" />
+                    {formatDate(selectedBlog.created_at)}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <Clock className="w-4 h-4" />
+                    {estimateReadTime(selectedBlog.content)}
+                  </span>
+                </div>
               </div>
             </div>
+          </div>
 
-            {/* Content */}
+          {/* Content with Enhanced Typography */}
+          <div className="prose prose-xl max-w-none mb-12">
             <div 
-              className="prose prose-lg max-w-none text-foreground mb-8"
-              dangerouslySetInnerHTML={{ __html: selectedBlog.content.replace(/\n/g, '<br />') }}
+              className="text-foreground leading-relaxed space-y-6"
+              style={{
+                fontSize: '1.125rem',
+                lineHeight: '2',
+                fontWeight: '400'
+              }}
+              dangerouslySetInnerHTML={{ 
+                __html: selectedBlog.content
+                  .split('\n\n')
+                  .map(para => `<p class="mb-6">${para.replace(/\n/g, '<br />')}</p>`)
+                  .join('') 
+              }}
             />
+          </div>
 
-            {/* Tags */}
-            {selectedBlog.tags && selectedBlog.tags.length > 0 && (
-              <div className="border-t border-border pt-6">
-                <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-                  <Tag className="w-4 h-4" />
-                  Tags
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {selectedBlog.tags.map((tag: string, index: number) => (
-                    <Badge key={index} variant="outline" className="text-sm">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
+          {/* Tags */}
+          {selectedBlog.tags && selectedBlog.tags.length > 0 && (
+            <div className="border-t-2 border-border pt-8 mt-12">
+              <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+                <Tag className="w-5 h-5" />
+                Related Topics
+              </h3>
+              <div className="flex flex-wrap gap-3">
+                {selectedBlog.tags.map((tag: string, index: number) => (
+                  <Badge 
+                    key={index} 
+                    variant="outline" 
+                    className="text-base px-4 py-2 rounded-full hover:bg-accent transition-colors cursor-pointer border-2"
+                  >
+                    #{tag}
+                  </Badge>
+                ))}
               </div>
-            )}
-          </article>
-        </div>
+            </div>
+          )}
+
+          {/* Share Section at Bottom */}
+          <div className="mt-16 pt-8 border-t-2 border-border">
+            <div className="flex items-center justify-between bg-accent/50 rounded-2xl p-6">
+              <div>
+                <h3 className="text-xl font-bold text-foreground mb-1">Enjoyed this article?</h3>
+                <p className="text-muted-foreground">Share it with your friends and family</p>
+              </div>
+              <Button
+                onClick={() => handleShare(selectedBlog)}
+                className="bg-gradient-health hover:shadow-health-lg transition-all"
+              >
+                <Share2 className="w-4 h-4 mr-2" />
+                Copy Link
+              </Button>
+            </div>
+          </div>
+        </article>
       </div>
     );
   }
@@ -332,70 +326,17 @@ const Blog = () => {
 
                   {/* Share Button Overlay */}
                   <div className="absolute top-3 right-3">
-                    <div className="relative">
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        className="h-8 w-8 p-0 bg-background/90 hover:bg-background"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setShowShareMenu(showShareMenu === blog.id ? null : blog.id);
-                        }}
-                      >
-                        <Share2 className="w-4 h-4" />
-                      </Button>
-
-                      {/* Share Menu */}
-                      {showShareMenu === blog.id && (
-                        <div className="absolute top-10 right-0 bg-card border border-border rounded-lg shadow-lg p-2 flex gap-1 z-10"
-                             onClick={(e) => e.stopPropagation()}>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 w-8 p-0"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleShare('twitter', blog);
-                            }}
-                          >
-                            <Twitter className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 w-8 p-0"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleShare('facebook', blog);
-                            }}
-                          >
-                            <Facebook className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 w-8 p-0"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleShare('linkedin', blog);
-                            }}
-                          >
-                            <Linkedin className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 w-8 p-0"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleShare('copy', blog);
-                            }}
-                          >
-                            <Copy className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      )}
-                    </div>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      className="h-8 w-8 p-0 bg-background/90 hover:bg-background shadow-lg"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleShare(blog);
+                      }}
+                    >
+                      <Share2 className="w-4 h-4" />
+                    </Button>
                   </div>
                 </div>
 

@@ -380,13 +380,19 @@ const Admin = () => {
           </div>
           <div className="col-span-2 sm:col-span-1">
             <Label htmlFor="category" className="text-xs">Category</Label>
-            <Input
-              id="category"
-              value={formData.category || ''}
-              onChange={(e) => handleInputChange('category', e.target.value)}
-              placeholder="e.g., Nutrition"
-              className="h-9 text-sm"
-            />
+            <Select value={formData.category || ''} onValueChange={(value) => handleInputChange('category', value)}>
+              <SelectTrigger className="h-9 text-sm">
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="nutrition">Nutrition</SelectItem>
+                <SelectItem value="fitness">Fitness</SelectItem>
+                <SelectItem value="wellness">Wellness</SelectItem>
+                <SelectItem value="recipes">Recipes</SelectItem>
+                <SelectItem value="mental-health">Mental Health</SelectItem>
+                <SelectItem value="disease-prevention">Disease Prevention</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
