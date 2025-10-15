@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Search, Filter, Star, Heart, AlertCircle, CheckCircle, X } from 'lucide-react';
+import { Search, Filter, Star, Heart, AlertCircle, CheckCircle, X, Package } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Card } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -118,95 +119,135 @@ const FoodProducts = () => {
           </div>
         </div>
 
-        {/* Products Grid */}
+        {/* Products List */}
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="card-product p-6 animate-pulse">
-                <div className="h-16 bg-muted rounded mb-4"></div>
-                <div className="h-6 bg-muted rounded mb-2"></div>
-                <div className="h-4 bg-muted rounded mb-4"></div>
-                <div className="h-20 bg-muted rounded"></div>
-              </div>
+          <div className="space-y-6">
+            {[...Array(4)].map((_, i) => (
+              <Card key={i} className="p-0 animate-pulse">
+                <div className="flex flex-col md:flex-row gap-0">
+                  <div className="w-full md:w-64 h-48 bg-muted"></div>
+                  <div className="flex-1 p-6">
+                    <div className="h-6 bg-muted rounded mb-2 w-3/4"></div>
+                    <div className="h-4 bg-muted rounded mb-4"></div>
+                    <div className="h-20 bg-muted rounded"></div>
+                  </div>
+                </div>
+              </Card>
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="space-y-6">
             {filteredProducts.map((product) => (
-              <div 
+              <Card 
                 key={product.id} 
-                className="card-product p-6 group cursor-pointer"
-                onClick={() => setSelectedProduct(product)}
+                className="p-0 hover:shadow-health-lg transition-all duration-300 border border-border/50 hover:border-primary/30 overflow-hidden group"
               >
-                <div className="flex items-start justify-between mb-4">
-                  {product.image_url ? (
-                    <img src={product.image_url} alt={product.name} className="w-16 h-16 object-cover rounded-lg" />
-                  ) : (
-                    <div className="w-16 h-16 bg-gradient-health rounded-lg flex items-center justify-center text-white text-2xl">
-                      🥗
+                <div className="flex flex-col md:flex-row gap-0 relative">
+                  {/* Product Image */}
+                  <div 
+                    className="w-full md:w-64 h-48 relative overflow-hidden cursor-pointer"
+                    onClick={() => setSelectedProduct(product)}
+                  >
+                    {product.image_url ? (
+                      <img 
+                        src={product.image_url} 
+                        alt={product.name} 
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-health flex items-center justify-center text-white text-6xl">
+                        🥗
+                      </div>
+                    )}
+                    {/* NEW Badge */}
+                    <div className="absolute top-3 left-3">
+                      <Badge className="bg-green-600 text-white px-3 py-1 text-xs font-bold">
+                        NEW
+                      </Badge>
                     </div>
-                  )}
-                  <Badge className={getCategoryBadge(product.categories?.name)}>
-                    {product.categories?.name || 'Unknown'}
-                  </Badge>
+                  </div>
+
+                  {/* Product Content */}
+                  <div className="flex-1 p-6 flex flex-col">
+                    {/* Header with Title and Add Now button */}
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <h3 className="text-2xl font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
+                          {product.name}
+                        </h3>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          {product.purpose}
+                        </p>
+                      </div>
+                      <Button 
+                        className="btn-health ml-4 flex-shrink-0"
+                        onClick={() => setSelectedProduct(product)}
+                      >
+                        Add Now
+                      </Button>
+                    </div>
+
+                    {/* Key Ingredients Section */}
+                    <div className="mb-4">
+                      <h4 className="text-sm font-semibold text-foreground mb-2">
+                        Key Ingredients
+                      </h4>
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="secondary" className="bg-muted text-foreground px-3 py-1">
+                          {product.categories?.name || 'Natural'}
+                        </Badge>
+                        {product.origin && (
+                          <Badge variant="secondary" className="bg-muted text-foreground px-3 py-1">
+                            {product.origin}
+                          </Badge>
+                        )}
+                        {product.region && (
+                          <Badge variant="secondary" className="bg-muted text-foreground px-3 py-1">
+                            {product.region}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Top Benefits Section */}
+                    <div className="flex-1">
+                      <h4 className="text-sm font-semibold text-foreground mb-2">
+                        Top Benefits
+                      </h4>
+                      <ul className="space-y-1.5">
+                        {product.advantages?.slice(0, 3).map((advantage, index) => (
+                          <li key={index} className="flex items-start text-sm text-muted-foreground">
+                            <CheckCircle className="w-4 h-4 mr-2 mt-0.5 text-green-600 flex-shrink-0" />
+                            <span>{advantage}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Bottom Info */}
+                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/50 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-4">
+                        <span className="flex items-center">
+                          <Package className="w-3 h-3 mr-1" />
+                          Category: {product.categories?.name || 'N/A'}
+                        </span>
+                        {product.is_indian && (
+                          <Badge variant="outline" className="text-xs">
+                            Indian Origin
+                          </Badge>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => setSelectedProduct(product)}
+                        className="text-primary hover:text-primary-dark font-medium hover:underline"
+                      >
+                        View Details →
+                      </button>
+                    </div>
+                  </div>
                 </div>
-
-              <h3 className="text-xl font-semibold text-foreground mb-3 group-hover:text-health transition-colors">
-                {product.name}
-              </h3>
-
-              <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
-                <strong>Purpose:</strong> {product.purpose}
-              </p>
-
-              {/* Advantages */}
-              <div className="mb-4">
-                <h4 className="text-sm font-semibold text-foreground mb-2 flex items-center">
-                  <CheckCircle className="w-4 h-4 mr-1 text-green-500" />
-                  Advantages
-                </h4>
-                <ul className="text-xs text-muted-foreground space-y-1">
-                  {product.advantages.slice(0, 2).map((advantage, index) => (
-                    <li key={index} className="flex items-start">
-                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-1.5 mr-2 flex-shrink-0"></span>
-                      {advantage}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Disadvantages */}
-              <div className="mb-4">
-                <h4 className="text-sm font-semibold text-foreground mb-2 flex items-center">
-                  <AlertCircle className="w-4 h-4 mr-1 text-orange-500" />
-                  Considerations
-                </h4>
-                <ul className="text-xs text-muted-foreground space-y-1">
-                  {product.disadvantages.slice(0, 2).map((disadvantage, index) => (
-                    <li key={index} className="flex items-start">
-                      <span className="w-1.5 h-1.5 bg-orange-500 rounded-full mt-1.5 mr-2 flex-shrink-0"></span>
-                      {disadvantage}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Medicinal Benefits */}
-              <div className="mb-6">
-                <h4 className="text-sm font-semibold text-foreground mb-2 flex items-center">
-                  <Heart className="w-4 h-4 mr-1 text-health" />
-                  Medicinal Benefits
-                </h4>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  {product.medicinalBenefits}
-                </p>
-              </div>
-
-              <Button className="w-full btn-health">
-                View Details
-              </Button>
-                </div>
-              ))}
+              </Card>
+            ))}
           </div>
         )}
 
