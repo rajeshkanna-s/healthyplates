@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Search, Calendar, User, Eye, Tag } from 'lucide-react';
+import { Search, Calendar, User, Tag, Share2, Twitter, Facebook, Linkedin, Copy, ArrowLeft, Clock } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 
 const Blog = () => {
   const { toast } = useToast();
@@ -14,6 +15,7 @@ const Blog = () => {
   const [blogs, setBlogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedBlog, setSelectedBlog] = useState<any>(null);
+  const [showShareMenu, setShowShareMenu] = useState<string | null>(null);
 
   const categories = [
     'all',
@@ -61,301 +63,407 @@ const Blog = () => {
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'nutrition': return 'bg-green-100 text-green-800';
-      case 'fitness': return 'bg-blue-100 text-blue-800';
-      case 'wellness': return 'bg-purple-100 text-purple-800';
-      case 'recipes': return 'bg-orange-100 text-orange-800';
-      case 'mental-health': return 'bg-pink-100 text-pink-800';
-      case 'disease-prevention': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'nutrition': return 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20';
+      case 'fitness': return 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20';
+      case 'wellness': return 'bg-purple-500/10 text-purple-700 dark:text-purple-400 border-purple-500/20';
+      case 'recipes': return 'bg-orange-500/10 text-orange-700 dark:text-orange-400 border-orange-500/20';
+      case 'mental-health': return 'bg-pink-500/10 text-pink-700 dark:text-pink-400 border-pink-500/20';
+      case 'disease-prevention': return 'bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20';
+      default: return 'bg-muted text-muted-foreground border-border';
     }
   };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
-      month: 'long',
+      month: 'short',
       day: 'numeric'
     });
   };
 
-  const truncateContent = (content: string, maxLength: number = 150) => {
-    if (content.length <= maxLength) return content;
-    return content.substr(0, maxLength) + '...';
+  const truncateContent = (content: string, maxLength: number = 120) => {
+    const plainText = content.replace(/<[^>]*>/g, '');
+    if (plainText.length <= maxLength) return plainText;
+    return plainText.substr(0, maxLength) + '...';
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-subtle py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-hero mb-6">Health & Wellness Blog</h1>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Stay informed with the latest insights on nutrition, fitness, wellness, and healthy living. 
-            Discover expert tips and evidence-based advice for your health journey.
-          </p>
-        </div>
+  const estimateReadTime = (content: string) => {
+    const wordsPerMinute = 200;
+    const words = content.trim().split(/\s+/).length;
+    const minutes = Math.ceil(words / wordsPerMinute);
+    return `${minutes} min read`;
+  };
 
-        {/* Search and Filter */}
-        <div className="bg-card rounded-2xl shadow-health p-6 mb-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Search Articles</label>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search blog posts..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+  const handleShare = (platform: string, blog: any) => {
+    const url = window.location.href;
+    const text = `Check out this article: ${blog.title}`;
+    
+    switch (platform) {
+      case 'twitter':
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+        break;
+      case 'facebook':
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+        break;
+      case 'linkedin':
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
+        break;
+      case 'copy':
+        navigator.clipboard.writeText(url);
+        toast({
+          title: "Link copied!",
+          description: "Blog link has been copied to clipboard."
+        });
+        break;
+    }
+    setShowShareMenu(null);
+  };
+
+  if (selectedBlog) {
+    return (
+      <div className="min-h-screen bg-background">
+        {/* Blog Detail View */}
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <Button
+            variant="ghost"
+            onClick={() => setSelectedBlog(null)}
+            className="mb-6"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Blog
+          </Button>
+
+          <article>
+            {/* Cover Image */}
+            {selectedBlog.cover_image_url && (
+              <div className="mb-8 rounded-2xl overflow-hidden">
+                <img 
+                  src={selectedBlog.cover_image_url} 
+                  alt={selectedBlog.title}
+                  className="w-full h-[400px] object-cover"
                 />
               </div>
-            </div>
-            
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Filter by Category</label>
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category} value={category}>
-                      {category === 'all' ? 'All Categories' : 
-                       category.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
+            )}
 
-        {/* Featured Post */}
-        {!loading && filteredBlogs.length > 0 && (
-          <div 
-            className="card-health overflow-hidden mb-12 cursor-pointer"
-            onClick={() => setSelectedBlog(filteredBlogs[0])}
-          >
-            <div className="md:flex">
-              <div className="md:w-1/2">
-                {filteredBlogs[0].cover_image_url ? (
-                  <img 
-                    src={filteredBlogs[0].cover_image_url} 
-                    alt={filteredBlogs[0].title}
-                    className="w-full h-64 md:h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-64 md:h-full bg-gradient-health flex items-center justify-center">
-                    <span className="text-white text-4xl">📰</span>
-                  </div>
-                )}
-              </div>
-              <div className="md:w-1/2 p-8">
-                <Badge className="mb-4 bg-gradient-health text-white">Featured</Badge>
-                <h2 className="text-3xl font-bold text-foreground mb-4 leading-tight">
-                  {filteredBlogs[0].title}
-                </h2>
-                <p className="text-muted-foreground mb-6 leading-relaxed">
-                  {filteredBlogs[0].excerpt || truncateContent(filteredBlogs[0].content)}
-                </p>
-                <div className="flex items-center space-x-6 text-sm text-muted-foreground mb-6">
-                  <div className="flex items-center space-x-1">
-                    <User className="w-4 h-4" />
-                    <span>{filteredBlogs[0].author_name}</span>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <Calendar className="w-4 h-4" />
-                    <span>{formatDate(filteredBlogs[0].created_at)}</span>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <Eye className="w-4 h-4" />
-                    <span>{filteredBlogs[0].views_count} views</span>
+            {/* Category Badge */}
+            {selectedBlog.category && (
+              <Badge className={`${getCategoryColor(selectedBlog.category)} mb-4 border`}>
+                {selectedBlog.category.split('-').map((word: string) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+              </Badge>
+            )}
+
+            {/* Title */}
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
+              {selectedBlog.title}
+            </h1>
+
+            {/* Excerpt */}
+            {selectedBlog.excerpt && (
+              <p className="text-xl text-muted-foreground mb-6 leading-relaxed italic">
+                {selectedBlog.excerpt}
+              </p>
+            )}
+
+            {/* Meta Info */}
+            <div className="flex items-center gap-6 mb-6 pb-6 border-b border-border flex-wrap">
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-full bg-gradient-health flex items-center justify-center text-white font-semibold">
+                  {selectedBlog.author_name?.charAt(0) || 'H'}
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-foreground">{selectedBlog.author_name}</p>
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <Calendar className="w-3 h-3" />
+                      {formatDate(selectedBlog.created_at)}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      {estimateReadTime(selectedBlog.content)}
+                    </span>
                   </div>
                 </div>
+              </div>
+
+              {/* Share Buttons */}
+              <div className="ml-auto flex items-center gap-2">
+                <span className="text-sm text-muted-foreground mr-2">Share:</span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={() => handleShare('twitter', selectedBlog)}
+                >
+                  <Twitter className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={() => handleShare('facebook', selectedBlog)}
+                >
+                  <Facebook className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={() => handleShare('linkedin', selectedBlog)}
+                >
+                  <Linkedin className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={() => handleShare('copy', selectedBlog)}
+                >
+                  <Copy className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div 
+              className="prose prose-lg max-w-none text-foreground mb-8"
+              dangerouslySetInnerHTML={{ __html: selectedBlog.content.replace(/\n/g, '<br />') }}
+            />
+
+            {/* Tags */}
+            {selectedBlog.tags && selectedBlog.tags.length > 0 && (
+              <div className="border-t border-border pt-6">
+                <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+                  <Tag className="w-4 h-4" />
+                  Tags
+                </h3>
                 <div className="flex flex-wrap gap-2">
-                  {filteredBlogs[0].category && (
-                    <Badge className={getCategoryColor(filteredBlogs[0].category)}>
-                      {filteredBlogs[0].category}
-                    </Badge>
-                  )}
-                  {filteredBlogs[0].tags?.slice(0, 3).map((tag: string, index: number) => (
-                    <Badge key={index} variant="outline">
+                  {selectedBlog.tags.map((tag: string, index: number) => (
+                    <Badge key={index} variant="outline" className="text-sm">
                       {tag}
                     </Badge>
                   ))}
                 </div>
               </div>
+            )}
+          </article>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+            Health & Wellness Blog
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Discover expert insights on nutrition, wellness, and healthy living
+          </p>
+        </div>
+
+        {/* Search and Filter */}
+        <Card className="p-6 mb-12 border-border/50">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search articles..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
             </div>
+            
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {category === 'all' ? 'All Categories' : 
+                     category.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-        )}
+        </Card>
 
         {/* Blog Posts Grid */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="card-health overflow-hidden animate-pulse">
-                <div className="h-48 bg-muted"></div>
+              <Card key={i} className="overflow-hidden animate-pulse">
+                <div className="h-56 bg-muted"></div>
                 <div className="p-6">
-                  <div className="h-4 bg-muted rounded mb-3"></div>
-                  <div className="h-6 bg-muted rounded mb-4"></div>
-                  <div className="h-3 bg-muted rounded mb-2"></div>
-                  <div className="h-3 bg-muted rounded mb-4"></div>
-                  <div className="h-3 bg-muted rounded"></div>
+                  <div className="h-4 bg-muted rounded mb-3 w-20"></div>
+                  <div className="h-6 bg-muted rounded mb-3"></div>
+                  <div className="h-20 bg-muted rounded mb-4"></div>
+                  <div className="h-4 bg-muted rounded w-32"></div>
                 </div>
-              </div>
+              </Card>
             ))}
           </div>
-        ) : filteredBlogs.length > 1 ? (
+        ) : filteredBlogs.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredBlogs.slice(1).map((blog) => (
-              <article 
+            {filteredBlogs.map((blog) => (
+              <Card 
                 key={blog.id} 
-                className="card-health overflow-hidden group hover:scale-105 transition-all duration-200 cursor-pointer"
+                className="overflow-hidden group hover:shadow-lg transition-all duration-300 cursor-pointer border-border/50"
                 onClick={() => setSelectedBlog(blog)}
               >
-                {blog.cover_image_url ? (
-                  <img 
-                    src={blog.cover_image_url} 
-                    alt={blog.title}
-                    className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
-                  />
-                ) : (
-                  <div className="w-full h-48 bg-gradient-subtle flex items-center justify-center">
-                    <span className="text-4xl">📝</span>
+                {/* Image */}
+                <div className="relative overflow-hidden h-56">
+                  {blog.cover_image_url ? (
+                    <img 
+                      src={blog.cover_image_url} 
+                      alt={blog.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-subtle flex items-center justify-center">
+                      <span className="text-5xl">📝</span>
+                    </div>
+                  )}
+
+                  {/* Share Button Overlay */}
+                  <div className="absolute top-3 right-3">
+                    <div className="relative">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        className="h-8 w-8 p-0 bg-background/90 hover:bg-background"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowShareMenu(showShareMenu === blog.id ? null : blog.id);
+                        }}
+                      >
+                        <Share2 className="w-4 h-4" />
+                      </Button>
+
+                      {/* Share Menu */}
+                      {showShareMenu === blog.id && (
+                        <div className="absolute top-10 right-0 bg-card border border-border rounded-lg shadow-lg p-2 flex gap-1 z-10"
+                             onClick={(e) => e.stopPropagation()}>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleShare('twitter', blog);
+                            }}
+                          >
+                            <Twitter className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleShare('facebook', blog);
+                            }}
+                          >
+                            <Facebook className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleShare('linkedin', blog);
+                            }}
+                          >
+                            <Linkedin className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleShare('copy', blog);
+                            }}
+                          >
+                            <Copy className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                )}
-                
+                </div>
+
+                {/* Content */}
                 <div className="p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    {blog.category && (
-                      <Badge className={getCategoryColor(blog.category)}>
-                        {blog.category}
-                      </Badge>
-                    )}
-                    <div className="flex items-center space-x-1 text-xs text-muted-foreground">
-                      <Eye className="w-3 h-3" />
-                      <span>{blog.views_count}</span>
+                  {/* Author & Date */}
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-8 h-8 rounded-full bg-gradient-health flex items-center justify-center text-white text-xs font-semibold">
+                      {blog.author_name?.charAt(0) || 'H'}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      <p className="font-medium text-foreground">{blog.author_name}</p>
+                      <p className="flex items-center gap-1">
+                        <Calendar className="w-3 h-3" />
+                        {formatDate(blog.created_at)}
+                      </p>
                     </div>
                   </div>
 
-                  <h3 className="text-lg font-semibold text-foreground mb-3 leading-tight group-hover:text-health transition-colors">
+                  {/* Category */}
+                  {blog.category && (
+                    <Badge className={`${getCategoryColor(blog.category)} mb-3 border text-xs`}>
+                      {blog.category.split('-').map((word: string) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                    </Badge>
+                  )}
+
+                  {/* Title */}
+                  <h3 className="text-xl font-bold text-foreground mb-3 leading-tight group-hover:text-primary transition-colors line-clamp-2">
                     {blog.title}
                   </h3>
 
-                  <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                  {/* Description */}
+                  <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
                     {blog.excerpt || truncateContent(blog.content)}
                   </p>
 
-                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
-                    <div className="flex items-center space-x-1">
-                      <User className="w-3 h-3" />
-                      <span>{blog.author_name}</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <Calendar className="w-3 h-3" />
-                      <span>{formatDate(blog.created_at)}</span>
-                    </div>
-                  </div>
-
+                  {/* Tags */}
                   {blog.tags && blog.tags.length > 0 && (
                     <div className="flex flex-wrap gap-1 mb-4">
                       {blog.tags.slice(0, 3).map((tag: string, index: number) => (
                         <Badge key={index} variant="outline" className="text-xs">
-                          <Tag className="w-3 h-3 mr-1" />
                           {tag}
                         </Badge>
                       ))}
                     </div>
                   )}
 
-                  <button className="text-sm text-health hover:text-health/80 font-medium">
-                    Read More →
-                  </button>
+                  {/* Read Time */}
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      {estimateReadTime(blog.content)}
+                    </span>
+                    <span className="text-primary font-medium group-hover:underline">
+                      Read More →
+                    </span>
+                  </div>
                 </div>
-              </article>
+              </Card>
             ))}
           </div>
-        ) : filteredBlogs.length === 1 ? (
-          <div className="text-center py-12">
-            <div className="text-6xl mb-4">📚</div>
-            <h3 className="text-xl font-semibold text-foreground mb-2">Only one post found</h3>
-            <p className="text-muted-foreground">Try adjusting your search criteria to see more posts.</p>
-          </div>
         ) : (
-          <div className="text-center py-12">
+          <div className="text-center py-16">
             <div className="text-6xl mb-4">📝</div>
             <h3 className="text-xl font-semibold text-foreground mb-2">No blog posts found</h3>
-            <p className="text-muted-foreground">We're working on creating amazing content for you.</p>
+            <p className="text-muted-foreground">Try adjusting your search or filter criteria.</p>
           </div>
         )}
-
-        {/* Detail Dialog */}
-        <Dialog open={!!selectedBlog} onOpenChange={() => setSelectedBlog(null)}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="text-2xl font-bold">{selectedBlog?.title}</DialogTitle>
-            </DialogHeader>
-            {selectedBlog && (
-              <div className="space-y-6">
-                {selectedBlog.cover_image_url && (
-                  <img 
-                    src={selectedBlog.cover_image_url} 
-                    alt={selectedBlog.title}
-                    className="w-full h-96 object-contain rounded-lg bg-muted"
-                  />
-                )}
-
-                <div className="flex items-center gap-4 flex-wrap">
-                  {selectedBlog.category && (
-                    <Badge className={getCategoryColor(selectedBlog.category)}>
-                      {selectedBlog.category}
-                    </Badge>
-                  )}
-                  <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                    <User className="w-4 h-4" />
-                    <span>{selectedBlog.author_name}</span>
-                  </div>
-                  <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                    <Calendar className="w-4 h-4" />
-                    <span>{formatDate(selectedBlog.created_at)}</span>
-                  </div>
-                  <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                    <Eye className="w-4 h-4" />
-                    <span>{selectedBlog.views_count} views</span>
-                  </div>
-                </div>
-
-                {selectedBlog.excerpt && (
-                  <div className="bg-muted/50 rounded-lg p-4">
-                    <p className="text-base text-muted-foreground italic">{selectedBlog.excerpt}</p>
-                  </div>
-                )}
-
-                <div>
-                  <div 
-                    className="prose prose-lg max-w-none text-muted-foreground"
-                    dangerouslySetInnerHTML={{ __html: selectedBlog.content.replace(/\n/g, '<br />') }}
-                  />
-                </div>
-
-                {selectedBlog.tags && selectedBlog.tags.length > 0 && (
-                  <div>
-                    <h3 className="text-lg font-semibold text-foreground mb-3">Tags</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedBlog.tags.map((tag: string, index: number) => (
-                        <Badge key={index} variant="outline" className="text-sm">
-                          <Tag className="w-3 h-3 mr-1" />
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </DialogContent>
-        </Dialog>
       </div>
     </div>
   );

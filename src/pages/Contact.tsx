@@ -82,9 +82,9 @@ const Contact = () => {
     {
       icon: Mail,
       title: "Email Us",
-      details: "healthyplates@gmail.com",
+      details: "info.healthyplates@gmail.com",
       description: "Send us an email and we'll respond within 24 hours",
-      action: "mailto:healthyplates@gmail.com"
+      action: "mailto:info.healthyplates@gmail.com"
     },
     {
       icon: Phone,
