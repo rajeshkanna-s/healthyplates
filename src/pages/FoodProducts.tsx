@@ -147,14 +147,14 @@ const FoodProducts = () => {
                 <div className="flex flex-col md:flex-row gap-0 relative">
                   {/* Product Image */}
                   <div 
-                    className="w-full md:w-64 h-48 relative overflow-hidden cursor-pointer"
+                    className="w-full md:w-64 h-56 relative overflow-hidden cursor-pointer"
                     onClick={() => navigate(`/food-products/${product.id}`)}
                   >
                     {product.image_url ? (
                       <img 
                         src={product.image_url} 
                         alt={product.name} 
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        className="w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-500"
                       />
                     ) : (
                       <div className="w-full h-full bg-gradient-health flex items-center justify-center text-white text-6xl">
