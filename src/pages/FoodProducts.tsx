@@ -144,10 +144,10 @@ const FoodProducts = () => {
                 key={product.id} 
                 className="p-0 hover:shadow-health-lg transition-all duration-300 border border-border/50 hover:border-primary/30 overflow-hidden group"
               >
-                <div className="flex flex-col md:flex-row gap-0 relative">
+                <div className="flex flex-col md:flex-row relative">
                   {/* Product Image */}
                   <div 
-                    className="w-full md:w-64 h-56 relative overflow-hidden cursor-pointer"
+                    className="w-full md:w-64 h-64 md:h-auto relative overflow-hidden cursor-pointer flex-shrink-0"
                     onClick={() => navigate(`/food-products/${product.id}`)}
                   >
                     {product.image_url ? (
