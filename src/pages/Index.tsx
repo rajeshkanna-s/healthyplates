@@ -14,37 +14,45 @@ const Index = () => {
 
   const fetchFeaturedContent = async () => {
     try {
-      // Fetch top 5 blog posts
+      // Fetch blogs for random selection
       const { data: blogs } = await supabase
         .from('blogs')
         .select('*')
         .eq('status', 'published')
-        .order('views_count', { ascending: false })
-        .limit(5);
+        .limit(20);
 
-      // Fetch top 5 food items
+      // Fetch foods for random selection
       const { data: foods } = await supabase
         .from('food_timing')
         .select('*')
-        .order('created_at', { ascending: false })
-        .limit(5);
+        .limit(20);
+
+      // Helper function to shuffle and pick random items
+      const getRandomItems = <T,>(array: T[], count: number): T[] => {
+        const shuffled = [...(array || [])].sort(() => 0.5 - Math.random());
+        return shuffled.slice(0, count);
+      };
+
+      // Get 3 random blogs and 2 random foods
+      const randomBlogs = getRandomItems(blogs || [], 3);
+      const randomFoods = getRandomItems(foods || [], 2);
 
       const items = [
-        ...(blogs || []).map(blog => ({
+        ...randomBlogs.map(blog => ({
           id: blog.id,
           title: blog.title,
           image: blog.cover_image_url || 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800',
           category: blog.category || 'Blog',
           link: '/blog'
         })),
-        ...(foods || []).map(food => ({
+        ...randomFoods.map(food => ({
           id: food.id,
           title: food.name,
           image: food.image_url || 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800',
           category: food.meal_time,
           link: '/foods'
         }))
-      ].slice(0, 5);
+      ];
 
       setCarouselItems(items);
     } catch (error) {
