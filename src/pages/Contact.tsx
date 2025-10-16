@@ -1,13 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Mail, Phone, Clock, Send, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const Contact = () => {
   const { toast } = useToast();
+  const [settings, setSettings] = useState<any>({});
+  
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    const { data } = await supabase.from('site_settings').select('*');
+    const settingsObj: any = {};
+    data?.forEach(item => {
+      settingsObj[item.setting_key] = item.setting_value;
+    });
+    setSettings(settingsObj);
+  };
   const [formData, setFormData] = useState({
     name: '',
     mobile: '',
@@ -78,27 +93,32 @@ const Contact = () => {
     }
   };
 
+  const email = settings.contact_email || 'info.healthyplates@gmail.com';
+  const phone = settings.contact_phone || '+91 8667454755';
+  const whatsappUrl = settings.social_whatsapp || 'https://wa.me/918667454755';
+  const contactHours = settings.contact_hours || {};
+
   const contactInfo = [
     {
       icon: Mail,
       title: "Email Us",
-      details: "info.healthyplates@gmail.com",
+      details: email,
       description: "Send us an email and we'll respond within 24 hours",
-      action: "mailto:info.healthyplates@gmail.com"
+      action: `mailto:${email}`
     },
     {
       icon: Phone,
       title: "Call Us",
-      details: "+91 8667454755",
+      details: phone,
       description: "Speak directly with our health experts",
-      action: "tel:+918667454755"
+      action: `tel:${phone.replace(/[^0-9+]/g, '')}`
     },
     {
       icon: MessageSquare,
       title: "WhatsApp",
-      details: "+91 8667454755",
+      details: phone,
       description: "Quick support via WhatsApp messenger",
-      action: "https://wa.me/918667454755"
+      action: whatsappUrl
     },
   ];
 
@@ -155,15 +175,21 @@ const Contact = () => {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Monday - Friday</span>
-                    <span className="text-foreground font-medium">9:00 AM - 6:00 PM</span>
+                    <span className="text-foreground font-medium">
+                      {contactHours.weekdays || '9:00 AM - 6:00 PM'}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Saturday</span>
-                    <span className="text-foreground font-medium">10:00 AM - 4:00 PM</span>
+                    <span className="text-foreground font-medium">
+                      {contactHours.saturday || '10:00 AM - 4:00 PM'}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Sunday</span>
-                    <span className="text-foreground font-medium">Closed</span>
+                    <span className="text-foreground font-medium">
+                      {contactHours.sunday || 'Closed'}
+                    </span>
                   </div>
                 </div>
               </div>

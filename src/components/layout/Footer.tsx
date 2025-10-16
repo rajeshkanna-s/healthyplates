@@ -1,13 +1,28 @@
 import { Link } from 'react-router-dom';
 import { Leaf, Mail, Phone, Instagram, Youtube, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 const Footer = () => {
+  const [settings, setSettings] = useState<any>({});
+  
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    const { data } = await supabase.from('site_settings').select('*');
+    const settingsObj: any = {};
+    data?.forEach(item => {
+      settingsObj[item.setting_key] = item.setting_value;
+    });
+    setSettings(settingsObj);
+  };
   return (
     <footer className="bg-gradient-subtle border-t border-border/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Brand Section */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
@@ -20,22 +35,21 @@ const Footer = () => {
               </div>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Your trusted source for healthy eating, nutrition tips, and wellness guidance. 
-              Discover the power of natural foods for a healthier lifestyle.
+              {settings.site_description || 'Your trusted source for healthy eating, nutrition tips, and wellness guidance. Discover the power of natural foods for a healthier lifestyle.'}
             </p>
             <div className="flex space-x-2">
               <Button variant="outline" size="sm" className="h-8 w-8 p-0" asChild>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+                <a href={settings.social_instagram || 'https://instagram.com'} target="_blank" rel="noopener noreferrer">
                   <Instagram className="h-4 w-4" />
                 </a>
               </Button>
               <Button variant="outline" size="sm" className="h-8 w-8 p-0" asChild>
-                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer">
+                <a href={settings.social_youtube || 'https://youtube.com'} target="_blank" rel="noopener noreferrer">
                   <Youtube className="h-4 w-4" />
                 </a>
               </Button>
               <Button variant="outline" size="sm" className="h-8 w-8 p-0" asChild>
-                <a href="https://wa.me/" target="_blank" rel="noopener noreferrer">
+                <a href={settings.social_whatsapp || 'https://wa.me/'} target="_blank" rel="noopener noreferrer">
                   <MessageCircle className="h-4 w-4" />
                 </a>
               </Button>
@@ -70,32 +84,15 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4 text-health" />
-                <span className="text-sm text-muted-foreground">info.healthyplates@gmail.com</span>
+                <span className="text-sm text-muted-foreground">{settings.contact_email || 'info.healthyplates@gmail.com'}</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Phone className="h-4 w-4 text-health" />
-                <span className="text-sm text-muted-foreground">+91 8667454755</span>
+                <span className="text-sm text-muted-foreground">{settings.contact_phone || '+91 8667454755'}</span>
               </div>
             </div>
           </div>
 
-          {/* Newsletter */}
-          <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-foreground">Newsletter</h4>
-            <p className="text-sm text-muted-foreground">
-              Subscribe to get weekly health tips and nutrition insights delivered to your inbox.
-            </p>
-            <div className="space-y-2">
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                className="text-sm"
-              />
-              <Button className="w-full btn-health text-sm">
-                Subscribe
-              </Button>
-            </div>
-          </div>
         </div>
 
         {/* Bottom Bar */}

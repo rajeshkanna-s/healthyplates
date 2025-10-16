@@ -37,6 +37,7 @@ const Admin = () => {
   const [diseaseFoods, setDiseaseFoods] = useState<any[]>([]);
   const [selfCareProcedures, setSelfCareProcedures] = useState<any[]>([]);
   const [blogs, setBlogs] = useState<any[]>([]);
+  const [siteSettings, setSiteSettings] = useState<any[]>([]);
 
   useEffect(() => {
     // Check if admin is logged in from localStorage
@@ -110,6 +111,13 @@ const Admin = () => {
             .order('created_at', { ascending: false });
           setBlogs(blogData || []);
           break;
+        case 'site-settings':
+          const { data: settingsData } = await supabase
+            .from('site_settings')
+            .select('*')
+            .order('setting_key');
+          setSiteSettings(settingsData || []);
+          break;
       }
     } catch (error) {
       toast({ title: "Error", description: "Failed to load data", variant: "destructive" });
@@ -168,6 +176,9 @@ const Admin = () => {
         case 'blogs':
           ({ error } = await supabase.from('blogs').delete().eq('id', id));
           break;
+        case 'site_settings':
+          ({ error } = await supabase.from('site_settings').delete().eq('id', id));
+          break;
       }
       if (error) throw error;
       
@@ -220,6 +231,9 @@ const Admin = () => {
         case 'blogs':
           table = 'blogs';
           break;
+        case 'site-settings':
+          table = 'site_settings';
+          break;
       }
 
       if (isEditing) {
@@ -240,6 +254,9 @@ const Admin = () => {
             updatedRows = u; error = e; break; }
           case 'blogs': {
             const { data: u, error: e } = await supabase.from('blogs').update(data).eq('id', editingId).select();
+            updatedRows = u; error = e; break; }
+          case 'site_settings': {
+            const { data: u, error: e } = await supabase.from('site_settings').update(data).eq('id', editingId).select();
             updatedRows = u; error = e; break; }
         }
         if (error) throw error;
@@ -265,6 +282,9 @@ const Admin = () => {
             insertedRows = i; error = e; break; }
           case 'blogs': {
             const { data: i, error: e } = await supabase.from('blogs').insert(data).select();
+            insertedRows = i; error = e; break; }
+          case 'site_settings': {
+            const { data: i, error: e } = await supabase.from('site_settings').insert(data).select();
             insertedRows = i; error = e; break; }
         }
         if (error) throw error;
@@ -878,6 +898,70 @@ const Admin = () => {
     </Card>
   );
 
+  const renderSiteSettingsForm = () => (
+    <Card className="max-w-3xl mx-auto">
+      <CardHeader className="pb-4">
+        <CardTitle className="text-lg">{isEditing ? 'Edit Site Setting' : 'Add Site Setting'}</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div>
+          <Label htmlFor="setting_key" className="text-xs">Setting Key *</Label>
+          <Input
+            id="setting_key"
+            value={formData.setting_key || ''}
+            onChange={(e) => handleInputChange('setting_key', e.target.value)}
+            placeholder="e.g., contact_email"
+            className="h-9 text-sm"
+            disabled={isEditing}
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="setting_value" className="text-xs">Setting Value * (JSON format)</Label>
+          <Textarea
+            id="setting_value"
+            value={typeof formData.setting_value === 'string' ? formData.setting_value : JSON.stringify(formData.setting_value || '', null, 2)}
+            onChange={(e) => {
+              try {
+                const parsed = JSON.parse(e.target.value);
+                handleInputChange('setting_value', parsed);
+              } catch {
+                handleInputChange('setting_value', e.target.value);
+              }
+            }}
+            placeholder='{"value": "example"} or just "simple text"'
+            className="min-h-[100px] text-sm font-mono"
+          />
+          <p className="text-xs text-muted-foreground mt-1">
+            For simple text, use quotes: "text". For objects: {"{"}...{"}"}
+          </p>
+        </div>
+
+        <div>
+          <Label htmlFor="description" className="text-xs">Description</Label>
+          <Input
+            id="description"
+            value={formData.description || ''}
+            onChange={(e) => handleInputChange('description', e.target.value)}
+            placeholder="Brief description of this setting"
+            className="h-9 text-sm"
+          />
+        </div>
+
+        <div className="flex gap-2 pt-2">
+          <Button onClick={handleSave} className="flex-1 h-9 text-sm">
+            <Save className="w-3 h-3 mr-1" />
+            {isEditing ? 'Update' : 'Create'}
+          </Button>
+          <Button variant="outline" onClick={resetForm} className="flex-1 h-9 text-sm">
+            <X className="w-3 h-3 mr-1" />
+            Cancel
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
   const renderForm = () => {
     switch (activeTab) {
       case 'food-products':
@@ -890,6 +974,8 @@ const Admin = () => {
         return renderSelfCareForm();
       case 'blogs':
         return renderBlogForm();
+      case 'site-settings':
+        return renderSiteSettingsForm();
       default:
         return null;
     }
@@ -958,12 +1044,13 @@ const Admin = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="food-products">Food Products</TabsTrigger>
             <TabsTrigger value="food-timing">Food Timing</TabsTrigger>
             <TabsTrigger value="disease-foods">Disease Foods</TabsTrigger>
             <TabsTrigger value="self-care">Self Care</TabsTrigger>
             <TabsTrigger value="blogs">Blogs</TabsTrigger>
+            <TabsTrigger value="site-settings">Site Settings</TabsTrigger>
           </TabsList>
 
           <div className="mt-8 space-y-8">
@@ -1173,6 +1260,50 @@ const Admin = () => {
                                   size="sm" 
                                   variant="destructive" 
                                   onClick={() => handleDelete(procedure.id, 'self_care_procedures')}
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="site-settings" className="mt-0">
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Setting Key</TableHead>
+                          <TableHead>Setting Value</TableHead>
+                          <TableHead>Description</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {siteSettings.map((setting) => (
+                          <TableRow key={setting.id}>
+                            <TableCell className="font-medium">{setting.setting_key}</TableCell>
+                            <TableCell className="max-w-xs">
+                              <code className="text-xs bg-muted px-2 py-1 rounded">
+                                {typeof setting.setting_value === 'string' 
+                                  ? setting.setting_value 
+                                  : JSON.stringify(setting.setting_value)}
+                              </code>
+                            </TableCell>
+                            <TableCell className="max-w-xs truncate">{setting.description}</TableCell>
+                            <TableCell>
+                              <div className="space-x-2">
+                                <Button size="sm" variant="outline" onClick={() => handleEdit(setting)}>
+                                  <Edit className="w-3 h-3" />
+                                </Button>
+                                <Button 
+                                  size="sm" 
+                                  variant="destructive" 
+                                  onClick={() => handleDelete(setting.id, 'site_settings')}
                                 >
                                   <Trash2 className="w-3 h-3" />
                                 </Button>
