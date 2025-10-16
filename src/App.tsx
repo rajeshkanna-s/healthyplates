@@ -15,6 +15,7 @@ import DiseaseDetail from "./pages/DiseaseDetail";
 import SelfCare from "./pages/SelfCare";
 import SelfCareDetail from "./pages/SelfCareDetail";
 import Blog from "./pages/Blog";
+import BlogDetail from "./pages/BlogDetail";
 import Admin from "./pages/Admin";
 import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="self-care" element={<SelfCare />} />
             <Route path="self-care/:id" element={<SelfCareDetail />} />
             <Route path="blog" element={<Blog />} />
+            <Route path="blog/:id" element={<BlogDetail />} />
             <Route path="admin" element={<Admin />} />
             {/* Redirect old data-entry route to admin */}
             <Route path="data-entry" element={<Admin />} />

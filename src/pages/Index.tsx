@@ -43,14 +43,14 @@ const Index = () => {
           title: blog.title,
           image: blog.cover_image_url || 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800',
           category: blog.category || 'Blog',
-          link: '/blog'
+          link: `/blog/${blog.id}`
         })),
         ...randomFoods.map(food => ({
           id: food.id,
           title: food.name,
           image: food.image_url || 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800',
           category: food.meal_time,
-          link: '/foods'
+          link: `/foods/${food.id}`
         }))
       ];
 
