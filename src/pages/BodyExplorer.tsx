@@ -4,12 +4,25 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
+// Import organ images
+import brainImg from "@/assets/organs/brain.png";
+import heartImg from "@/assets/organs/heart.png";
+import lungsImg from "@/assets/organs/lungs.png";
+import liverImg from "@/assets/organs/liver.png";
+import stomachImg from "@/assets/organs/stomach.png";
+import pancreasImg from "@/assets/organs/pancreas.png";
+import kidneysImg from "@/assets/organs/kidneys.png";
+import intestinesImg from "@/assets/organs/intestines.png";
+import bladderImg from "@/assets/organs/bladder.png";
+import spleenImg from "@/assets/organs/spleen.png";
+
 interface Organ {
   id: string;
   name: string;
   icon: any;
+  image: string;
   color: string;
-  position: { x: number; y: number };
+  position: { x: number; y: number; width: number; height: number };
   description: string;
   usage: string;
   functions: string[];
@@ -23,8 +36,9 @@ const organs: Organ[] = [
     id: "brain",
     name: "Brain",
     icon: Brain,
-    color: "hsl(var(--primary))",
-    position: { x: 50, y: 10 },
+    image: brainImg,
+    color: "hsl(280, 70%, 65%)",
+    position: { x: 35, y: 2, width: 30, height: 20 },
     description: "The control center of the nervous system, responsible for processing information and coordinating body functions.",
     usage: "Controls thoughts, memory, emotions, movement, and all bodily functions through electrical and chemical signals.",
     functions: [
@@ -48,39 +62,12 @@ const organs: Organ[] = [
     stats: { size: "~1,350 cm³", weight: "~1.4 kg", activity: "24/7 active" }
   },
   {
-    id: "heart",
-    name: "Heart",
-    icon: Heart,
-    color: "hsl(0, 70%, 50%)",
-    position: { x: 45, y: 30 },
-    description: "A muscular organ that pumps blood throughout the circulatory system, delivering oxygen and nutrients.",
-    usage: "Continuously pumps oxygenated blood to all body tissues and returns deoxygenated blood to the lungs.",
-    functions: [
-      "Pumps blood throughout the body",
-      "Maintains blood pressure",
-      "Delivers oxygen to tissues",
-      "Removes carbon dioxide",
-      "Distributes nutrients and hormones",
-      "Regulates blood flow",
-      "Maintains cardiac rhythm",
-      "Responds to body's changing needs"
-    ],
-    facts: [
-      "Beats approximately 100,000 times per day",
-      "Pumps about 7,570 liters of blood daily",
-      "Can continue beating outside the body",
-      "Creates enough pressure to squirt blood 30 feet",
-      "Your heartbeat syncs with the music you listen to"
-    ],
-    disorders: ["Heart Disease", "Heart Attack", "Arrhythmia", "Heart Failure", "Coronary Artery Disease"],
-    stats: { size: "~Fist-sized", weight: "~300g", activity: "100,000 beats/day" }
-  },
-  {
     id: "lungs",
     name: "Lungs",
     icon: Wind,
-    color: "hsl(200, 70%, 50%)",
-    position: { x: 50, y: 28 },
+    image: lungsImg,
+    color: "hsl(340, 70%, 65%)",
+    position: { x: 30, y: 22, width: 40, height: 25 },
     description: "Paired organs responsible for gas exchange, taking in oxygen and expelling carbon dioxide.",
     usage: "Exchange oxygen from air with carbon dioxide from blood through millions of tiny air sacs called alveoli.",
     functions: [
@@ -104,11 +91,41 @@ const organs: Organ[] = [
     stats: { size: "~6 liters capacity", weight: "~1.3 kg total", activity: "20,000 breaths/day" }
   },
   {
+    id: "heart",
+    name: "Heart",
+    icon: Heart,
+    image: heartImg,
+    color: "hsl(0, 85%, 60%)",
+    position: { x: 38, y: 30, width: 24, height: 20 },
+    description: "A muscular organ that pumps blood throughout the circulatory system, delivering oxygen and nutrients.",
+    usage: "Continuously pumps oxygenated blood to all body tissues and returns deoxygenated blood to the lungs.",
+    functions: [
+      "Pumps blood throughout the body",
+      "Maintains blood pressure",
+      "Delivers oxygen to tissues",
+      "Removes carbon dioxide",
+      "Distributes nutrients and hormones",
+      "Regulates blood flow",
+      "Maintains cardiac rhythm",
+      "Responds to body's changing needs"
+    ],
+    facts: [
+      "Beats approximately 100,000 times per day",
+      "Pumps about 7,570 liters of blood daily",
+      "Can continue beating outside the body",
+      "Creates enough pressure to squirt blood 30 feet",
+      "Your heartbeat syncs with the music you listen to"
+    ],
+    disorders: ["Heart Disease", "Heart Attack", "Arrhythmia", "Heart Failure", "Coronary Artery Disease"],
+    stats: { size: "~Fist-sized", weight: "~300g", activity: "100,000 beats/day" }
+  },
+  {
     id: "liver",
     name: "Liver",
     icon: Activity,
-    color: "hsl(30, 70%, 40%)",
-    position: { x: 55, y: 42 },
+    image: liverImg,
+    color: "hsl(15, 70%, 50%)",
+    position: { x: 42, y: 40, width: 28, height: 18 },
     description: "The largest internal organ, performing over 500 vital functions including detoxification and metabolism.",
     usage: "Processes nutrients from food, produces bile for digestion, stores vitamins, and filters toxins from blood.",
     functions: [
@@ -135,8 +152,9 @@ const organs: Organ[] = [
     id: "stomach",
     name: "Stomach",
     icon: Apple,
-    color: "hsl(45, 70%, 50%)",
-    position: { x: 48, y: 45 },
+    image: stomachImg,
+    color: "hsl(350, 70%, 65%)",
+    position: { x: 32, y: 48, width: 20, height: 18 },
     description: "A muscular, hollow organ that breaks down food using acid and enzymes as part of digestion.",
     usage: "Mixes food with digestive juices, breaks down proteins, and gradually releases contents to small intestine.",
     functions: [
@@ -160,11 +178,41 @@ const organs: Organ[] = [
     stats: { size: "~25cm long", weight: "~1.5 kg when full", activity: "2-4 hour digestion" }
   },
   {
+    id: "spleen",
+    name: "Spleen",
+    icon: Filter,
+    image: spleenImg,
+    color: "hsl(320, 65%, 55%)",
+    position: { x: 20, y: 42, width: 15, height: 14 },
+    description: "An organ that filters blood, removes old red blood cells, and supports the immune system.",
+    usage: "Filters blood, stores white blood cells and platelets, helps fight infections, and recycles iron.",
+    functions: [
+      "Filters damaged blood cells",
+      "Stores white blood cells",
+      "Produces antibodies",
+      "Removes old red blood cells",
+      "Stores platelets",
+      "Recycles iron",
+      "Fights bacterial infections",
+      "Supports immune response"
+    ],
+    facts: [
+      "Can increase 3x in size when storing blood",
+      "Contains 25% of body's lymphocytes",
+      "Filters 150ml of blood per minute",
+      "Can live without it",
+      "Stores 1/3 of body's platelets"
+    ],
+    disorders: ["Enlarged Spleen", "Ruptured Spleen", "Hypersplenism", "Splenomegaly", "Blood Disorders"],
+    stats: { size: "~12cm long", weight: "~150-200g", activity: "Continuous filtration" }
+  },
+  {
     id: "pancreas",
     name: "Pancreas",
     icon: Sparkles,
-    color: "hsl(320, 60%, 50%)",
-    position: { x: 52, y: 47 },
+    image: pancreasImg,
+    color: "hsl(30, 75%, 70%)",
+    position: { x: 35, y: 52, width: 24, height: 12 },
     description: "A gland that produces insulin to regulate blood sugar and digestive enzymes to break down food.",
     usage: "Secretes insulin and glucagon to control blood glucose, and releases enzymes to digest proteins, fats, and carbohydrates.",
     functions: [
@@ -191,8 +239,9 @@ const organs: Organ[] = [
     id: "kidneys",
     name: "Kidneys",
     icon: Droplets,
-    color: "hsl(280, 60%, 50%)",
-    position: { x: 50, y: 50 },
+    image: kidneysImg,
+    color: "hsl(5, 70%, 60%)",
+    position: { x: 30, y: 56, width: 40, height: 18 },
     description: "Paired organs that filter waste products, excess water, and toxins from blood to produce urine.",
     usage: "Filter blood continuously, maintain fluid balance, regulate blood pressure, and produce hormones.",
     functions: [
@@ -219,8 +268,9 @@ const organs: Organ[] = [
     id: "intestines",
     name: "Intestines",
     icon: Activity,
-    color: "hsl(150, 60%, 45%)",
-    position: { x: 50, y: 58 },
+    image: intestinesImg,
+    color: "hsl(355, 65%, 65%)",
+    position: { x: 28, y: 62, width: 44, height: 28 },
     description: "A long tube where most digestion and nutrient absorption occurs, divided into small and large intestines.",
     usage: "Small intestine absorbs nutrients; large intestine absorbs water and forms waste for elimination.",
     functions: [
@@ -247,8 +297,9 @@ const organs: Organ[] = [
     id: "bladder",
     name: "Bladder",
     icon: Droplets,
-    color: "hsl(190, 60%, 50%)",
-    position: { x: 50, y: 68 },
+    image: bladderImg,
+    color: "hsl(345, 65%, 70%)",
+    position: { x: 38, y: 80, width: 24, height: 16 },
     description: "A hollow, muscular organ that stores urine before it is eliminated from the body.",
     usage: "Collects and stores urine from kidneys, then releases it through the urethra during urination.",
     functions: [
@@ -270,34 +321,6 @@ const organs: Organ[] = [
     ],
     disorders: ["UTI", "Overactive Bladder", "Bladder Cancer", "Incontinence", "Bladder Stones"],
     stats: { size: "~400-600ml capacity", weight: "~40g empty", activity: "6-8 voids/day" }
-  },
-  {
-    id: "spleen",
-    name: "Spleen",
-    icon: Filter,
-    color: "hsl(340, 60%, 50%)",
-    position: { x: 42, y: 44 },
-    description: "An organ that filters blood, removes old red blood cells, and supports the immune system.",
-    usage: "Filters blood, stores white blood cells and platelets, helps fight infections, and recycles iron.",
-    functions: [
-      "Filters damaged blood cells",
-      "Stores white blood cells",
-      "Produces antibodies",
-      "Removes old red blood cells",
-      "Stores platelets",
-      "Recycles iron",
-      "Fights bacterial infections",
-      "Supports immune response"
-    ],
-    facts: [
-      "Can increase 3x in size when storing blood",
-      "Contains 25% of body's lymphocytes",
-      "Filters 150ml of blood per minute",
-      "Can live without it",
-      "Stores 1/3 of body's platelets"
-    ],
-    disorders: ["Enlarged Spleen", "Ruptured Spleen", "Hypersplenism", "Splenomegaly", "Blood Disorders"],
-    stats: { size: "~12cm long", weight: "~150-200g", activity: "Continuous filtration" }
   }
 ];
 
@@ -351,7 +374,7 @@ export default function BodyExplorer() {
 
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Body Viewer */}
-          <Card className="relative overflow-hidden bg-gradient-to-b from-muted/30 to-background">
+          <Card className="relative overflow-hidden bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
             <CardContent className="p-4">
               {selectedOrgan && (
                 <Button
@@ -366,201 +389,101 @@ export default function BodyExplorer() {
               )}
               
               <div className="relative h-[700px] flex items-center justify-center overflow-hidden">
-                {/* SVG Body with Organs */}
-                <svg 
-                  viewBox="0 0 400 700" 
-                  className={`w-full h-full transition-all duration-700 ${
-                    selectedOrgan ? 'scale-150' : 'scale-100'
-                  }`}
-                  style={{ 
-                    filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))',
-                  }}
-                >
-                  {/* Body Silhouette */}
-                  <g>
+                {/* Body Silhouette */}
+                <div className={`relative w-full h-full transition-all duration-700 ${
+                  selectedOrgan ? 'opacity-30 scale-95' : 'opacity-100 scale-100'
+                }`}>
+                  <svg viewBox="0 0 100 100" className="w-full h-full">
                     {/* Head */}
-                    <ellipse cx="200" cy="60" rx="45" ry="55" fill="hsl(var(--muted))" opacity="0.3" stroke="hsl(var(--border))" strokeWidth="2"/>
-                    
+                    <ellipse cx="50" cy="8" rx="8" ry="10" fill="none" stroke="hsl(var(--border))" strokeWidth="0.3" opacity="0.5"/>
                     {/* Neck */}
-                    <rect x="185" y="105" width="30" height="35" fill="hsl(var(--muted))" opacity="0.3" stroke="hsl(var(--border))" strokeWidth="2"/>
-                    
+                    <rect x="47" y="16" width="6" height="6" fill="none" stroke="hsl(var(--border))" strokeWidth="0.3" opacity="0.5"/>
                     {/* Torso */}
                     <path 
-                      d="M 155 140 L 155 400 Q 155 420 175 420 L 225 420 Q 245 420 245 400 L 245 140 Q 245 140 200 140 Q 155 140 155 140" 
-                      fill="hsl(var(--muted))" 
-                      opacity="0.3" 
+                      d="M 35 22 L 35 70 Q 35 75 40 75 L 60 75 Q 65 75 65 70 L 65 22 Q 65 22 50 22 Q 35 22 35 22" 
+                      fill="none" 
                       stroke="hsl(var(--border))" 
-                      strokeWidth="2"
+                      strokeWidth="0.3" 
+                      opacity="0.5"
                     />
-                    
                     {/* Shoulders */}
-                    <ellipse cx="130" cy="160" rx="25" ry="30" fill="hsl(var(--muted))" opacity="0.3" stroke="hsl(var(--border))" strokeWidth="2"/>
-                    <ellipse cx="270" cy="160" rx="25" ry="30" fill="hsl(var(--muted))" opacity="0.3" stroke="hsl(var(--border))" strokeWidth="2"/>
-                    
+                    <ellipse cx="28" cy="25" rx="5" ry="6" fill="none" stroke="hsl(var(--border))" strokeWidth="0.3" opacity="0.5"/>
+                    <ellipse cx="72" cy="25" rx="5" ry="6" fill="none" stroke="hsl(var(--border))" strokeWidth="0.3" opacity="0.5"/>
                     {/* Arms */}
-                    <rect x="105" y="180" width="20" height="150" rx="10" fill="hsl(var(--muted))" opacity="0.3" stroke="hsl(var(--border))" strokeWidth="2"/>
-                    <rect x="275" y="180" width="20" height="150" rx="10" fill="hsl(var(--muted))" opacity="0.3" stroke="hsl(var(--border))" strokeWidth="2"/>
-                    
+                    <rect x="23" y="30" width="4" height="25" rx="2" fill="none" stroke="hsl(var(--border))" strokeWidth="0.3" opacity="0.5"/>
+                    <rect x="73" y="30" width="4" height="25" rx="2" fill="none" stroke="hsl(var(--border))" strokeWidth="0.3" opacity="0.5"/>
                     {/* Pelvis */}
-                    <ellipse cx="200" cy="440" rx="60" ry="40" fill="hsl(var(--muted))" opacity="0.3" stroke="hsl(var(--border))" strokeWidth="2"/>
-                    
+                    <ellipse cx="50" cy="78" rx="12" ry="8" fill="none" stroke="hsl(var(--border))" strokeWidth="0.3" opacity="0.5"/>
                     {/* Legs */}
-                    <rect x="165" y="460" width="30" height="180" rx="15" fill="hsl(var(--muted))" opacity="0.3" stroke="hsl(var(--border))" strokeWidth="2"/>
-                    <rect x="205" y="460" width="30" height="180" rx="15" fill="hsl(var(--muted))" opacity="0.3" stroke="hsl(var(--border))" strokeWidth="2"/>
-                  </g>
+                    <rect x="42" y="84" width="6" height="14" rx="3" fill="none" stroke="hsl(var(--border))" strokeWidth="0.3" opacity="0.5"/>
+                    <rect x="52" y="84" width="6" height="14" rx="3" fill="none" stroke="hsl(var(--border))" strokeWidth="0.3" opacity="0.5"/>
+                  </svg>
+                </div>
 
-                  {/* Organs with transparent colored overlays */}
+                {/* Organs Layer */}
+                <div className="absolute inset-0 w-full h-full">
                   {organs.map((organ) => {
                     const isSelected = selectedOrgan?.id === organ.id;
                     const isHovered = hoveredOrgan === organ.id;
                     const shouldHighlight = isSelected || isHovered;
                     
-                    // Organ shapes based on position
-                    let organPath = "";
-                    let organShape: JSX.Element;
-                    
-                    switch(organ.id) {
-                      case "brain":
-                        organShape = (
-                          <g key={organ.id}>
-                            <ellipse cx="200" cy="50" rx="38" ry="45" fill={organ.color} opacity={shouldHighlight ? 0.7 : 0.4} />
-                            <rect x="165" y="80" width="70" height="25" rx="3" fill="white" opacity="0.9" stroke={organ.color} strokeWidth="2"/>
-                            <text x="200" y="97" textAnchor="middle" fill={organ.color} fontSize="14" fontWeight="600">Brain</text>
-                          </g>
-                        );
-                        break;
-                      
-                      case "heart":
-                        organShape = (
-                          <g key={organ.id}>
-                            <path d="M 185 200 L 200 220 L 215 200 Q 225 185 215 175 Q 205 170 200 175 Q 195 170 185 175 Q 175 185 185 200" 
-                              fill={organ.color} opacity={shouldHighlight ? 0.7 : 0.4} />
-                            <rect x="165" y="205" width="70" height="25" rx="3" fill="white" opacity="0.9" stroke={organ.color} strokeWidth="2"/>
-                            <text x="200" y="222" textAnchor="middle" fill={organ.color} fontSize="14" fontWeight="600">Heart</text>
-                          </g>
-                        );
-                        break;
-                      
-                      case "lungs":
-                        organShape = (
-                          <g key={organ.id}>
-                            <ellipse cx="175" cy="190" rx="25" ry="45" fill={organ.color} opacity={shouldHighlight ? 0.7 : 0.4} />
-                            <ellipse cx="225" cy="190" rx="25" ry="45" fill={organ.color} opacity={shouldHighlight ? 0.7 : 0.4} />
-                            <rect x="165" y="145" width="70" height="25" rx="3" fill="white" opacity="0.9" stroke={organ.color} strokeWidth="2"/>
-                            <text x="200" y="162" textAnchor="middle" fill={organ.color} fontSize="14" fontWeight="600">Lungs</text>
-                          </g>
-                        );
-                        break;
-                      
-                      case "liver":
-                        organShape = (
-                          <g key={organ.id}>
-                            <path d="M 160 260 L 220 260 Q 235 265 230 280 L 210 290 L 165 290 Q 155 285 160 270 Z" 
-                              fill={organ.color} opacity={shouldHighlight ? 0.7 : 0.4} />
-                            <rect x="165" y="250" width="70" height="25" rx="3" fill="white" opacity="0.9" stroke={organ.color} strokeWidth="2"/>
-                            <text x="200" y="267" textAnchor="middle" fill={organ.color} fontSize="14" fontWeight="600">Liver</text>
-                          </g>
-                        );
-                        break;
-                      
-                      case "stomach":
-                        organShape = (
-                          <g key={organ.id}>
-                            <ellipse cx="185" cy="300" rx="22" ry="35" fill={organ.color} opacity={shouldHighlight ? 0.7 : 0.4} />
-                            <rect x="215" y="285" width="85" height="25" rx="3" fill="white" opacity="0.9" stroke={organ.color} strokeWidth="2"/>
-                            <text x="257" y="302" textAnchor="middle" fill={organ.color} fontSize="14" fontWeight="600">Stomach</text>
-                          </g>
-                        );
-                        break;
-                      
-                      case "pancreas":
-                        organShape = (
-                          <g key={organ.id}>
-                            <rect x="195" y="305" width="45" height="15" rx="7" fill={organ.color} opacity={shouldHighlight ? 0.7 : 0.4} />
-                            <rect x="240" y="295" width="85" height="25" rx="3" fill="white" opacity="0.9" stroke={organ.color} strokeWidth="2"/>
-                            <text x="282" y="312" textAnchor="middle" fill={organ.color} fontSize="14" fontWeight="600">Pancreas</text>
-                          </g>
-                        );
-                        break;
-                      
-                      case "spleen":
-                        organShape = (
-                          <g key={organ.id}>
-                            <ellipse cx="230" cy="290" rx="18" ry="30" fill={organ.color} opacity={shouldHighlight ? 0.7 : 0.4} />
-                            <rect x="235" y="315" width="70" height="25" rx="3" fill="white" opacity="0.9" stroke={organ.color} strokeWidth="2"/>
-                            <text x="270" y="332" textAnchor="middle" fill={organ.color} fontSize="14" fontWeight="600">Spleen</text>
-                          </g>
-                        );
-                        break;
-                      
-                      case "kidneys":
-                        organShape = (
-                          <g key={organ.id}>
-                            <ellipse cx="170" cy="340" rx="15" ry="25" fill={organ.color} opacity={shouldHighlight ? 0.7 : 0.4} />
-                            <ellipse cx="230" cy="340" rx="15" ry="25" fill={organ.color} opacity={shouldHighlight ? 0.7 : 0.4} />
-                            <rect x="165" y="325" width="80" height="25" rx="3" fill="white" opacity="0.9" stroke={organ.color} strokeWidth="2"/>
-                            <text x="205" y="342" textAnchor="middle" fill={organ.color} fontSize="14" fontWeight="600">Kidneys</text>
-                          </g>
-                        );
-                        break;
-                      
-                      case "intestines":
-                        organShape = (
-                          <g key={organ.id}>
-                            <path d="M 170 370 Q 165 380 175 390 Q 185 395 195 390 Q 205 395 215 390 Q 225 395 230 385 Q 235 375 225 370 Z" 
-                              fill={organ.color} opacity={shouldHighlight ? 0.7 : 0.4} />
-                            <path d="M 175 385 Q 180 400 200 405 Q 220 400 225 385" 
-                              fill={organ.color} opacity={shouldHighlight ? 0.6 : 0.3} />
-                            <rect x="165" y="405" width="85" height="25" rx="3" fill="white" opacity="0.9" stroke={organ.color} strokeWidth="2"/>
-                            <text x="207" y="422" textAnchor="middle" fill={organ.color} fontSize="14" fontWeight="600">Intestines</text>
-                          </g>
-                        );
-                        break;
-                      
-                      case "bladder":
-                        organShape = (
-                          <g key={organ.id}>
-                            <ellipse cx="200" cy="455" rx="22" ry="18" fill={organ.color} opacity={shouldHighlight ? 0.7 : 0.4} />
-                            <rect x="165" y="465" width="75" height="25" rx="3" fill="white" opacity="0.9" stroke={organ.color} strokeWidth="2"/>
-                            <text x="202" y="482" textAnchor="middle" fill={organ.color} fontSize="14" fontWeight="600">Bladder</text>
-                          </g>
-                        );
-                        break;
-                      
-                      default:
-                        organShape = <g key={organ.id}></g>;
-                    }
-                    
                     return (
-                      <g 
+                      <div
                         key={organ.id}
-                        className="cursor-pointer transition-all duration-300"
+                        className={`absolute cursor-pointer transition-all duration-700 ease-out ${
+                          isSelected ? 'z-30 scale-[2.5]' : shouldHighlight ? 'z-20 scale-110' : 'z-10 scale-100'
+                        }`}
+                        style={{
+                          left: `${organ.position.x}%`,
+                          top: `${organ.position.y}%`,
+                          width: `${organ.position.width}%`,
+                          height: `${organ.position.height}%`,
+                          filter: shouldHighlight ? 'drop-shadow(0 0 20px rgba(255, 255, 255, 0.8))' : 'none',
+                          transform: isSelected ? 'translate(-50%, -50%)' : 'translate(0, 0)',
+                          transformOrigin: 'center',
+                        }}
                         onClick={() => setSelectedOrgan(organ)}
                         onMouseEnter={() => setHoveredOrgan(organ.id)}
                         onMouseLeave={() => setHoveredOrgan(null)}
-                        style={{
-                          transform: shouldHighlight ? 'scale(1.05)' : 'scale(1)',
-                          transformOrigin: 'center',
-                        }}
                       >
-                        {organShape}
-                        {shouldHighlight && (
-                          <circle 
-                            cx={organ.position.x * 4} 
-                            cy={organ.position.y * 7}
-                            r="60" 
-                            fill="none" 
-                            stroke={organ.color} 
-                            strokeWidth="3" 
-                            strokeDasharray="5,5"
-                            opacity="0.6"
-                            className="animate-pulse"
+                        <img 
+                          src={organ.image} 
+                          alt={organ.name}
+                          className={`w-full h-full object-contain transition-all duration-300 ${
+                            shouldHighlight ? 'brightness-110' : 'brightness-100'
+                          }`}
+                        />
+                        
+                        {/* Label */}
+                        {!isSelected && (
+                          <div 
+                            className={`absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap transition-all duration-300 ${
+                              shouldHighlight ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
+                            }`}
+                          >
+                            <div 
+                              className="px-3 py-1 rounded-full text-xs font-semibold shadow-lg"
+                              style={{ 
+                                backgroundColor: organ.color,
+                                color: 'white'
+                              }}
+                            >
+                              {organ.name}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Pulse Animation */}
+                        {shouldHighlight && !isSelected && (
+                          <div 
+                            className="absolute inset-0 rounded-full animate-ping opacity-30"
+                            style={{ backgroundColor: organ.color }}
                           />
                         )}
-                      </g>
+                      </div>
                     );
                   })}
-                </svg>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -572,7 +495,7 @@ export default function BodyExplorer() {
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="p-3 rounded-full" style={{ backgroundColor: selectedOrgan.color }}>
+                      <div className="p-3 rounded-full shadow-lg" style={{ backgroundColor: selectedOrgan.color }}>
                         <selectedOrgan.icon className="h-6 w-6 text-white" />
                       </div>
                       <div>
@@ -590,6 +513,15 @@ export default function BodyExplorer() {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-6">
+                  {/* Organ Image */}
+                  <div className="flex justify-center">
+                    <img 
+                      src={selectedOrgan.image} 
+                      alt={selectedOrgan.name}
+                      className="w-48 h-48 object-contain drop-shadow-2xl"
+                    />
+                  </div>
+
                   {/* Usage */}
                   <div>
                     <h3 className="font-semibold mb-2 flex items-center gap-2">
