@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Brain, Heart, Activity, Droplets, Apple, Sparkles, X, ZoomIn, Wind, Filter, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -324,20 +324,6 @@ const organs: Organ[] = [
   }
 ];
 
-// Organ callout positions - arranged around the body like in reference image
-const organCallouts = [
-  { id: "brain", angle: 45, distance: 280, bodyX: 50, bodyY: 8 },
-  { id: "lungs", angle: 135, distance: 260, bodyX: 42, bodyY: 28 },
-  { id: "heart", angle: 0, distance: 320, bodyX: 52, bodyY: 35 },
-  { id: "liver", angle: 180, distance: 260, bodyX: 32, bodyY: 42 },
-  { id: "kidneys", angle: 210, distance: 280, bodyX: 42, bodyY: 56 },
-  { id: "stomach", angle: 340, distance: 300, bodyX: 58, bodyY: 50 },
-  { id: "pancreas", angle: 240, distance: 300, bodyX: 40, bodyY: 52 },
-  { id: "intestines", angle: 300, distance: 320, bodyX: 50, bodyY: 68 },
-  { id: "bladder", angle: 270, distance: 280, bodyX: 50, bodyY: 80 },
-  { id: "spleen", angle: 160, distance: 240, bodyX: 28, bodyY: 45 },
-];
-
 export default function BodyExplorer() {
   const [selectedOrgan, setSelectedOrgan] = useState<Organ | null>(null);
   const [hoveredOrgan, setHoveredOrgan] = useState<string | null>(null);
@@ -348,209 +334,153 @@ export default function BodyExplorer() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-background">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
       {/* Header */}
-      <div className="container mx-auto px-4 py-8 md:py-12">
-        <div className="text-center mb-8 md:mb-12 animate-fade-in">
-          <h1 className="text-3xl md:text-5xl font-bold mb-2 md:mb-4">
-            THE HUMAN BODY
+      <div className="container mx-auto px-4 py-12">
+        <div className="text-center mb-12 animate-fade-in">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            Know Your Body
           </h1>
-          <p className="text-xl md:text-2xl text-primary font-medium">Internal Organs</p>
-          <p className="text-sm text-muted-foreground mt-2">Click on any organ to explore detailed information</p>
+          <p className="text-xl text-muted-foreground mb-2">Internal Organs Interactive Explorer</p>
+          <p className="text-sm text-muted-foreground">Click on any organ to explore detailed information</p>
         </div>
 
-        {/* Main Interactive Body Display */}
-        <div className="relative max-w-7xl mx-auto mb-8">
-          <Card className="relative overflow-visible bg-gradient-to-br from-background to-muted/5 border-2">
-            <CardContent className="p-4 md:p-8">
+        {/* Quick Navigation Panel */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ZoomIn className="h-5 w-5" />
+              Quick Navigation
+            </CardTitle>
+            <CardDescription>Jump directly to any organ</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-2">
+              {organs.map((organ) => (
+                <Button
+                  key={organ.id}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSelectedOrgan(organ)}
+                  className="hover:scale-105 transition-transform"
+                >
+                  <organ.icon className="h-4 w-4 mr-2" style={{ color: organ.color }} />
+                  {organ.name}
+                </Button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Body Viewer */}
+          <Card className="relative overflow-hidden bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+            <CardContent className="p-4">
               {selectedOrgan && (
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={resetView}
-                  className="absolute top-4 right-4 z-30 shadow-lg"
+                  className="absolute top-4 right-4 z-20"
                 >
                   <RotateCcw className="h-4 w-4 mr-2" />
-                  Reset
+                  Reset View
                 </Button>
               )}
               
-              <div className="relative w-full h-[600px] md:h-[800px] flex items-center justify-center">
-                {/* Central Body Silhouette with Organs */}
-                <div className="relative w-[300px] h-[500px] md:w-[400px] md:h-[650px]">
+              <div className="relative h-[700px] flex items-center justify-center overflow-hidden">
+                {/* Body Silhouette */}
+                <div className={`relative w-full h-full transition-all duration-700 ${
+                  selectedOrgan ? 'opacity-30 scale-95' : 'opacity-100 scale-100'
+                }`}>
                   <svg viewBox="0 0 100 100" className="w-full h-full">
-                    {/* Male Body Silhouette - Skin tone */}
-                    <defs>
-                      <linearGradient id="skinGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" style={{ stopColor: 'hsl(25, 60%, 75%)', stopOpacity: 0.9 }} />
-                        <stop offset="100%" style={{ stopColor: 'hsl(25, 55%, 70%)', stopOpacity: 0.9 }} />
-                      </linearGradient>
-                    </defs>
-                    
                     {/* Head */}
-                    <ellipse cx="50" cy="8" rx="7" ry="9" fill="url(#skinGradient)" stroke="hsl(25, 50%, 60%)" strokeWidth="0.4"/>
-                    
+                    <ellipse cx="50" cy="8" rx="8" ry="10" fill="none" stroke="hsl(var(--border))" strokeWidth="0.3" opacity="0.5"/>
                     {/* Neck */}
-                    <rect x="46" y="15" width="8" height="7" fill="url(#skinGradient)" stroke="hsl(25, 50%, 60%)" strokeWidth="0.4"/>
-                    
-                    {/* Torso - Main body */}
+                    <rect x="47" y="16" width="6" height="6" fill="none" stroke="hsl(var(--border))" strokeWidth="0.3" opacity="0.5"/>
+                    {/* Torso */}
                     <path 
-                      d="M 32 22 L 32 65 Q 32 72 38 72 L 62 72 Q 68 72 68 65 L 68 22 L 60 22 L 60 24 Q 58 22 50 22 Q 42 22 40 24 L 40 22 Z" 
-                      fill="url(#skinGradient)" 
-                      stroke="hsl(25, 50%, 60%)" 
-                      strokeWidth="0.4"
+                      d="M 35 22 L 35 70 Q 35 75 40 75 L 60 75 Q 65 75 65 70 L 65 22 Q 65 22 50 22 Q 35 22 35 22" 
+                      fill="none" 
+                      stroke="hsl(var(--border))" 
+                      strokeWidth="0.3" 
+                      opacity="0.5"
                     />
-                    
                     {/* Shoulders */}
-                    <ellipse cx="32" cy="24" rx="6" ry="7" fill="url(#skinGradient)" stroke="hsl(25, 50%, 60%)" strokeWidth="0.4"/>
-                    <ellipse cx="68" cy="24" rx="6" ry="7" fill="url(#skinGradient)" stroke="hsl(25, 50%, 60%)" strokeWidth="0.4"/>
-                    
+                    <ellipse cx="28" cy="25" rx="5" ry="6" fill="none" stroke="hsl(var(--border))" strokeWidth="0.3" opacity="0.5"/>
+                    <ellipse cx="72" cy="25" rx="5" ry="6" fill="none" stroke="hsl(var(--border))" strokeWidth="0.3" opacity="0.5"/>
                     {/* Arms */}
-                    <rect x="22" y="28" width="6" height="30" rx="3" fill="url(#skinGradient)" stroke="hsl(25, 50%, 60%)" strokeWidth="0.4"/>
-                    <rect x="72" y="28" width="6" height="30" rx="3" fill="url(#skinGradient)" stroke="hsl(25, 50%, 60%)" strokeWidth="0.4"/>
-                    
-                    {/* Hands */}
-                    <ellipse cx="25" cy="60" rx="3" ry="4" fill="url(#skinGradient)" stroke="hsl(25, 50%, 60%)" strokeWidth="0.4"/>
-                    <ellipse cx="75" cy="60" rx="3" ry="4" fill="url(#skinGradient)" stroke="hsl(25, 50%, 60%)" strokeWidth="0.4"/>
-                    
-                    {/* Pelvis/Hips */}
-                    <path 
-                      d="M 38 72 L 38 78 L 42 85 L 42 98 L 46 98 L 46 85 Q 46 82 48 82 L 52 82 Q 54 82 54 85 L 54 98 L 58 98 L 58 85 L 62 78 L 62 72 Z" 
-                      fill="url(#skinGradient)" 
-                      stroke="hsl(25, 50%, 60%)" 
-                      strokeWidth="0.4"
-                    />
-
-                    {/* Internal Organs - positioned anatomically */}
-                    {/* Brain */}
-                    <ellipse cx="50" cy="7" rx="5" ry="4" fill="hsl(340, 80%, 70%)" opacity="0.7" stroke="hsl(340, 70%, 50%)" strokeWidth="0.3"/>
-                    
-                    {/* Lungs - both sides */}
-                    <ellipse cx="44" cy="32" rx="6" ry="10" fill="hsl(340, 75%, 65%)" opacity="0.6" stroke="hsl(340, 70%, 50%)" strokeWidth="0.3"/>
-                    <ellipse cx="56" cy="32" rx="6" ry="10" fill="hsl(340, 75%, 65%)" opacity="0.6" stroke="hsl(340, 70%, 50%)" strokeWidth="0.3"/>
-                    
-                    {/* Heart */}
-                    <path d="M 50 38 L 47 42 L 50 45 L 53 42 Z" fill="hsl(0, 85%, 60%)" opacity="0.7" stroke="hsl(0, 75%, 50%)" strokeWidth="0.3"/>
-                    
-                    {/* Liver */}
-                    <ellipse cx="54" cy="48" rx="8" ry="6" fill="hsl(15, 70%, 50%)" opacity="0.7" stroke="hsl(15, 60%, 40%)" strokeWidth="0.3"/>
-                    
-                    {/* Stomach */}
-                    <ellipse cx="46" cy="50" rx="4" ry="6" fill="hsl(350, 70%, 65%)" opacity="0.6" stroke="hsl(350, 60%, 50%)" strokeWidth="0.3"/>
-                    
-                    {/* Pancreas */}
-                    <ellipse cx="50" cy="52" rx="6" ry="3" fill="hsl(30, 75%, 70%)" opacity="0.6" stroke="hsl(30, 65%, 55%)" strokeWidth="0.3"/>
-                    
-                    {/* Kidneys - both sides */}
-                    <ellipse cx="45" cy="56" rx="3" ry="5" fill="hsl(5, 70%, 60%)" opacity="0.6" stroke="hsl(5, 60%, 50%)" strokeWidth="0.3"/>
-                    <ellipse cx="55" cy="56" rx="3" ry="5" fill="hsl(5, 70%, 60%)" opacity="0.6" stroke="hsl(5, 60%, 50%)" strokeWidth="0.3"/>
-                    
-                    {/* Intestines */}
-                    <path d="M 45 60 Q 48 62 50 60 Q 52 62 55 60 L 55 68 Q 50 70 45 68 Z" fill="hsl(355, 65%, 65%)" opacity="0.6" stroke="hsl(355, 60%, 50%)" strokeWidth="0.3"/>
-                    
-                    {/* Bladder */}
-                    <ellipse cx="50" cy="75" rx="4" ry="3" fill="hsl(345, 65%, 70%)" opacity="0.6" stroke="hsl(345, 60%, 55%)" strokeWidth="0.3"/>
+                    <rect x="23" y="30" width="4" height="25" rx="2" fill="none" stroke="hsl(var(--border))" strokeWidth="0.3" opacity="0.5"/>
+                    <rect x="73" y="30" width="4" height="25" rx="2" fill="none" stroke="hsl(var(--border))" strokeWidth="0.3" opacity="0.5"/>
+                    {/* Pelvis */}
+                    <ellipse cx="50" cy="78" rx="12" ry="8" fill="none" stroke="hsl(var(--border))" strokeWidth="0.3" opacity="0.5"/>
+                    {/* Legs */}
+                    <rect x="42" y="84" width="6" height="14" rx="3" fill="none" stroke="hsl(var(--border))" strokeWidth="0.3" opacity="0.5"/>
+                    <rect x="52" y="84" width="6" height="14" rx="3" fill="none" stroke="hsl(var(--border))" strokeWidth="0.3" opacity="0.5"/>
                   </svg>
+                </div>
 
-                  {/* Connecting Lines and Organ Callouts */}
-                  {organCallouts.map((callout) => {
-                    const organ = organs.find(o => o.id === callout.id);
-                    if (!organ) return null;
-                    
+                {/* Organs Layer */}
+                <div className="absolute inset-0 w-full h-full">
+                  {organs.map((organ) => {
                     const isSelected = selectedOrgan?.id === organ.id;
                     const isHovered = hoveredOrgan === organ.id;
                     const shouldHighlight = isSelected || isHovered;
                     
-                    // Calculate callout position (around the body)
-                    const angle = (callout.angle * Math.PI) / 180;
-                    const radius = callout.distance;
-                    const centerX = 50;
-                    const centerY = 50;
-                    
-                    // Callout position in percentage
-                    const calloutXPercent = centerX + (Math.cos(angle) * radius / 4);
-                    const calloutYPercent = centerY + (Math.sin(angle) * radius / 6.5);
-                    
                     return (
-                      <React.Fragment key={organ.id}>
-                        {/* Connecting Line */}
-                        <svg 
-                          className="absolute inset-0 w-full h-full pointer-events-none"
-                          style={{ zIndex: 1 }}
-                        >
-                          <line
-                            x1={`${callout.bodyX}%`}
-                            y1={`${callout.bodyY}%`}
-                            x2={`${calloutXPercent}%`}
-                            y2={`${calloutYPercent}%`}
-                            stroke={shouldHighlight ? organ.color : 'hsl(var(--border))'}
-                            strokeWidth={shouldHighlight ? "2" : "1"}
-                            strokeDasharray="4,4"
-                            className="transition-all duration-300"
-                            opacity={shouldHighlight ? "0.8" : "0.4"}
-                          />
-                        </svg>
-
-                        {/* Organ Callout Circle */}
-                        <div
-                          className={`absolute cursor-pointer transition-all duration-500 ${
-                            shouldHighlight ? 'z-20' : 'z-10'
+                      <div
+                        key={organ.id}
+                        className={`absolute cursor-pointer transition-all duration-700 ease-out ${
+                          isSelected ? 'z-30 scale-[2.5]' : shouldHighlight ? 'z-20 scale-110' : 'z-10 scale-100'
+                        }`}
+                        style={{
+                          left: `${organ.position.x}%`,
+                          top: `${organ.position.y}%`,
+                          width: `${organ.position.width}%`,
+                          height: `${organ.position.height}%`,
+                          filter: shouldHighlight ? 'drop-shadow(0 0 20px rgba(255, 255, 255, 0.8))' : 'none',
+                          transform: isSelected ? 'translate(-50%, -50%)' : 'translate(0, 0)',
+                          transformOrigin: 'center',
+                        }}
+                        onClick={() => setSelectedOrgan(organ)}
+                        onMouseEnter={() => setHoveredOrgan(organ.id)}
+                        onMouseLeave={() => setHoveredOrgan(null)}
+                      >
+                        <img 
+                          src={organ.image} 
+                          alt={organ.name}
+                          className={`w-full h-full object-contain transition-all duration-300 ${
+                            shouldHighlight ? 'brightness-110' : 'brightness-100'
                           }`}
-                          style={{
-                            left: `${calloutXPercent}%`,
-                            top: `${calloutYPercent}%`,
-                            transform: 'translate(-50%, -50%)',
-                          }}
-                          onClick={() => setSelectedOrgan(organ)}
-                          onMouseEnter={() => setHoveredOrgan(organ.id)}
-                          onMouseLeave={() => setHoveredOrgan(null)}
-                        >
-                          {/* Circular Background */}
+                        />
+                        
+                        {/* Label */}
+                        {!isSelected && (
                           <div 
-                            className={`relative w-20 h-20 md:w-24 md:h-24 rounded-full bg-background border-2 shadow-lg flex items-center justify-center transition-all duration-300 ${
-                              shouldHighlight ? 'scale-125 shadow-2xl' : 'scale-100'
-                            }`}
-                            style={{
-                              borderColor: shouldHighlight ? organ.color : 'hsl(var(--border))',
-                            }}
-                          >
-                            {/* Organ Image */}
-                            <img 
-                              src={organ.image} 
-                              alt={organ.name}
-                              className="w-14 h-14 md:w-16 md:h-16 object-contain"
-                            />
-                            
-                            {/* Glow Effect */}
-                            {shouldHighlight && (
-                              <div 
-                                className="absolute inset-0 rounded-full animate-pulse opacity-40"
-                                style={{ 
-                                  backgroundColor: organ.color,
-                                  filter: 'blur(8px)',
-                                  zIndex: -1
-                                }}
-                              />
-                            )}
-                          </div>
-
-                          {/* Organ Label */}
-                          <div 
-                            className={`absolute top-full mt-2 left-1/2 -translate-x-1/2 whitespace-nowrap transition-all duration-300 ${
-                              shouldHighlight ? 'opacity-100 scale-100' : 'opacity-80 scale-95'
+                            className={`absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap transition-all duration-300 ${
+                              shouldHighlight ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
                             }`}
                           >
                             <div 
-                              className="px-2 py-1 rounded text-xs font-semibold text-center uppercase tracking-wide"
+                              className="px-3 py-1 rounded-full text-xs font-semibold shadow-lg"
                               style={{ 
-                                color: shouldHighlight ? organ.color : 'hsl(var(--foreground))',
+                                backgroundColor: organ.color,
+                                color: 'white'
                               }}
                             >
-                              {organ.name.toUpperCase()}
+                              {organ.name}
                             </div>
                           </div>
-                        </div>
-                      </React.Fragment>
+                        )}
+
+                        {/* Pulse Animation */}
+                        {shouldHighlight && !isSelected && (
+                          <div 
+                            className="absolute inset-0 rounded-full animate-ping opacity-30"
+                            style={{ backgroundColor: organ.color }}
+                          />
+                        )}
+                      </div>
                     );
                   })}
                 </div>
