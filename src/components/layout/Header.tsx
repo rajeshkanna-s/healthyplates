@@ -14,6 +14,7 @@ const Header = () => {
     { name: 'Diseases', href: '/diseases' },
     { name: 'Self-Care', href: '/self-care' },
     { name: 'Blog', href: '/blog' },
+    { name: 'Know Your Body', href: '/body-explorer' },
     { name: 'Contact', href: '/contact' },
     { name: 'Admin', href: '/admin' },
   ];
