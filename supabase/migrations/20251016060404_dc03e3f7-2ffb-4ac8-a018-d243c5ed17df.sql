@@ -27,8 +27,8 @@ INSERT INTO public.site_settings (setting_key, setting_value, description) VALUE
   ('contact_email', '"info.healthyplates@gmail.com"'::jsonb, 'Primary contact email address'),
   ('contact_phone', '"+91 8667454755"'::jsonb, 'Primary contact phone number'),
   ('site_description', '"Your trusted source for healthy eating, nutrition tips, and wellness guidance. Discover the power of natural foods for a healthier lifestyle."'::jsonb, 'Site description for footer'),
-  ('social_instagram', '"https://instagram.com"'::jsonb, 'Instagram profile URL'),
-  ('social_youtube', '"https://youtube.com"'::jsonb, 'YouTube channel URL'),
+  ('social_instagram', '"https://www.instagram.com/healthyplates.in"'::jsonb, 'Instagram profile URL'),
+  ('social_youtube', '"https://www.youtube.com/@HealthyPlates-hp"'::jsonb, 'YouTube channel URL'),
   ('social_whatsapp', '"https://wa.me/918667454755"'::jsonb, 'WhatsApp contact URL'),
   ('contact_hours', '{
     "weekdays": "Monday - Friday: 9:00 AM - 6:00 PM",

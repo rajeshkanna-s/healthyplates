@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import WhyHealthyPlates from '@/components/home/WhyHealthyPlates';
-import LatestBlogs from '@/components/home/LatestBlogs';
-import TopProducts from '@/components/home/TopProducts';
-import FeaturedCarousel from '@/components/home/FeaturedCarousel';
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import WhyHealthyPlates from "@/components/home/WhyHealthyPlates";
+import LatestBlogs from "@/components/home/LatestBlogs";
+import TopProducts from "@/components/home/TopProducts";
+import FeaturedCarousel from "@/components/home/FeaturedCarousel";
 
 const Index = () => {
   const [carouselItems, setCarouselItems] = useState<any[]>([]);
@@ -16,15 +16,15 @@ const Index = () => {
     try {
       // Fetch blogs for random selection
       const { data: blogs } = await supabase
-        .from('blogs')
-        .select('*')
-        .eq('status', 'published')
+        .from("blogs")
+        .select("*")
+        .eq("status", "published")
         .limit(20);
 
       // Fetch foods for random selection
       const { data: foods } = await supabase
-        .from('food_timing')
-        .select('*')
+        .from("food_timing")
+        .select("*")
         .limit(20);
 
       // Helper function to shuffle and pick random items
@@ -38,25 +38,29 @@ const Index = () => {
       const randomFoods = getRandomItems(foods || [], 2);
 
       const items = [
-        ...randomBlogs.map(blog => ({
+        ...randomBlogs.map((blog) => ({
           id: blog.id,
           title: blog.title,
-          image: blog.cover_image_url || 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800',
-          category: blog.category || 'Blog',
-          link: `/blog/${blog.id}`
+          image:
+            blog.cover_image_url ||
+            "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800",
+          category: blog.category || "Blog",
+          link: `/blog/${blog.id}`,
         })),
-        ...randomFoods.map(food => ({
+        ...randomFoods.map((food) => ({
           id: food.id,
           title: food.name,
-          image: food.image_url || 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800',
+          image:
+            food.image_url ||
+            "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800",
           category: food.meal_time,
-          link: `/foods/${food.id}`
-        }))
+          link: `/foods/${food.id}`,
+        })),
       ];
 
       setCarouselItems(items);
     } catch (error) {
-      console.error('Error fetching featured content:', error);
+      console.error("Error fetching :", error);
     }
   };
 
@@ -65,8 +69,10 @@ const Index = () => {
       {/* Featured Carousel Section */}
       <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center mb-8">
-          <h2 className="text-section">Featured Content</h2>
-          <p className="text-muted-foreground">Discover our top blog posts and healthy foods</p>
+          {/* <h2 className="text-section">Featured Content</h2> */}
+          {/* <p className="text-muted-foreground">
+            Discover our top blog posts and healthy foods
+          </p> */}
         </div>
         <FeaturedCarousel items={carouselItems} />
       </section>

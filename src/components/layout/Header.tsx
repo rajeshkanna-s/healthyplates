@@ -1,22 +1,23 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Leaf } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X, Leaf } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Logo from "@/assets/HPLogo.png";
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
 
   const navigation = [
-    { name: 'Home', href: '/' },
-    { name: 'Food Products', href: '/food-products' },
-    { name: 'Foods', href: '/foods' },
-    { name: 'Diseases', href: '/diseases' },
-    { name: 'Self-Care', href: '/self-care' },
-    { name: 'Blog', href: '/blog' },
-    { name: 'Know Your Body', href: '/body-explorer' },
-    { name: 'Contact', href: '/contact' },
-    { name: 'Admin', href: '/admin' },
+    { name: "Home", href: "/" },
+    { name: "Food Products", href: "/food-products" },
+    { name: "Foods", href: "/foods" },
+    { name: "Diseases", href: "/diseases" },
+    { name: "Self-Care", href: "/self-care" },
+    { name: "Blog", href: "/blog" },
+    { name: "Know Your Body", href: "/body-explorer" },
+    { name: "Contact", href: "/contact" },
+    { name: "Admin", href: "/admin" },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -24,15 +25,29 @@ const Header = () => {
   return (
     <header className="bg-background/95 backdrop-blur-sm border-b border-border/50 sticky top-0 z-50 shadow-health">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div
+          className="flex justify-between items-center h-16"
+          style={{ height: "5rem" }}
+        >
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-            <div className="bg-gradient-health p-2 rounded-lg shadow-md">
-              <Leaf className="h-6 w-6 text-white" />
-            </div>
+          <Link
+            to="/"
+            className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
+          >
+            <img
+              src={Logo}
+              alt="HealthyPlates Logo"
+              className="object-contain"
+              style={{ width: "6rem", height: "4rem" }}
+            />
+
             <div>
-              <h1 className="text-xl font-bold text-foreground">HealthyPlates</h1>
-              <p className="text-xs text-muted-foreground">Eat Smart, Live Healthy</p>
+              <h1 className="text-xl font-bold text-foreground">
+                HealthyPlates
+              </h1>
+              <p className="text-xs text-muted-foreground">
+                Eat Smart, Live Healthy
+              </p>
             </div>
           </Link>
 
@@ -44,8 +59,8 @@ const Header = () => {
                 to={item.href}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   isActive(item.href)
-                    ? 'bg-primary text-primary-foreground shadow-md'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                    ? "bg-primary text-primary-foreground shadow-md"
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent"
                 }`}
               >
                 {item.name}
@@ -81,8 +96,8 @@ const Header = () => {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
                     isActive(item.href)
-                      ? 'bg-primary text-primary-foreground shadow-md'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                      ? "bg-primary text-primary-foreground shadow-md"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
                   }`}
                 >
                   {item.name}
