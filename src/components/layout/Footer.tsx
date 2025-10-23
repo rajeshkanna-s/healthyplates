@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import Logo from "@/assets/HPLogo.png";
 
 const Footer = () => {
   const [settings, setSettings] = useState<any>({});
@@ -34,7 +35,7 @@ const Footer = () => {
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
               <img
-                src="../src/assets/HPLogo.png"
+                src={Logo}
                 alt="HP Logo"
                 className="h-8 w-8 object-contain"
                 style={{ width: "6rem", height: "3rem" }}
