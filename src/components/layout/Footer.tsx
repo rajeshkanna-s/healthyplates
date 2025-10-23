@@ -35,9 +35,9 @@ const Footer = () => {
             <div className="flex items-center space-x-2">
               <img
                 src="../src/assets/HPLogo.png"
-                alt="HealthyPlates Logo"
+                alt="HP Logo"
                 className="h-8 w-8 object-contain"
-                style={{ width: "6rem", height: "4rem" }}
+                style={{ width: "6rem", height: "3rem" }}
               />
               <div>
                 <h3 className="text-lg font-bold text-foreground">
@@ -114,7 +114,7 @@ const Footer = () => {
                 to="/foods"
                 className="text-sm text-muted-foreground hover:text-health transition-colors"
               >
-                Meal Timing
+                Foods
               </Link>
               <Link
                 to="/disease"
@@ -132,7 +132,7 @@ const Footer = () => {
                 to="/blog"
                 className="text-sm text-muted-foreground hover:text-health transition-colors"
               >
-                Health Blog
+                Blog
               </Link>
             </nav>
           </div>

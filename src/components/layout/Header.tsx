@@ -36,7 +36,7 @@ const Header = () => {
           >
             <img
               src={Logo}
-              alt="HealthyPlates Logo"
+              alt="HP Logo"
               className="object-contain"
               style={{ width: "6rem", height: "4rem" }}
             />
