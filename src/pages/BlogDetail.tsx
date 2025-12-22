@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import DOMPurify from 'dompurify';
 
 const BlogDetail = () => {
   const { id } = useParams();
@@ -218,10 +219,12 @@ const BlogDetail = () => {
               fontWeight: '400'
             }}
             dangerouslySetInnerHTML={{ 
-              __html: blog.content
-                .split('\n\n')
-                .map(para => `<p class="mb-6">${para.replace(/\n/g, '<br />')}</p>`)
-                .join('') 
+              __html: DOMPurify.sanitize(
+                blog.content
+                  .split('\n\n')
+                  .map(para => `<p class="mb-6">${para.replace(/\n/g, '<br />')}</p>`)
+                  .join('')
+              )
             }}
           />
         </div>

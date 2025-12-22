@@ -5,28 +5,54 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Eye, EyeOff } from 'lucide-react';
-import type { User } from '@supabase/supabase-js';
+import type { User, Session } from '@supabase/supabase-js';
+import { z } from 'zod';
+
+// Input validation schema
+const loginSchema = z.object({
+  email: z.string().trim().email({ message: "Invalid email address" }).max(255, { message: "Email must be less than 255 characters" }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters" }).max(128, { message: "Password must be less than 128 characters" })
+});
 
 const Auth = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
-    password: '',
-    fullName: '',
-    mobileNumber: ''
+    password: ''
   });
 
   useEffect(() => {
-    // Check if user is already logged in from localStorage
-    const adminLoggedIn = localStorage.getItem('admin_logged_in');
-    if (adminLoggedIn === 'true') {
-      window.location.href = '/admin';
-    }
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        // Redirect authenticated users to admin page
+        if (session?.user) {
+          setTimeout(() => {
+            window.location.href = '/admin';
+          }, 100);
+        }
+      }
+    );
+
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        window.location.href = '/admin';
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -34,38 +60,45 @@ const Auth = () => {
     setLoading(true);
 
     try {
-      // Direct credential validation
-      const ADMIN_EMAIL = 'durbinyarul@gmail.com';
-      const ADMIN_PASSWORD = 'durbinyarul@6890';
-      
-      // Compare credentials
-      if (formData.email !== ADMIN_EMAIL || formData.password !== ADMIN_PASSWORD) {
-        throw new Error('Invalid admin credentials');
+      // Validate input
+      const validatedData = loginSchema.parse(formData);
+
+      // Use Supabase Auth for secure authentication
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: validatedData.email,
+        password: validatedData.password
+      });
+
+      if (error) {
+        throw error;
       }
 
-      // If credentials match, set login state and redirect
-      localStorage.setItem('admin_logged_in', 'true');
-      setUser({ email: formData.email } as any);
       toast({
         title: "Success",
-        description: "Admin logged in successfully!",
+        description: "Logged in successfully!",
       });
       
-      // Redirect to admin page
-      setTimeout(() => {
-        window.location.href = '/admin';
-      }, 500);
+      // Redirect will be handled by onAuthStateChange
     } catch (error: any) {
+      let errorMessage = 'An error occurred during sign in.';
+      
+      if (error instanceof z.ZodError) {
+        errorMessage = error.errors[0]?.message || 'Invalid input';
+      } else if (error.message === 'Invalid login credentials') {
+        errorMessage = 'Invalid email or password. Please try again.';
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
       toast({
         title: "Error",
-        description: error.message === 'Invalid admin credentials' ? 'Access denied. Admin credentials required.' : error.message,
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
       setLoading(false);
     }
   };
-
 
   const handleInputChange = (field: keyof typeof formData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -101,6 +134,7 @@ const Auth = () => {
                   onChange={(e) => handleInputChange('email', e.target.value)}
                   placeholder="Enter admin email"
                   required
+                  maxLength={255}
                 />
               </div>
               <div>
@@ -113,6 +147,7 @@ const Auth = () => {
                     onChange={(e) => handleInputChange('password', e.target.value)}
                     placeholder="Enter admin password"
                     required
+                    maxLength={128}
                   />
                   <Button
                     type="button"
