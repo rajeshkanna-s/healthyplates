@@ -8,7 +8,6 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import DOMPurify from 'dompurify';
 
 const Blog = () => {
   const { toast } = useToast();
@@ -209,12 +208,10 @@ const Blog = () => {
             <div 
               className="text-foreground leading-relaxed space-y-4 sm:space-y-6 text-base sm:text-lg"
               dangerouslySetInnerHTML={{ 
-                __html: DOMPurify.sanitize(
-                  selectedBlog.content
-                    .split('\n\n')
-                    .map((para: string) => `<p class="mb-4 sm:mb-6">${para.replace(/\n/g, '<br />')}</p>`)
-                    .join('')
-                )
+                __html: selectedBlog.content
+                  .split('\n\n')
+                  .map((para: string) => `<p class="mb-4 sm:mb-6">${para.replace(/\n/g, '<br />')}</p>`)
+                  .join('') 
               }}
             />
           </div>
