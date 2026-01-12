@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import {
-  Leaf,
   Mail,
   Phone,
   Instagram,
@@ -14,6 +13,7 @@ import Logo from "@/assets/HPLogo.png";
 
 const Footer = () => {
   const [settings, setSettings] = useState<any>({});
+  const currentYear = new Date().getFullYear();
 
   useEffect(() => {
     fetchSettings();
@@ -27,31 +27,31 @@ const Footer = () => {
     });
     setSettings(settingsObj);
   };
+
   return (
     <footer className="bg-gradient-subtle border-t border-border/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand Section */}
-          <div className="space-y-4">
+          <div className="lg:col-span-1 space-y-4">
             <div className="flex items-center space-x-2">
               <img
                 src={Logo}
-                alt="HP Logo"
-                className="h-8 w-8 object-contain"
-                style={{ width: "6rem", height: "3rem" }}
+                alt="HealthyPlates Logo"
+                className="h-10 w-auto object-contain"
               />
               <div>
                 <h3 className="text-lg font-bold text-foreground">
                   HealthyPlates
                 </h3>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs text-muted-foreground">
                   Eat Smart, Live Healthy
                 </p>
               </div>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
               {settings.site_description ||
-                "Your trusted source for healthy eating, nutrition tips, and wellness guidance. Discover the power of natural foods for a healthier lifestyle."}
+                "Your trusted source for healthy eating, nutrition tips, and wellness guidance."}
             </p>
             <div className="flex space-x-2">
               <Button
@@ -61,9 +61,10 @@ const Footer = () => {
                 asChild
               >
                 <a
-                  href={"https://www.instagram.com/healthyplates.in/"}
+                  href="https://www.instagram.com/healthyplates.in/"
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label="Follow us on Instagram"
                 >
                   <Instagram className="h-4 w-4" />
                 </a>
@@ -75,9 +76,10 @@ const Footer = () => {
                 asChild
               >
                 <a
-                  href={"https://www.youtube.com/@HealthyPlates-hp"}
+                  href="https://www.youtube.com/@HealthyPlates-hp"
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label="Subscribe on YouTube"
                 >
                   <Youtube className="h-4 w-4" />
                 </a>
@@ -92,6 +94,7 @@ const Footer = () => {
                   href={settings.social_whatsapp || "https://wa.me/"}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label="Contact us on WhatsApp"
                 >
                   <MessageCircle className="h-4 w-4" />
                 </a>
@@ -101,75 +104,106 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-foreground">
-              Quick Links
+            <h4 className="text-sm font-semibold text-foreground uppercase tracking-wide">
+              Explore
             </h4>
             <nav className="flex flex-col space-y-2">
               <Link
                 to="/food-products"
-                className="text-sm text-muted-foreground hover:text-health transition-colors"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
               >
                 Food Products
               </Link>
               <Link
                 to="/foods"
-                className="text-sm text-muted-foreground hover:text-health transition-colors"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
               >
-                Foods
+                Foods by Time
               </Link>
               <Link
-                to="/disease"
-                className="text-sm text-muted-foreground hover:text-health transition-colors"
+                to="/diseases"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
               >
                 Disease Guide
               </Link>
               <Link
                 to="/self-care"
-                className="text-sm text-muted-foreground hover:text-health transition-colors"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
               >
                 Self-Care
               </Link>
+            </nav>
+          </div>
+
+          {/* Resources */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-semibold text-foreground uppercase tracking-wide">
+              Resources
+            </h4>
+            <nav className="flex flex-col space-y-2">
               <Link
                 to="/blog"
-                className="text-sm text-muted-foreground hover:text-health transition-colors"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
               >
-                Blog
+                Health Blog
+              </Link>
+              <Link
+                to="/body-explorer"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                Know Your Body
+              </Link>
+              <Link
+                to="/contact"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                Contact Us
               </Link>
             </nav>
           </div>
 
           {/* Contact Info */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-foreground">
-              Contact Info
+            <h4 className="text-sm font-semibold text-foreground uppercase tracking-wide">
+              Contact
             </h4>
             <div className="space-y-3">
-              <div className="flex items-center space-x-2">
-                <Mail className="h-4 w-4 text-health" />
-                <span className="text-sm text-muted-foreground">
-                  {settings.contact_email || "info.healthyplates@gmail.com"}
-                </span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Phone className="h-4 w-4 text-health" />
-                <span className="text-sm text-muted-foreground">
-                  {settings.contact_phone || "+91 8667454755"}
-                </span>
-              </div>
+              <a 
+                href={`mailto:${settings.contact_email || "info.healthyplates@gmail.com"}`}
+                className="flex items-center space-x-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Mail className="h-4 w-4 flex-shrink-0" />
+                <span className="break-all">{settings.contact_email || "info.healthyplates@gmail.com"}</span>
+              </a>
+              <a 
+                href={`tel:${settings.contact_phone || "+918667454755"}`}
+                className="flex items-center space-x-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Phone className="h-4 w-4 flex-shrink-0" />
+                <span>{settings.contact_phone || "+91 8667454755"}</span>
+              </a>
             </div>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-8 pt-8 border-t border-border/50">
-          <div className="text-center space-y-2">
-            <p className="text-sm text-muted-foreground">
-              © 2025 HealthyPlates.in, All rights reserved.
+        <div className="mt-10 pt-8 border-t border-border/50">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-sm text-muted-foreground text-center md:text-left">
+              © {currentYear} HealthyPlates.in. All rights reserved.
             </p>
-            <p className="text-xs text-muted-foreground">
-              Developed by RAJESHKANNA S
-            </p>
+            <div className="flex items-center space-x-6 text-sm text-muted-foreground">
+              <Link to="/privacy" className="hover:text-primary transition-colors">
+                Privacy Policy
+              </Link>
+              <Link to="/terms" className="hover:text-primary transition-colors">
+                Terms of Use
+              </Link>
+            </div>
           </div>
+          <p className="text-xs text-muted-foreground text-center mt-4">
+            Developed by RAJESHKANNA S
+          </p>
         </div>
       </div>
     </footer>
