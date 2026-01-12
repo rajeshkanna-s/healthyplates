@@ -1,118 +1,153 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { Leaf, Heart, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { supabase } from '@/integrations/supabase/client';
-import FoodProductCard from '@/components/ui/FoodProductCard';
+import { Badge } from '@/components/ui/badge';
 
 const TopProducts = () => {
-  const [products, setProducts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('food_products')
-        .select(`
-          *,
-          categories(*)
-        `)
-        .order('created_at', { ascending: false })
-        .limit(6);
-
-      if (error) throw error;
-      setProducts(data || []);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fallback static data if no products in DB
-  const fallbackProducts = [
+  const topProducts = [
     {
-      id: '1',
+      id: 1,
       name: "Organic Almonds",
-      purpose: "Rich in Vitamin E, healthy fats, and protein for optimal brain function.",
-      advantages: ["Supports heart health", "Good source of protein", "Helps manage blood sugar"],
-      key_ingredients: ["High protein", "Healthy fats", "Vegan"],
-      categories: { name: "Nuts" },
+      category: "Nuts",
+      benefits: ["Brain Health", "Heart Health", "Energy Boost"],
+      image: "🌰",
+      description: "Rich in Vitamin E, healthy fats, and protein for optimal brain function and heart health.",
+      medicinalUse: "Improves memory, reduces cholesterol, strengthens bones",
+      badge: "badge-proteins"
     },
     {
-      id: '2',
+      id: 2,
       name: "Fresh Spinach",
-      purpose: "Packed with iron, folate, and antioxidants to support blood health.",
-      advantages: ["Iron rich", "Immune support", "Improves vision"],
-      key_ingredients: ["Iron", "Folate", "Antioxidants"],
-      categories: { name: "Leafy Greens" },
+      category: "Leafy Greens",
+      benefits: ["Iron Rich", "Immune Support", "Eye Health"],
+      rating: 4.8,
+      reviews: 95,
+      image: "🥬",
+      description: "Packed with iron, folate, and antioxidants to support blood health and immunity.",
+      medicinalUse: "Prevents anemia, boosts immunity, improves vision",
+      badge: "badge-vegetables"
     },
     {
-      id: '3',
+      id: 3,
       name: "Golden Turmeric",
-      purpose: "Natural anti-inflammatory powerhouse with curcumin for wellness.",
-      advantages: ["Reduces inflammation", "Boosts immunity", "Heals wounds"],
-      key_ingredients: ["Curcumin", "Anti-inflammatory"],
-      categories: { name: "Spices" },
+      category: "Spices",
+      benefits: ["Anti-inflammatory", "Immunity", "Joint Health"],
+      rating: 4.9,
+      reviews: 203,
+      image: "🧄",
+      description: "Natural anti-inflammatory powerhouse with curcumin for overall wellness.",
+      medicinalUse: "Reduces inflammation, heals wounds, boosts immunity",
+      badge: "badge-grains"
     },
+    {
+      id: 4,
+      name: "Chia Seeds",
+      category: "Seeds",
+      benefits: ["Omega-3", "Fiber", "Protein"],
+      rating: 4.7,
+      reviews: 156,
+      image: "🌱",
+      description: "Tiny superfood seeds loaded with omega-3 fatty acids and complete protein.",
+      medicinalUse: "Improves heart health, aids digestion, sustained energy",
+      badge: "badge-proteins"
+    },
+    {
+      id: 5,
+      name: "Fresh Blueberries",
+      category: "Fruits",
+      benefits: ["Antioxidants", "Brain Health", "Anti-aging"],
+      rating: 4.8,
+      reviews: 89,
+      image: "🫐",
+      description: "Antioxidant-rich berries that support cognitive function and healthy aging.",
+      medicinalUse: "Enhances memory, protects against aging, supports eye health",
+      badge: "badge-fruits"
+    },
+    {
+      id: 6,
+      name: "Coconut Oil",
+      category: "Oils",
+      benefits: ["Healthy Fats", "Skin Health", "Metabolism"],
+      rating: 4.6,
+      reviews: 134,
+      image: "🥥",
+      description: "Pure, cold-pressed coconut oil with medium-chain triglycerides for quick energy.",
+      medicinalUse: "Boosts metabolism, moisturizes skin, antimicrobial properties",
+      badge: "badge-grains"
+    }
   ];
-
-  const displayProducts = products.length > 0 ? products : fallbackProducts;
 
   return (
     <section className="py-16 md:py-24 bg-gradient-subtle">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Top Food Products
-          </h2>
+        <div className="text-center mb-16">
+          <h2 className="text-section">Top Food Products This Week</h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             Discover our most popular and highly-rated natural ingredients, carefully selected for their 
             exceptional health benefits and nutritional value.
           </p>
         </div>
 
-        {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-card rounded-lg overflow-hidden">
-                <Skeleton className="h-48 w-full" />
-                <div className="p-5 space-y-3">
-                  <Skeleton className="h-5 w-3/4" />
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-10 w-full mt-4" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {topProducts.map((product) => (
+            <div key={product.id} className="card-product p-6 group">
+              <div className="flex items-start justify-between mb-4">
+                <div className="text-4xl mb-4">{product.image}</div>
+                <Badge className={product.badge}>
+                  {product.category}
+                </Badge>
+              </div>
+
+              <h3 className="text-xl font-semibold text-foreground mb-2 group-hover:text-health transition-colors">
+                {product.name}
+              </h3>
+
+
+              <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
+                {product.description}
+              </p>
+
+              <div className="mb-4">
+                <h4 className="text-sm font-semibold text-foreground mb-2 flex items-center">
+                  <Heart className="w-4 h-4 mr-1 text-health" />
+                  Key Benefits
+                </h4>
+                <div className="flex flex-wrap gap-1">
+                  {product.benefits.map((benefit, index) => (
+                    <span
+                      key={index}
+                      className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full"
+                    >
+                      {benefit}
+                    </span>
+                  ))}
                 </div>
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {displayProducts.map((product) => (
-              <FoodProductCard
-                key={product.id}
-                id={product.id}
-                name={product.name}
-                purpose={product.purpose}
-                imageUrl={product.image_url}
-                category={product.categories?.name}
-                benefits={product.advantages || []}
-                tags={product.key_ingredients || []}
-                isNew={true}
-              />
-            ))}
-          </div>
-        )}
+
+              <div className="mb-6">
+                <h4 className="text-sm font-semibold text-foreground mb-2 flex items-center">
+                  <Shield className="w-4 h-4 mr-1 text-secondary" />
+                  Medicinal Use
+                </h4>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  {product.medicinalUse}
+                </p>
+              </div>
+
+              <Link to={`/food-products/${product.id}`} className="block">
+                <Button className="w-full btn-health">
+                  <Leaf className="w-4 h-4 mr-2" />
+                  Learn More
+                </Button>
+              </Link>
+            </div>
+          ))}
+        </div>
 
         <div className="text-center mt-12">
           <Link to="/food-products">
-            <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+            <Button variant="outline" className="btn-nutrition border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground">
               Explore All Products
-              <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </Link>
         </div>
