@@ -189,41 +189,37 @@ const FoodProducts = () => {
                       </Button>
                     </div>
 
-                    {/* Key Ingredients Section */}
+                    {/* Key Benefits Section */}
                     <div className="mb-4">
                       <h4 className="text-sm font-semibold text-foreground mb-2">
-                        Key Ingredients
+                        Key Benefits
                       </h4>
-                      <div className="flex flex-wrap gap-2">
-                        <Badge variant="secondary" className="bg-muted text-foreground px-3 py-1">
-                          {product.categories?.name || 'Natural'}
-                        </Badge>
-                        {product.origin && (
-                          <Badge variant="secondary" className="bg-muted text-foreground px-3 py-1">
-                            {product.origin}
-                          </Badge>
-                        )}
-                        {product.region && (
-                          <Badge variant="secondary" className="bg-muted text-foreground px-3 py-1">
-                            {product.region}
-                          </Badge>
-                        )}
-                      </div>
+                      {product.advantages && product.advantages.length > 0 ? (
+                        <ul className="space-y-1.5">
+                          {product.advantages.slice(0, 3).map((advantage: string, index: number) => (
+                            <li key={index} className="flex items-start text-sm text-muted-foreground">
+                              <CheckCircle className="w-4 h-4 mr-2 mt-0.5 text-green-600 flex-shrink-0" />
+                              <span>{advantage}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">No benefits listed</p>
+                      )}
                     </div>
 
-                    {/* Top Benefits Section */}
+                    {/* Medicinal Use Section */}
                     <div className="flex-1">
                       <h4 className="text-sm font-semibold text-foreground mb-2">
-                        Top Benefits
+                        Medicinal Use
                       </h4>
-                      <ul className="space-y-1.5">
-                        {product.advantages?.slice(0, 3).map((advantage, index) => (
-                          <li key={index} className="flex items-start text-sm text-muted-foreground">
-                            <CheckCircle className="w-4 h-4 mr-2 mt-0.5 text-green-600 flex-shrink-0" />
-                            <span>{advantage}</span>
-                          </li>
-                        ))}
-                      </ul>
+                      {product.medicinal_benefits ? (
+                        <p className="text-sm text-muted-foreground line-clamp-3">
+                          {product.medicinal_benefits}
+                        </p>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">No medicinal use listed</p>
+                      )}
                     </div>
 
                     {/* Bottom Info */}
