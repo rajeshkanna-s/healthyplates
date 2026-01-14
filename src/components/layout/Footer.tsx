@@ -164,7 +164,7 @@ const Footer = () => {
         <div className="mt-8 pt-8 border-t border-border/50">
           <div className="text-center space-y-2">
             <p className="text-sm text-muted-foreground">
-              © 2025 HealthyPlates.in, All rights reserved.
+              © {new Date().getFullYear()} HealthyPlates.in, All rights reserved.
             </p>
             <p className="text-xs text-muted-foreground">
               Developed by RAJESHKANNA S

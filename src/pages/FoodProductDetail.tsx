@@ -165,58 +165,6 @@ const FoodProductDetail = () => {
           </div>
         )}
 
-        {/* Key Ingredients */}
-        {product.key_ingredients && product.key_ingredients.length > 0 && (
-          <div className="mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-6">Key Ingredients</h2>
-            <div className="flex flex-wrap gap-3">
-              {product.key_ingredients.map((ingredient, index) => (
-                <Badge key={index} variant="secondary" className="bg-muted text-foreground px-4 py-2 text-base">
-                  {ingredient}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Nutrition Facts */}
-        {product.nutrition_facts && Object.keys(product.nutrition_facts).length > 0 && (
-          <div className="mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-6">Nutrition Facts</h2>
-            <div className="bg-muted/30 rounded-2xl p-6 space-y-3">
-              {product.nutrition_facts.calories && (
-                <div className="flex justify-between text-lg border-b border-border pb-2">
-                  <span className="font-semibold">Calories:</span>
-                  <span className="text-muted-foreground">{product.nutrition_facts.calories}</span>
-                </div>
-              )}
-              {product.nutrition_facts.protein && (
-                <div className="flex justify-between text-lg border-b border-border pb-2">
-                  <span className="font-semibold">Protein:</span>
-                  <span className="text-muted-foreground">{product.nutrition_facts.protein}</span>
-                </div>
-              )}
-              {product.nutrition_facts.carbs && (
-                <div className="flex justify-between text-lg border-b border-border pb-2">
-                  <span className="font-semibold">Carbs:</span>
-                  <span className="text-muted-foreground">{product.nutrition_facts.carbs}</span>
-                </div>
-              )}
-              {product.nutrition_facts.fat && (
-                <div className="flex justify-between text-lg border-b border-border pb-2">
-                  <span className="font-semibold">Fat:</span>
-                  <span className="text-muted-foreground">{product.nutrition_facts.fat}</span>
-                </div>
-              )}
-              {product.nutrition_facts.fiber && (
-                <div className="flex justify-between text-lg">
-                  <span className="font-semibold">Fiber:</span>
-                  <span className="text-muted-foreground">{product.nutrition_facts.fiber}</span>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
 
         {/* Health Benefits */}
         {product.advantages && product.advantages.length > 0 && (
@@ -251,15 +199,6 @@ const FoodProductDetail = () => {
           </div>
         )}
 
-        {/* Medicinal Benefits */}
-        {product.medicinal_benefits && (
-          <div className="mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">Medicinal Benefits</h2>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              {product.medicinal_benefits}
-            </p>
-          </div>
-        )}
 
         {/* Origin Details */}
         <div className="border-t-2 border-border pt-8 mt-12">
