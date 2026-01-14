@@ -150,28 +150,20 @@ const FoodProductDetail = () => {
 
         {/* Purpose */}
         {product.purpose && (
-          <p className="text-2xl text-muted-foreground mb-10 leading-relaxed font-light italic border-l-4 border-primary pl-6 py-2">
-            {product.purpose}
-          </p>
-        )}
-
-        {/* Description */}
-        {product.description && (
-          <div className="mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">About</h2>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              {product.description}
+          <div className="mb-10">
+            <h2 className="text-2xl font-bold text-foreground mb-4">Purpose</h2>
+            <p className="text-lg text-muted-foreground leading-relaxed border-l-4 border-primary pl-6 py-2">
+              {product.purpose}
             </p>
           </div>
         )}
 
-
-        {/* Health Benefits */}
+        {/* Key Benefits */}
         {product.advantages && product.advantages.length > 0 && (
-          <div className="mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-6">Health Benefits</h2>
+          <div className="mb-10">
+            <h2 className="text-2xl font-bold text-foreground mb-6">Key Benefits</h2>
             <ul className="space-y-4">
-              {product.advantages.map((advantage, index) => (
+              {product.advantages.map((advantage: string, index: number) => (
                 <li key={index} className="flex items-start text-lg text-muted-foreground">
                   <Heart className="w-6 h-6 mr-3 mt-1 text-primary flex-shrink-0" />
                   <span>{advantage}</span>
@@ -181,49 +173,25 @@ const FoodProductDetail = () => {
           </div>
         )}
 
-        {/* Considerations */}
-        {product.disadvantages && product.disadvantages.length > 0 && (
-          <div className="mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-6 flex items-center">
-              <AlertCircle className="w-8 h-8 mr-3 text-orange-500" />
-              Considerations
-            </h2>
-            <ul className="space-y-4">
-              {product.disadvantages.map((disadvantage, index) => (
-                <li key={index} className="flex items-start text-lg text-muted-foreground">
-                  <span className="w-3 h-3 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                  <span>{disadvantage}</span>
-                </li>
-              ))}
-            </ul>
+        {/* Medicinal Use */}
+        {product.medicinal_benefits && (
+          <div className="mb-10">
+            <h2 className="text-2xl font-bold text-foreground mb-4">Medicinal Use</h2>
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              {product.medicinal_benefits}
+            </p>
           </div>
         )}
 
-
-        {/* Origin Details */}
-        <div className="border-t-2 border-border pt-8 mt-12">
-          <h2 className="text-3xl font-bold text-foreground mb-6">Product Information</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {product.origin && (
-              <div className="bg-muted/30 rounded-xl p-4">
-                <p className="text-sm text-muted-foreground mb-1">Origin</p>
-                <p className="text-lg font-semibold text-foreground">{product.origin}</p>
-              </div>
-            )}
-            {product.region && (
-              <div className="bg-muted/30 rounded-xl p-4">
-                <p className="text-sm text-muted-foreground mb-1">Region</p>
-                <p className="text-lg font-semibold text-foreground">{product.region}</p>
-              </div>
-            )}
-            {product.is_indian !== null && (
-              <div className="bg-muted/30 rounded-xl p-4">
-                <p className="text-sm text-muted-foreground mb-1">Indian Origin</p>
-                <p className="text-lg font-semibold text-foreground">{product.is_indian ? 'Yes' : 'No'}</p>
-              </div>
-            )}
+        {/* Description */}
+        {product.description && (
+          <div className="mb-10">
+            <h2 className="text-2xl font-bold text-foreground mb-4">Description</h2>
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              {product.description}
+            </p>
           </div>
-        </div>
+        )}
 
         {/* Share Section */}
         <div className="mt-16 pt-8 border-t-2 border-border">
