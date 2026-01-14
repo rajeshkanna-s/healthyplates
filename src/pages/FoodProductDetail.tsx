@@ -143,7 +143,7 @@ const FoodProductDetail = () => {
           </div>
         )}
 
-        {/* Title */}
+        {/* Product Name */}
         <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-8 leading-tight tracking-tight">
           {product.name}
         </h1>
