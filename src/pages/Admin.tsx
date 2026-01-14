@@ -368,6 +368,28 @@ const Admin = () => {
           />
         </div>
 
+        <div>
+          <Label htmlFor="advantages" className="text-xs">Key Benefits (comma separated)</Label>
+          <Textarea
+            id="advantages"
+            value={formData.advantages?.join(', ') || ''}
+            onChange={(e) => handleArrayInputChange('advantages', e.target.value)}
+            placeholder="Rich in vitamins, Boosts immunity, Supports heart health"
+            className="min-h-[60px] text-sm"
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="medicinal_benefits" className="text-xs">Medicinal Use</Label>
+          <Textarea
+            id="medicinal_benefits"
+            value={formData.medicinal_benefits || ''}
+            onChange={(e) => handleInputChange('medicinal_benefits', e.target.value)}
+            placeholder="Traditional medicinal uses and healing properties"
+            className="min-h-[60px] text-sm"
+          />
+        </div>
+
         <div className="flex gap-2 pt-2">
           <Button onClick={handleSave} className="flex-1 h-9 text-sm">
             <Save className="w-3 h-3 mr-1" />
