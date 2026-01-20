@@ -173,10 +173,10 @@ const FoodProductDetail = () => {
           </div>
         )}
 
-        {/* Medicinal Use */}
+        {/* Health Usage */}
         {product.medicinal_benefits && (
           <div className="mb-10">
-            <h2 className="text-2xl font-bold text-foreground mb-4">Medicinal Use</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-4">Health Usage</h2>
             <p className="text-lg text-muted-foreground leading-relaxed">
               {product.medicinal_benefits}
             </p>

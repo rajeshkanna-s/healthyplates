@@ -149,7 +149,7 @@ const TopProducts = () => {
                   <div className="mb-6">
                     <h4 className="text-sm font-semibold text-foreground mb-2 flex items-center">
                       <Shield className="w-4 h-4 mr-1 text-secondary" />
-                      Medicinal Use
+                      Health Usage
                     </h4>
                     <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
                       {product.medicinal_benefits}
