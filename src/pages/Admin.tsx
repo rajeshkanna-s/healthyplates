@@ -380,7 +380,7 @@ const Admin = () => {
         </div>
 
         <div>
-          <Label htmlFor="medicinal_benefits" className="text-xs">Medicinal Use</Label>
+          <Label htmlFor="medicinal_benefits" className="text-xs">Health Usage</Label>
           <Textarea
             id="medicinal_benefits"
             value={formData.medicinal_benefits || ''}

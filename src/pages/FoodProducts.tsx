@@ -208,17 +208,17 @@ const FoodProducts = () => {
                       )}
                     </div>
 
-                    {/* Medicinal Use Section */}
+                    {/* Health Usage Section */}
                     <div className="flex-1">
                       <h4 className="text-sm font-semibold text-foreground mb-2">
-                        Medicinal Use
+                        Health Usage
                       </h4>
                       {product.medicinal_benefits ? (
                         <p className="text-sm text-muted-foreground line-clamp-3">
                           {product.medicinal_benefits}
                         </p>
                       ) : (
-                        <p className="text-sm text-muted-foreground">No medicinal use listed</p>
+                        <p className="text-sm text-muted-foreground">No health usage listed</p>
                       )}
                     </div>
 
