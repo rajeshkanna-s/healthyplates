@@ -700,346 +700,104 @@ export default function BodyExplorer() {
 
           {/* Body Parts Tab (new content) */}
           <TabsContent value="body-parts" className="animate-fade-in">
-            <p className="text-sm text-muted-foreground text-center mb-8">
-              Explore the complete human anatomy with labeled body parts
-            </p>
-
-            {/* Category Legend */}
-            <Card className="mb-8">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Bone className="h-5 w-5" />
-                  Body Regions
-                </CardTitle>
-                <CardDescription>Click on a category to highlight specific body parts</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-3">
-                  <Button
-                    variant={selectedCategory === null ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setSelectedCategory(null)}
-                  >
-                    All Parts
-                  </Button>
-                  <Button
-                    variant={selectedCategory === "head" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setSelectedCategory(selectedCategory === "head" ? null : "head")}
-                    style={{ borderColor: selectedCategory === "head" ? categoryColors.head : undefined }}
-                  >
-                    <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: categoryColors.head }} />
-                    Head & Neck
-                  </Button>
-                  <Button
-                    variant={selectedCategory === "torso" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setSelectedCategory(selectedCategory === "torso" ? null : "torso")}
-                  >
-                    <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: categoryColors.torso }} />
-                    Torso & Organs
-                  </Button>
-                  <Button
-                    variant={selectedCategory === "upper-limb" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setSelectedCategory(selectedCategory === "upper-limb" ? null : "upper-limb")}
-                  >
-                    <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: categoryColors['upper-limb'] }} />
-                    Arms & Hands
-                  </Button>
-                  <Button
-                    variant={selectedCategory === "lower-limb" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setSelectedCategory(selectedCategory === "lower-limb" ? null : "lower-limb")}
-                  >
-                    <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: categoryColors['lower-limb'] }} />
-                    Legs & Feet
-                  </Button>
+            {/* Body Parts Section Header */}
+            <Card className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border-green-200 dark:border-green-800 mb-8">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between flex-wrap gap-4">
+                  <div>
+                    <h2 className="text-2xl font-bold text-green-800 dark:text-green-200">Human Anatomy</h2>
+                    <p className="text-green-600 dark:text-green-400">
+                      Explore internal organs and external body parts with detailed labeled diagrams
+                    </p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
+            {/* Anatomy Images Display - Side by Side */}
             <div className="grid lg:grid-cols-2 gap-8">
-              {/* Full Body Anatomy Diagram */}
-              <Card className="relative overflow-hidden bg-gradient-to-b from-amber-50/50 to-orange-50/30 dark:from-slate-900 dark:to-slate-800">
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold mb-4 text-center">External Body Parts</h3>
-                  <div className="relative h-[700px]">
-                    {/* Human Body SVG */}
-                    <svg viewBox="0 0 100 100" className="w-full h-full">
-                      {/* Full body outline */}
-                      {/* Head */}
-                      <ellipse cx="50" cy="7" rx="7" ry="8" fill="hsl(30, 50%, 85%)" stroke="hsl(30, 40%, 60%)" strokeWidth="0.3"/>
-                      {/* Neck */}
-                      <rect x="47" y="14" width="6" height="5" fill="hsl(30, 50%, 85%)" stroke="hsl(30, 40%, 60%)" strokeWidth="0.3"/>
-                      
-                      {/* Torso */}
-                      <path 
-                        d="M 38 19 L 35 22 L 33 35 L 35 48 L 38 55 L 43 58 L 50 60 L 57 58 L 62 55 L 65 48 L 67 35 L 65 22 L 62 19 Z" 
-                        fill="hsl(30, 50%, 85%)" 
-                        stroke="hsl(30, 40%, 60%)" 
-                        strokeWidth="0.3"
-                      />
-                      
-                      {/* Shoulders and Arms - Left */}
-                      <ellipse cx="30" cy="22" rx="6" ry="4" fill="hsl(30, 50%, 85%)" stroke="hsl(30, 40%, 60%)" strokeWidth="0.3"/>
-                      <rect x="24" y="24" width="5" height="18" rx="2.5" fill="hsl(30, 50%, 85%)" stroke="hsl(30, 40%, 60%)" strokeWidth="0.3"/>
-                      <rect x="22" y="42" width="5" height="16" rx="2.5" fill="hsl(30, 50%, 85%)" stroke="hsl(30, 40%, 60%)" strokeWidth="0.3"/>
-                      <ellipse cx="22" cy="60" rx="3" ry="4" fill="hsl(30, 50%, 85%)" stroke="hsl(30, 40%, 60%)" strokeWidth="0.3"/>
-                      
-                      {/* Shoulders and Arms - Right */}
-                      <ellipse cx="70" cy="22" rx="6" ry="4" fill="hsl(30, 50%, 85%)" stroke="hsl(30, 40%, 60%)" strokeWidth="0.3"/>
-                      <rect x="71" y="24" width="5" height="18" rx="2.5" fill="hsl(30, 50%, 85%)" stroke="hsl(30, 40%, 60%)" strokeWidth="0.3"/>
-                      <rect x="73" y="42" width="5" height="16" rx="2.5" fill="hsl(30, 50%, 85%)" stroke="hsl(30, 40%, 60%)" strokeWidth="0.3"/>
-                      <ellipse cx="78" cy="60" rx="3" ry="4" fill="hsl(30, 50%, 85%)" stroke="hsl(30, 40%, 60%)" strokeWidth="0.3"/>
-                      
-                      {/* Pelvis/Hips */}
-                      <ellipse cx="50" cy="60" rx="14" ry="6" fill="hsl(30, 50%, 85%)" stroke="hsl(30, 40%, 60%)" strokeWidth="0.3"/>
-                      
-                      {/* Legs - Left */}
-                      <rect x="40" y="64" width="8" height="22" rx="4" fill="hsl(30, 50%, 85%)" stroke="hsl(30, 40%, 60%)" strokeWidth="0.3"/>
-                      <rect x="40" y="86" width="7" height="10" rx="3.5" fill="hsl(30, 50%, 85%)" stroke="hsl(30, 40%, 60%)" strokeWidth="0.3"/>
-                      <ellipse cx="42" cy="98" rx="4" ry="2" fill="hsl(30, 50%, 85%)" stroke="hsl(30, 40%, 60%)" strokeWidth="0.3"/>
-                      
-                      {/* Legs - Right */}
-                      <rect x="52" y="64" width="8" height="22" rx="4" fill="hsl(30, 50%, 85%)" stroke="hsl(30, 40%, 60%)" strokeWidth="0.3"/>
-                      <rect x="53" y="86" width="7" height="10" rx="3.5" fill="hsl(30, 50%, 85%)" stroke="hsl(30, 40%, 60%)" strokeWidth="0.3"/>
-                      <ellipse cx="58" cy="98" rx="4" ry="2" fill="hsl(30, 50%, 85%)" stroke="hsl(30, 40%, 60%)" strokeWidth="0.3"/>
-                    </svg>
-
-                    {/* Labels for body parts */}
-                    {bodyParts
-                      .filter(part => !selectedCategory || part.category === selectedCategory)
-                      .map((part) => {
-                        const color = categoryColors[part.category];
-                        const isLeft = part.labelPosition === 'left';
-                        
-                        return (
-                          <div
-                            key={part.id}
-                            className="absolute flex items-center gap-1 transition-all duration-300"
-                            style={{
-                              left: `${part.position.x}%`,
-                              top: `${part.position.y}%`,
-                              transform: 'translate(-50%, -50%)',
-                            }}
-                          >
-                            {/* Dot marker */}
-                            <div 
-                              className="w-2 h-2 rounded-full shadow-sm z-10"
-                              style={{ backgroundColor: color }}
-                            />
-                            
-                            {/* Label line and text */}
-                            <div 
-                              className={`flex items-center ${isLeft ? 'flex-row-reverse' : 'flex-row'}`}
-                            >
-                              <div 
-                                className={`h-px ${isLeft ? 'w-6' : 'w-6'}`}
-                                style={{ backgroundColor: color }}
-                              />
-                              <span 
-                                className={`text-[8px] font-medium px-1 py-0.5 rounded whitespace-nowrap shadow-sm ${
-                                  isLeft ? 'mr-0.5' : 'ml-0.5'
-                                }`}
-                                style={{ 
-                                  backgroundColor: `${color}20`,
-                                  color: color,
-                                  borderLeft: `2px solid ${color}`
-                                }}
-                              >
-                                {part.name}
-                              </span>
-                            </div>
-                          </div>
-                        );
-                      })}
+              {/* Internal Organs Image */}
+              <Card className="relative overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <CardHeader className="bg-gradient-to-r from-rose-50 to-pink-50 dark:from-rose-950/30 dark:to-pink-950/30 border-b">
+                  <CardTitle className="flex items-center gap-2 text-rose-700 dark:text-rose-300">
+                    <Activity className="w-5 h-5" />
+                    Internal Organs
+                  </CardTitle>
+                  <CardDescription>
+                    Major organs inside the human body
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="p-4 bg-gradient-to-b from-amber-50/50 to-orange-50/30 dark:from-slate-900 dark:to-slate-800">
+                  <div className="relative rounded-lg overflow-hidden">
+                    <img 
+                      src="https://res.cloudinary.com/di4yfgmlz/image/upload/v1768899400/BODY%20PARTS/Internal_Organs_ke7xmk.png"
+                      alt="Human Internal Organs Anatomy Diagram showing Trachea, Esophagus, Lungs, Heart, Liver, Stomach, Spleen, Pancreas, Kidneys, Intestines, and Bladder"
+                      className="w-full h-auto object-contain mx-auto"
+                      loading="lazy"
+                    />
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Internal Organs Diagram */}
-              <Card className="relative overflow-hidden bg-gradient-to-b from-rose-50/50 to-pink-50/30 dark:from-slate-900 dark:to-slate-800">
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold mb-4 text-center">Internal Organs</h3>
-                  <div className="relative h-[700px]">
-                    {/* Body outline with internal organs visible */}
-                    <svg viewBox="0 0 100 100" className="w-full h-full">
-                      {/* Semi-transparent body outline */}
-                      <ellipse cx="50" cy="7" rx="7" ry="8" fill="none" stroke="hsl(var(--border))" strokeWidth="0.5" opacity="0.6"/>
-                      <rect x="47" y="14" width="6" height="5" fill="none" stroke="hsl(var(--border))" strokeWidth="0.5" opacity="0.6"/>
-                      <path 
-                        d="M 38 19 L 35 22 L 33 35 L 35 48 L 38 55 L 43 58 L 50 60 L 57 58 L 62 55 L 65 48 L 67 35 L 65 22 L 62 19 Z" 
-                        fill="none" 
-                        stroke="hsl(var(--border))" 
-                        strokeWidth="0.5"
-                        opacity="0.6"
-                      />
-                      
-                      {/* Brain */}
-                      <ellipse cx="50" cy="6" rx="5" ry="4" fill="hsl(340, 70%, 75%)" stroke="hsl(340, 60%, 50%)" strokeWidth="0.3"/>
-                      
-                      {/* Thyroid */}
-                      <path d="M 47 16 Q 50 18 53 16 Q 52 17 50 17 Q 48 17 47 16" fill="hsl(180, 60%, 65%)" stroke="hsl(180, 50%, 45%)" strokeWidth="0.2"/>
-                      
-                      {/* Trachea */}
-                      <rect x="49" y="17" width="2" height="6" rx="1" fill="hsl(200, 60%, 75%)" stroke="hsl(200, 50%, 55%)" strokeWidth="0.2"/>
-                      
-                      {/* Lungs */}
-                      <ellipse cx="42" cy="28" rx="6" ry="8" fill="hsl(350, 70%, 80%)" stroke="hsl(350, 60%, 60%)" strokeWidth="0.3"/>
-                      <ellipse cx="58" cy="28" rx="6" ry="8" fill="hsl(350, 70%, 80%)" stroke="hsl(350, 60%, 60%)" strokeWidth="0.3"/>
-                      
-                      {/* Heart */}
-                      <path d="M 50 26 C 46 24 44 28 44 30 C 44 34 50 38 50 38 C 50 38 56 34 56 30 C 56 28 54 24 50 26" fill="hsl(0, 75%, 55%)" stroke="hsl(0, 65%, 40%)" strokeWidth="0.3"/>
-                      
-                      {/* Diaphragm */}
-                      <path d="M 36 37 Q 50 40 64 37" fill="none" stroke="hsl(30, 60%, 50%)" strokeWidth="0.5"/>
-                      
-                      {/* Liver */}
-                      <path d="M 52 38 Q 62 38 64 42 Q 64 46 58 48 Q 52 48 50 44 Q 50 40 52 38" fill="hsl(15, 70%, 45%)" stroke="hsl(15, 60%, 35%)" strokeWidth="0.3"/>
-                      
-                      {/* Stomach */}
-                      <path d="M 40 40 Q 36 42 38 48 Q 42 52 48 50 Q 50 46 48 42 Q 44 38 40 40" fill="hsl(350, 60%, 70%)" stroke="hsl(350, 50%, 50%)" strokeWidth="0.3"/>
-                      
-                      {/* Gallbladder */}
-                      <ellipse cx="54" cy="44" rx="2" ry="3" fill="hsl(120, 50%, 50%)" stroke="hsl(120, 40%, 35%)" strokeWidth="0.2"/>
-                      
-                      {/* Spleen */}
-                      <ellipse cx="36" cy="44" rx="3" ry="4" fill="hsl(320, 60%, 55%)" stroke="hsl(320, 50%, 40%)" strokeWidth="0.3"/>
-                      
-                      {/* Pancreas */}
-                      <path d="M 42 48 Q 50 50 58 48 Q 56 50 50 50 Q 44 50 42 48" fill="hsl(40, 70%, 70%)" stroke="hsl(40, 60%, 50%)" strokeWidth="0.2"/>
-                      
-                      {/* Kidneys */}
-                      <ellipse cx="38" cy="48" rx="3" ry="4" fill="hsl(5, 65%, 55%)" stroke="hsl(5, 55%, 40%)" strokeWidth="0.3"/>
-                      <ellipse cx="62" cy="48" rx="3" ry="4" fill="hsl(5, 65%, 55%)" stroke="hsl(5, 55%, 40%)" strokeWidth="0.3"/>
-                      
-                      {/* Small Intestine */}
-                      <path d="M 44 52 Q 46 54 50 53 Q 54 52 56 54 Q 54 56 50 55 Q 46 56 44 54 Q 46 52 48 54 Q 52 55 54 53 Q 52 57 48 56 Q 45 55 44 52" fill="hsl(355, 60%, 70%)" stroke="hsl(355, 50%, 50%)" strokeWidth="0.2"/>
-                      
-                      {/* Large Intestine */}
-                      <path d="M 38 50 L 38 56 Q 38 60 50 60 Q 62 60 62 56 L 62 50" fill="none" stroke="hsl(20, 50%, 55%)" strokeWidth="1" strokeLinecap="round"/>
-                      
-                      {/* Appendix */}
-                      <path d="M 62 56 Q 64 58 62 60" fill="none" stroke="hsl(20, 50%, 55%)" strokeWidth="0.5"/>
-                      
-                      {/* Bladder */}
-                      <ellipse cx="50" cy="58" rx="4" ry="3" fill="hsl(45, 60%, 70%)" stroke="hsl(45, 50%, 50%)" strokeWidth="0.3"/>
-                    </svg>
-
-                    {/* Labels for internal organs */}
-                    {internalOrgans
-                      .filter(part => !selectedCategory || part.category === selectedCategory || selectedCategory === "torso")
-                      .map((part) => {
-                        const color = categoryColors.torso;
-                        const isLeft = part.labelPosition === 'left';
-                        
-                        return (
-                          <div
-                            key={part.id}
-                            className="absolute flex items-center gap-1 transition-all duration-300"
-                            style={{
-                              left: `${part.position.x}%`,
-                              top: `${part.position.y}%`,
-                              transform: 'translate(-50%, -50%)',
-                            }}
-                          >
-                            {/* Dot marker */}
-                            <div 
-                              className="w-2 h-2 rounded-full shadow-sm z-10"
-                              style={{ backgroundColor: color }}
-                            />
-                            
-                            {/* Label line and text */}
-                            <div 
-                              className={`flex items-center ${isLeft ? 'flex-row-reverse' : 'flex-row'}`}
-                            >
-                              <div 
-                                className={`h-px ${isLeft ? 'w-6' : 'w-6'}`}
-                                style={{ backgroundColor: color }}
-                              />
-                              <span 
-                                className={`text-[8px] font-medium px-1 py-0.5 rounded whitespace-nowrap shadow-sm ${
-                                  isLeft ? 'mr-0.5' : 'ml-0.5'
-                                }`}
-                                style={{ 
-                                  backgroundColor: `${color}20`,
-                                  color: color,
-                                  borderLeft: `2px solid ${color}`
-                                }}
-                              >
-                                {part.name}
-                              </span>
-                            </div>
-                          </div>
-                        );
-                      })}
+              {/* External Body Parts Image */}
+              <Card className="relative overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <CardHeader className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border-b">
+                  <CardTitle className="flex items-center gap-2 text-amber-700 dark:text-amber-300">
+                    <User className="w-5 h-5" />
+                    External Body Parts
+                  </CardTitle>
+                  <CardDescription>
+                    External anatomical parts labeled
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="p-4 bg-gradient-to-b from-amber-50/50 to-orange-50/30 dark:from-slate-900 dark:to-slate-800">
+                  <div className="relative rounded-lg overflow-hidden">
+                    <img 
+                      src="https://res.cloudinary.com/di4yfgmlz/image/upload/v1768899400/BODY%20PARTS/External_Body_Parts_lcdjcv.png"
+                      alt="Human External Body Parts Anatomy Diagram showing Head, Forehead, Eyes, Nose, Mouth, Neck, Shoulders, Chest, Arms, Elbows, Hands, Fingers, Knees, Ankles, Feet, and Toes"
+                      className="w-full h-auto object-contain mx-auto"
+                      loading="lazy"
+                    />
                   </div>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Parts List */}
-            <div className="mt-8 grid md:grid-cols-4 gap-4">
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: categoryColors.head }} />
-                    Head & Neck
+            {/* Quick Reference Cards */}
+            <div className="grid md:grid-cols-2 gap-6 mt-8">
+              <Card className="border-rose-200 dark:border-rose-800 bg-gradient-to-br from-rose-50/50 to-pink-50/30 dark:from-rose-950/20 dark:to-pink-950/10">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center gap-2 text-rose-700 dark:text-rose-300">
+                    <Activity className="w-5 h-5" />
+                    Key Internal Organs
                   </CardTitle>
+                  <CardDescription>Vital organs essential for body functions</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex flex-wrap gap-1">
-                    {bodyParts.filter(p => p.category === 'head').map(part => (
-                      <Badge key={part.id} variant="secondary" className="text-xs">{part.name}</Badge>
+                  <div className="flex flex-wrap gap-2">
+                    {["Brain", "Heart", "Lungs", "Liver", "Stomach", "Kidneys", "Pancreas", "Spleen", "Small Intestine", "Large Intestine", "Bladder", "Esophagus", "Trachea", "Gallbladder", "Ureter"].map((organ) => (
+                      <Badge key={organ} variant="secondary" className="bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-300 hover:bg-rose-200 transition-colors">
+                        {organ}
+                      </Badge>
                     ))}
                   </div>
                 </CardContent>
               </Card>
               
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: categoryColors.torso }} />
-                    Torso
+              <Card className="border-amber-200 dark:border-amber-800 bg-gradient-to-br from-amber-50/50 to-orange-50/30 dark:from-amber-950/20 dark:to-orange-950/10">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center gap-2 text-amber-700 dark:text-amber-300">
+                    <User className="w-5 h-5" />
+                    Key External Parts
                   </CardTitle>
+                  <CardDescription>External body parts visible on the body surface</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex flex-wrap gap-1">
-                    {bodyParts.filter(p => p.category === 'torso').map(part => (
-                      <Badge key={part.id} variant="secondary" className="text-xs">{part.name}</Badge>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: categoryColors['upper-limb'] }} />
-                    Arms & Hands
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-1">
-                    {bodyParts.filter(p => p.category === 'upper-limb').map(part => (
-                      <Badge key={part.id} variant="secondary" className="text-xs">{part.name}</Badge>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: categoryColors['lower-limb'] }} />
-                    Legs & Feet
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-1">
-                    {bodyParts.filter(p => p.category === 'lower-limb').map(part => (
-                      <Badge key={part.id} variant="secondary" className="text-xs">{part.name}</Badge>
+                  <div className="flex flex-wrap gap-2">
+                    {["Head", "Scalp", "Forehead", "Eyes", "Eyebrows", "Ears", "Nose", "Mouth", "Lips", "Chin", "Cheeks", "Neck", "Shoulders", "Chest", "Armpits", "Upper Arms", "Elbows", "Forearms", "Wrists", "Hands", "Fingers", "Navel", "Knees", "Lower Legs", "Ankles", "Feet", "Toes"].map((part) => (
+                      <Badge key={part} variant="secondary" className="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 hover:bg-amber-200 transition-colors">
+                        {part}
+                      </Badge>
                     ))}
                   </div>
                 </CardContent>
