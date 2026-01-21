@@ -141,6 +141,12 @@ const Footer = () => {
               >
                 About Us
               </Link>
+              <Link
+                to="/admin"
+                className="text-sm text-muted-foreground hover:text-health transition-colors"
+              >
+                Admin
+              </Link>
             </nav>
           </div>
 
