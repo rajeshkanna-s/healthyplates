@@ -17,6 +17,7 @@ import SelfCareDetail from "./pages/SelfCareDetail";
 import Blog from "./pages/Blog";
 import BlogDetail from "./pages/BlogDetail";
 import BodyExplorer from "./pages/BodyExplorer";
+import DietPlanner from "./pages/DietPlanner";
 import Admin from "./pages/Admin";
 import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
@@ -48,6 +49,7 @@ const App = () => (
             <Route path="blog" element={<Blog />} />
             <Route path="blog/:id" element={<BlogDetail />} />
             <Route path="body-explorer" element={<BodyExplorer />} />
+            <Route path="diet-planner" element={<DietPlanner />} />
             <Route path="admin" element={<Admin />} />
             {/* Redirect old data-entry route to admin */}
             <Route path="data-entry" element={<Admin />} />

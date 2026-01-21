@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Brain, Heart, Activity, Droplets, Apple, Sparkles, X, ZoomIn, Wind, Filter, RotateCcw, User, Bone, Calculator, Scale, Ruler, Flame, Users, ClipboardList } from "lucide-react";
+import { Brain, Heart, Activity, Droplets, Apple, Sparkles, X, ZoomIn, Wind, Filter, RotateCcw, User, Bone, Calculator, Scale, Ruler, Flame, Users } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { HealthyPlanner } from "@/components/health-planner";
 
 // Import organ images
 import brainImg from "@/assets/organs/brain.png";
@@ -1180,7 +1179,7 @@ export default function BodyExplorer() {
 
         {/* Tabs for switching between views */}
         <Tabs defaultValue="organs" className="w-full">
-          <TabsList className="grid w-full max-w-3xl mx-auto grid-cols-5 mb-8">
+          <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-4 mb-8">
             <TabsTrigger value="organs" className="flex items-center gap-1 text-xs sm:text-sm">
               <Heart className="h-4 w-4" />
               <span className="hidden sm:inline">Internal</span> Organs
@@ -1196,10 +1195,6 @@ export default function BodyExplorer() {
             <TabsTrigger value="calorie-calc" className="flex items-center gap-1 text-xs sm:text-sm">
               <Flame className="h-4 w-4" />
               Calorie
-            </TabsTrigger>
-            <TabsTrigger value="healthy-planner" className="flex items-center gap-1 text-xs sm:text-sm">
-              <ClipboardList className="h-4 w-4" />
-              <span className="hidden sm:inline">Diet</span> Planner
             </TabsTrigger>
           </TabsList>
 
@@ -1581,10 +1576,6 @@ export default function BodyExplorer() {
             <DailyCalorieCalculator />
           </TabsContent>
 
-          {/* Healthy Planner Tab */}
-          <TabsContent value="healthy-planner" className="animate-fade-in">
-            <HealthyPlanner />
-          </TabsContent>
         </Tabs>
 
         {/* Educational Disclaimer */}
