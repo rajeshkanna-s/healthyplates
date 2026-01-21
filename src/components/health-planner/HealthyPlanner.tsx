@@ -5,7 +5,7 @@ import {
   User, Target, Activity, Utensils, HeartPulse, 
   ChevronRight, ChevronLeft, CheckCircle2, FileDown, FileSpreadsheet,
   Scale, Ruler, Calendar, Dumbbell, AlertCircle, Flame, Beef, Wheat, Droplets,
-  ShoppingCart, ChefHat, Lightbulb, ClipboardList, TrendingUp, Clock, UtensilsCrossed
+  ShoppingCart, ChefHat, Lightbulb, ClipboardList, TrendingUp, Clock, UtensilsCrossed, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -72,6 +72,8 @@ const EQUIPMENT = [
 export default function HealthyPlanner() {
   const [currentStep, setCurrentStep] = useState<FormStep>('profile');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
+  const [isDownloadingExcel, setIsDownloadingExcel] = useState(false);
   const [generatedPlan, setGeneratedPlan] = useState<MealPlan | null>(null);
   const [calculatedTargets, setCalculatedTargets] = useState<CalculatedTargets | null>(null);
 
@@ -151,17 +153,30 @@ export default function HealthyPlanner() {
     setCurrentStep('results');
   };
 
-  const handleDownloadPDF = () => {
+  const handleDownloadPDF = async () => {
     if (generatedPlan) {
-      const intake: UserIntake = { profile, goal, activity, dietary, medical };
-      generatePDF(generatedPlan, intake);
+      setIsDownloadingPDF(true);
+      try {
+        const intake: UserIntake = { profile, goal, activity, dietary, medical };
+        // Use setTimeout to allow UI to update before heavy PDF generation
+        await new Promise(resolve => setTimeout(resolve, 100));
+        generatePDF(generatedPlan, intake);
+      } finally {
+        setIsDownloadingPDF(false);
+      }
     }
   };
 
-  const handleDownloadExcel = () => {
+  const handleDownloadExcel = async () => {
     if (generatedPlan) {
-      const intake: UserIntake = { profile, goal, activity, dietary, medical };
-      generateExcel(generatedPlan, intake);
+      setIsDownloadingExcel(true);
+      try {
+        const intake: UserIntake = { profile, goal, activity, dietary, medical };
+        await new Promise(resolve => setTimeout(resolve, 100));
+        generateExcel(generatedPlan, intake);
+      } finally {
+        setIsDownloadingExcel(false);
+      }
     }
   };
 
@@ -797,13 +812,32 @@ export default function HealthyPlanner() {
 
               {/* Download Buttons - Top */}
               <div className="flex flex-col sm:flex-row gap-3">
-                <Button onClick={handleDownloadPDF} className="flex-1 gap-2" size="lg">
-                  <FileDown className="w-5 h-5" />
-                  Download PDF
+                <Button 
+                  onClick={handleDownloadPDF} 
+                  className="flex-1 gap-2" 
+                  size="lg"
+                  disabled={isDownloadingPDF || isDownloadingExcel}
+                >
+                  {isDownloadingPDF ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <FileDown className="w-5 h-5" />
+                  )}
+                  {isDownloadingPDF ? 'Generating PDF...' : 'Download PDF'}
                 </Button>
-                <Button onClick={handleDownloadExcel} variant="outline" className="flex-1 gap-2" size="lg">
-                  <FileSpreadsheet className="w-5 h-5" />
-                  Download Excel
+                <Button 
+                  onClick={handleDownloadExcel} 
+                  variant="outline" 
+                  className="flex-1 gap-2" 
+                  size="lg"
+                  disabled={isDownloadingPDF || isDownloadingExcel}
+                >
+                  {isDownloadingExcel ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <FileSpreadsheet className="w-5 h-5" />
+                  )}
+                  {isDownloadingExcel ? 'Generating Excel...' : 'Download Excel'}
                 </Button>
               </div>
 
