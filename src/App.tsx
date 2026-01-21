@@ -21,6 +21,10 @@ import Admin from "./pages/Admin";
 import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsConditions from "./pages/TermsConditions";
+import Disclaimer from "./pages/Disclaimer";
+import About from "./pages/About";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +52,11 @@ const App = () => (
             {/* Redirect old data-entry route to admin */}
             <Route path="data-entry" element={<Admin />} />
             <Route path="contact" element={<Contact />} />
+            {/* Legal & Info Pages */}
+            <Route path="privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="terms" element={<TermsConditions />} />
+            <Route path="disclaimer" element={<Disclaimer />} />
+            <Route path="about" element={<About />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Route>

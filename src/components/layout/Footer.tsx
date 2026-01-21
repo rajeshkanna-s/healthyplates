@@ -109,16 +109,16 @@ const Footer = () => {
                 to="/food-products"
                 className="text-sm text-muted-foreground hover:text-health transition-colors"
               >
-                Food Products
+                Food Items
               </Link>
               <Link
                 to="/foods"
                 className="text-sm text-muted-foreground hover:text-health transition-colors"
               >
-                Foods
+                Daily Meals
               </Link>
               <Link
-                to="/disease"
+                to="/diseases"
                 className="text-sm text-muted-foreground hover:text-health transition-colors"
               >
                 Disease Guide
@@ -135,13 +135,19 @@ const Footer = () => {
               >
                 Blog
               </Link>
+              <Link
+                to="/about"
+                className="text-sm text-muted-foreground hover:text-health transition-colors"
+              >
+                About Us
+              </Link>
             </nav>
           </div>
 
-          {/* Contact Info */}
+          {/* Contact & Legal */}
           <div className="space-y-4">
             <h4 className="text-lg font-semibold text-foreground">
-              Contact Info
+              Contact & Legal
             </h4>
             <div className="space-y-3">
               <div className="flex items-center space-x-2">
@@ -157,6 +163,26 @@ const Footer = () => {
                 </span>
               </div>
             </div>
+            <nav className="flex flex-col space-y-2 pt-2 border-t border-border/50">
+              <Link
+                to="/privacy-policy"
+                className="text-sm text-muted-foreground hover:text-health transition-colors"
+              >
+                Privacy Policy
+              </Link>
+              <Link
+                to="/terms"
+                className="text-sm text-muted-foreground hover:text-health transition-colors"
+              >
+                Terms & Conditions
+              </Link>
+              <Link
+                to="/disclaimer"
+                className="text-sm text-muted-foreground hover:text-health transition-colors"
+              >
+                Medical Disclaimer
+              </Link>
+            </nav>
           </div>
         </div>
 

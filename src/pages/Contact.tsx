@@ -284,6 +284,11 @@ const Contact = () => {
                   <Send className="h-4 w-4 mr-2" />
                   Send Message
                 </Button>
+
+                <p className="text-xs text-muted-foreground text-center mt-4">
+                  By submitting this form, you agree to our{' '}
+                  <a href="/privacy-policy" className="text-primary hover:underline">Privacy Policy</a>.
+                </p>
               </form>
             </div>
           </div>
