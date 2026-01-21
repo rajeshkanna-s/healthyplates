@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowLeft, HelpCircle, Utensils, Heart, Activity, BookOpen, Calculator, ClipboardList, Sparkles, Users } from 'lucide-react';
+import { ArrowLeft, HelpCircle, Utensils, Heart, Activity, BookOpen, Calculator, ClipboardList, Sparkles, Users, Apple, Sun, Stethoscope, Scissors, FileText, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -26,6 +26,40 @@ const FAQ = () => {
         {
           question: "Is HealthyPlates free to use?",
           answer: "Yes! HealthyPlates is completely free to use. All our tools including the BMI Calculator, Daily Calorie Calculator, Diet Planner, educational content, and health guides are available at no cost. We believe health education should be accessible to everyone."
+        }
+      ]
+    },
+    {
+      title: "Our Main Features",
+      icon: BookOpen,
+      faqs: [
+        {
+          question: "What is the Food Items page?",
+          answer: "The Food Items page is your complete guide to understanding all types of foods. Here you can learn about different food items, their nutritional value, health benefits, and the purpose of consuming them in your daily diet. Whether it's fruits, vegetables, grains, proteins, or dairy products - we provide detailed information on usage, benefits, and how each food contributes to your overall health and wellbeing."
+        },
+        {
+          question: "What is the Daily Meals page?",
+          answer: "The Daily Meals page helps you understand what healthy eating looks like on a daily basis. It provides guidance on what foods are ideal for each meal of the day, what healthy snacks you can take between meals, the best times to eat different foods, and how to properly consume them for maximum nutritional benefit. This section focuses on building healthy eating habits that you can follow every day."
+        },
+        {
+          question: "What is the Diseases page?",
+          answer: "The Diseases page is designed to help those with specific health conditions. If you have a particular disease or health issue, this section suggests foods that can help improve your condition, foods you should avoid, and natural dietary strategies to support your recovery and overall health management. It's a food-based approach to supporting your health journey."
+        },
+        {
+          question: "What is the Self-Care page?",
+          answer: "The Self-Care page covers holistic wellness practices including skin care routines, hair care guidance, and fitness tips. If you're experiencing skin problems like acne, dryness, or pigmentation, we suggest effective home remedies using natural ingredients. The same applies to hair care issues like hair fall, dandruff, or dull hair. We provide step-by-step natural treatments and prevention tips you can follow at home."
+        },
+        {
+          question: "What is the Blog section?",
+          answer: "Our Blog section features detailed health-related articles covering a wide range of wellness topics. You'll find wellness stories, nutrition insights, lifestyle improvement content, and expert-backed health education. The blog is regularly updated with new content to keep you informed about the latest in health and nutrition knowledge."
+        },
+        {
+          question: "What is the Know Your Body page?",
+          answer: "The Know Your Body page is your gateway to understanding human anatomy. You can explore internal organs (like heart, liver, kidneys, brain) and external body parts with detailed labeled diagrams. This page also features our BMI Calculator to help you understand your body mass index and what it means for your health, plus a Daily Calorie Calculator to determine your daily energy needs."
+        },
+        {
+          question: "What is the Diet Planner?",
+          answer: "The Diet Planner is a comprehensive tool that creates specialized meal plans tailored for both men and women. Based on your health conditions, age, weight, height, and activity level, it tells you exactly what food items to buy, what to eat per meal, how much to consume, and when to eat. You get complete weekly meal schedules, shopping lists, portion guides, and nutritional information. Best of all, you can download your complete diet plan as a free PDF file!"
         }
       ]
     },
