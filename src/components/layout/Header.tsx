@@ -16,6 +16,7 @@ const Header = () => {
     { name: "Self-Care", href: "/self-care" },
     { name: "Blog", href: "/blog" },
     { name: "Know Your Body", href: "/body-explorer" },
+    { name: "Diet Planner", href: "/diet-planner" },
     { name: "Contact", href: "/contact" },
   ];
 

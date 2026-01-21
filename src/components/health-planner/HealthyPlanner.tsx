@@ -254,12 +254,17 @@ export default function HealthyPlanner() {
                     <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
                       id="age"
-                      type="number"
-                      min={10}
-                      max={100}
-                      value={profile.age}
-                      onChange={(e) => setProfile({ ...profile, age: parseInt(e.target.value) || 0 })}
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      value={profile.age === 0 ? '' : profile.age}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, '');
+                        const num = parseInt(val) || 0;
+                        setProfile({ ...profile, age: Math.min(num, 60) });
+                      }}
                       className="pl-10"
+                      placeholder="e.g., 30"
                     />
                   </div>
                 </div>
@@ -270,12 +275,17 @@ export default function HealthyPlanner() {
                     <Ruler className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
                       id="height"
-                      type="number"
-                      min={100}
-                      max={250}
-                      value={profile.heightCm}
-                      onChange={(e) => setProfile({ ...profile, heightCm: parseInt(e.target.value) || 0 })}
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      value={profile.heightCm === 0 ? '' : profile.heightCm}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, '');
+                        const num = parseInt(val) || 0;
+                        setProfile({ ...profile, heightCm: Math.min(num, 225) });
+                      }}
                       className="pl-10"
+                      placeholder="e.g., 170"
                     />
                   </div>
                 </div>
@@ -286,12 +296,17 @@ export default function HealthyPlanner() {
                     <Scale className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
                       id="weight"
-                      type="number"
-                      min={30}
-                      max={300}
-                      value={profile.weightKg}
-                      onChange={(e) => setProfile({ ...profile, weightKg: parseInt(e.target.value) || 0 })}
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      value={profile.weightKg === 0 ? '' : profile.weightKg}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, '');
+                        const num = parseInt(val) || 0;
+                        setProfile({ ...profile, weightKg: Math.min(num, 200) });
+                      }}
                       className="pl-10"
+                      placeholder="e.g., 70"
                     />
                   </div>
                 </div>
@@ -318,12 +333,20 @@ export default function HealthyPlanner() {
                   <Label htmlFor="bodyfat">Body Fat % (Optional)</Label>
                   <Input
                     id="bodyfat"
-                    type="number"
-                    min={5}
-                    max={60}
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     placeholder="e.g., 20"
-                    value={profile.bodyFatPercent || ''}
-                    onChange={(e) => setProfile({ ...profile, bodyFatPercent: parseInt(e.target.value) || undefined })}
+                    value={profile.bodyFatPercent ?? ''}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/\D/g, '');
+                      if (val === '') {
+                        setProfile({ ...profile, bodyFatPercent: undefined });
+                      } else {
+                        const num = parseInt(val) || 0;
+                        setProfile({ ...profile, bodyFatPercent: Math.min(num, 90) });
+                      }
+                    }}
                   />
                 </div>
               </div>
@@ -721,11 +744,20 @@ export default function HealthyPlanner() {
                     <Label htmlFor="sleep">Sleep Hours/Night</Label>
                     <Input
                       id="sleep"
-                      type="number"
-                      min={3}
-                      max={12}
-                      value={medical.sleepHours}
-                      onChange={(e) => setMedical({ ...medical, sleepHours: parseInt(e.target.value) || 7 })}
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      value={medical.sleepHours === 0 ? '' : medical.sleepHours}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, '');
+                        if (val === '') {
+                          setMedical({ ...medical, sleepHours: 0 });
+                        } else {
+                          const num = parseInt(val) || 0;
+                          setMedical({ ...medical, sleepHours: Math.min(num, 18) });
+                        }
+                      }}
+                      placeholder="e.g., 7"
                     />
                   </div>
 
