@@ -94,11 +94,22 @@ const Diseases = () => {
   return (
     <div className="min-h-screen bg-gradient-subtle py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Medical Disclaimer */}
+        <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mb-8">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+            <p className="text-sm text-amber-800 dark:text-amber-300">
+              <strong>Disclaimer:</strong> Content is for informational purposes only and does not substitute professional medical advice. 
+              Foods listed may support wellness but do not cure or treat diseases. Always consult a healthcare professional.
+            </p>
+          </div>
+        </div>
+
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-hero mb-6">Disease Management with Foods</h1>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Discover foods that can help manage various health conditions. Learn about nutritional approaches to support your wellness journey.
+            Discover foods that may help support various health conditions. Learn about nutritional approaches that may assist your wellness journey.
           </p>
         </div>
 

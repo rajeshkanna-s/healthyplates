@@ -188,12 +188,18 @@ const Blog = () => {
                 {selectedBlog.author_name?.charAt(0) || 'H'}
               </div>
               <div>
-                <p className="text-sm sm:text-base font-semibold text-foreground">{selectedBlog.author_name}</p>
+                <p className="text-sm sm:text-base font-semibold text-foreground">{selectedBlog.author_name || 'HealthyPlates Team'}</p>
+                <p className="text-xs text-muted-foreground">Health & Wellness Contributor</p>
                 <div className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground mt-0.5">
                   <span className="flex items-center gap-1">
                     <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
-                    {formatDate(selectedBlog.created_at)}
+                    Published: {formatDate(selectedBlog.created_at)}
                   </span>
+                  {selectedBlog.updated_at && selectedBlog.updated_at !== selectedBlog.created_at && (
+                    <span className="flex items-center gap-1 text-primary">
+                      Updated: {formatDate(selectedBlog.updated_at)}
+                    </span>
+                  )}
                   <span className="flex items-center gap-1">
                     <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
                     {estimateReadTime(selectedBlog.content)}
@@ -428,10 +434,10 @@ const Blog = () => {
                           {blog.author_name?.charAt(0) || 'H'}
                         </div>
                         <div className="text-xs">
-                          <p className="font-medium text-foreground truncate max-w-[100px]">{blog.author_name}</p>
+                          <p className="font-medium text-foreground truncate max-w-[100px]">{blog.author_name || 'HealthyPlates Team'}</p>
                           <p className="text-muted-foreground flex items-center gap-1">
                             <Calendar className="w-3 h-3" />
-                            {formatDate(blog.created_at)}
+                            {formatDate(blog.updated_at || blog.created_at)}
                           </p>
                         </div>
                       </div>

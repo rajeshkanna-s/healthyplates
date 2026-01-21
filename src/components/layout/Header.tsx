@@ -10,14 +10,13 @@ const Header = () => {
 
   const navigation = [
     { name: "Home", href: "/" },
-    { name: "Food Products", href: "/food-products" },
-    { name: "Foods", href: "/foods" },
+    { name: "Food Items", href: "/food-products" },
+    { name: "Daily Meals", href: "/foods" },
     { name: "Diseases", href: "/diseases" },
     { name: "Self-Care", href: "/self-care" },
     { name: "Blog", href: "/blog" },
     { name: "Know Your Body", href: "/body-explorer" },
     { name: "Contact", href: "/contact" },
-    { name: "Admin", href: "/admin" },
   ];
 
   const isActive = (path: string) => location.pathname === path;
