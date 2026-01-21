@@ -126,22 +126,21 @@ export function generatePDF(mealPlan: MealPlan, intake: UserIntake): void {
     yPos += lines.length * 6 + 3;
   });
 
-  // Weekly Meal Plans (show first 7 days as sample)
+  // Full Meal Plan - All Days
   doc.addPage();
   yPos = 20;
   doc.setFontSize(18);
-  doc.text('Weekly Meal Plan', 14, yPos);
+  doc.text(`Complete Meal Plan (${mealPlan.days.length} Days)`, 14, yPos);
   yPos += 15;
 
-  const daysToShow = Math.min(mealPlan.days.length, 7);
-  
-  for (let i = 0; i < daysToShow; i++) {
+  // Show ALL days based on plan length
+  for (let i = 0; i < mealPlan.days.length; i++) {
     const day = mealPlan.days[i];
     checkPageBreak(60);
 
     doc.setFontSize(12);
     doc.setTextColor(34, 139, 34);
-    doc.text(`${day.dayName} (${day.date})`, 14, yPos);
+    doc.text(`Day ${day.day}: ${day.dayName} (${day.date})`, 14, yPos);
     yPos += 8;
 
     const mealData = day.meals.map(meal => [
@@ -185,35 +184,36 @@ export function generatePDF(mealPlan: MealPlan, intake: UserIntake): void {
     yPos = (doc as any).lastAutoTable.finalY + 10;
   }
 
-  // Shopping List (Week 1)
+  // Shopping Lists - All Weeks
   if (mealPlan.weeklyShoppingLists.length > 0) {
-    doc.addPage();
-    yPos = 20;
-    doc.setFontSize(18);
-    doc.setTextColor(0, 0, 0);
-    doc.text('Week 1 Shopping List', 14, yPos);
-    yPos += 15;
-
-    const shoppingList = mealPlan.weeklyShoppingLists[0];
-    shoppingList.items.forEach(category => {
-      checkPageBreak(30);
-      doc.setFontSize(12);
-      doc.setTextColor(34, 139, 34);
-      doc.text(category.category, 14, yPos);
-      yPos += 8;
-
-      doc.setFontSize(10);
+    mealPlan.weeklyShoppingLists.forEach((shoppingList, weekIndex) => {
+      doc.addPage();
+      yPos = 20;
+      doc.setFontSize(18);
       doc.setTextColor(0, 0, 0);
-      category.ingredients.forEach((ing, idx) => {
-        checkPageBreak(8);
-        doc.text(`${idx + 1}. ${ing.name} - ${ing.quantity}`, 18, yPos);
-        yPos += 6;
+      doc.text(`Week ${shoppingList.weekNumber} Shopping List`, 14, yPos);
+      yPos += 15;
+
+      shoppingList.items.forEach(category => {
+        checkPageBreak(30);
+        doc.setFontSize(12);
+        doc.setTextColor(34, 139, 34);
+        doc.text(category.category, 14, yPos);
+        yPos += 8;
+
+        doc.setFontSize(10);
+        doc.setTextColor(0, 0, 0);
+        category.ingredients.forEach((ing, idx) => {
+          checkPageBreak(8);
+          doc.text(`${idx + 1}. ${ing.name} - ${ing.quantity}`, 18, yPos);
+          yPos += 6;
+        });
+        yPos += 4;
       });
-      yPos += 4;
     });
   }
 
-  // Recipes Page
+  // Recipes Page - All unique recipes from entire plan
   doc.addPage();
   yPos = 20;
   doc.setFontSize(18);
@@ -222,7 +222,7 @@ export function generatePDF(mealPlan: MealPlan, intake: UserIntake): void {
   yPos += 15;
 
   const uniqueRecipes = new Map<string, { ingredients: string[]; instructions: string[]; prepTime: number }>();
-  mealPlan.days.slice(0, 7).forEach(day => {
+  mealPlan.days.forEach(day => {
     day.meals.forEach(meal => {
       if (!uniqueRecipes.has(meal.recipeName)) {
         uniqueRecipes.set(meal.recipeName, {
