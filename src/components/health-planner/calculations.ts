@@ -356,30 +356,30 @@ function generateConditionNotes(conditions: string[]): string[] {
   const notes: string[] = [];
 
   if (conditions.includes('diabetes')) {
-    notes.push('🍽️ Diabetes Management: Follow the plate method - 1/2 non-starchy vegetables, 1/4 lean protein, 1/4 whole grains.');
-    notes.push('⏰ Spread carbohydrate intake evenly across meals to avoid blood sugar spikes.');
-    notes.push('🚫 Avoid sugary drinks, fruit juices, and foods with added sugars.');
-    notes.push('📊 Monitor blood glucose levels regularly, especially when changing diet.');
+    notes.push('Diabetes Management: Follow the plate method - 1/2 non-starchy vegetables, 1/4 lean protein, 1/4 whole grains.');
+    notes.push('Spread carbohydrate intake evenly across meals to avoid blood sugar spikes.');
+    notes.push('Avoid sugary drinks, fruit juices, and foods with added sugars.');
+    notes.push('Monitor blood glucose levels regularly, especially when changing diet.');
   }
 
   if (conditions.includes('hypothyroidism')) {
-    notes.push('💊 Thyroid Medication: Take levothyroxine on empty stomach, 30-60 minutes before breakfast.');
-    notes.push('⚠️ Avoid iron and calcium supplements within 4 hours of thyroid medication.');
-    notes.push('🥗 Include selenium-rich foods: Brazil nuts (1-2/day), seafood, eggs.');
-    notes.push('🥬 Cook goitrogenic vegetables (cabbage, broccoli, cauliflower) to reduce impact.');
+    notes.push('Thyroid Medication: Take levothyroxine on empty stomach, 30-60 minutes before breakfast.');
+    notes.push('Avoid iron and calcium supplements within 4 hours of thyroid medication.');
+    notes.push('Include selenium-rich foods: Brazil nuts (1-2/day), seafood, eggs.');
+    notes.push('Cook goitrogenic vegetables (cabbage, broccoli, cauliflower) to reduce impact.');
   }
 
   if (conditions.includes('hypertension')) {
-    notes.push('🧂 Sodium Limit: Keep sodium under 2,300mg/day (ideally 1,500mg for better BP control).');
-    notes.push('🍌 Include potassium-rich foods: bananas, potatoes, spinach, beans.');
-    notes.push('🥗 Follow DASH diet principles: high fruits, vegetables, whole grains, lean proteins.');
-    notes.push('🚫 Avoid processed foods, canned soups, and high-sodium condiments.');
+    notes.push('Sodium Limit: Keep sodium under 2,300mg/day (ideally 1,500mg for better BP control).');
+    notes.push('Include potassium-rich foods: bananas, potatoes, spinach, beans.');
+    notes.push('Follow DASH diet principles: high fruits, vegetables, whole grains, lean proteins.');
+    notes.push('Avoid processed foods, canned soups, and high-sodium condiments.');
   }
 
   if (conditions.includes('pcos')) {
-    notes.push('⚖️ Focus on low-glycemic foods to help manage insulin resistance.');
-    notes.push('🥩 Include adequate protein at each meal to promote satiety.');
-    notes.push('🫒 Include anti-inflammatory foods: fatty fish, olive oil, leafy greens.');
+    notes.push('Focus on low-glycemic foods to help manage insulin resistance.');
+    notes.push('Include adequate protein at each meal to promote satiety.');
+    notes.push('Include anti-inflammatory foods: fatty fish, olive oil, leafy greens.');
   }
 
   return notes;
@@ -388,25 +388,25 @@ function generateConditionNotes(conditions: string[]): string[] {
 // Generate general tips
 function generateTips(intake: UserIntake): string[] {
   const tips = [
-    '💧 Stay hydrated: Aim for 8-10 glasses of water daily.',
-    '🍽️ Eat mindfully: Chew thoroughly and avoid distractions during meals.',
-    '🛌 Prioritize sleep: Aim for 7-9 hours for optimal metabolism and recovery.',
-    '🚶 Stay active: Include daily movement beyond structured exercise.',
-    '📝 Track progress: Keep a food diary and monitor weight weekly.',
+    'Stay hydrated: Aim for 8-10 glasses of water daily.',
+    'Eat mindfully: Chew thoroughly and avoid distractions during meals.',
+    'Prioritize sleep: Aim for 7-9 hours for optimal metabolism and recovery.',
+    'Stay active: Include daily movement beyond structured exercise.',
+    'Track progress: Keep a food diary and monitor weight weekly.',
   ];
 
   if (intake.medical.stressLevel === 'high') {
-    tips.push('🧘 Manage stress: High cortisol can affect weight. Try meditation or deep breathing.');
+    tips.push('Manage stress: High cortisol can affect weight. Try meditation or deep breathing.');
   }
 
   if (intake.goal.primaryGoal === 'weight-loss') {
-    tips.push('🍳 Protein first: Start meals with protein to boost satiety.');
-    tips.push('🥗 Volume eating: Fill up on low-calorie, high-fiber vegetables.');
+    tips.push('Protein first: Start meals with protein to boost satiety.');
+    tips.push('Volume eating: Fill up on low-calorie, high-fiber vegetables.');
   }
 
   if (intake.goal.primaryGoal === 'weight-gain') {
-    tips.push('🥜 Calorie-dense foods: Include nuts, dried fruits, and healthy oils.');
-    tips.push('⏰ Meal timing: Eat every 3-4 hours to maintain calorie intake.');
+    tips.push('Calorie-dense foods: Include nuts, dried fruits, and healthy oils.');
+    tips.push('Meal timing: Eat every 3-4 hours to maintain calorie intake.');
   }
 
   return tips.slice(0, 6);
