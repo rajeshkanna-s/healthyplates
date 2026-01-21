@@ -188,6 +188,12 @@ const Footer = () => {
               >
                 Medical Disclaimer
               </Link>
+              <Link
+                to="/faq"
+                className="text-sm text-muted-foreground hover:text-health transition-colors"
+              >
+                FAQ
+              </Link>
             </nav>
           </div>
         </div>
