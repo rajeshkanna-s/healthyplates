@@ -53,8 +53,8 @@ export function calculateTargetCalories(
       const deficitPercent = targetPace === 'slow' ? 0.10 : targetPace === 'aggressive' ? 0.20 : 0.15;
       deficitOrSurplus = -Math.round(tdee * deficitPercent);
       targetCalories = tdee + deficitOrSurplus;
-      // ~7700 kcal = 1kg fat
-      weeklyChangeKg = -(deficitOrSurplus * 7) / 7700;
+      // ~7700 kcal = 1kg fat, deficitOrSurplus is already negative, so result will be negative (weight loss)
+      weeklyChangeKg = (deficitOrSurplus * 7) / 7700;
       break;
     case 'weight-gain':
       // Surplus based on pace
