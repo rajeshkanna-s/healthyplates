@@ -10,13 +10,13 @@ const Header = () => {
 
   const navigation = [
     { name: "Home", href: "/" },
+    { name: "Diet Planner", href: "/diet-planner" },
     { name: "Food Items", href: "/food-products" },
     { name: "Daily Meals", href: "/foods" },
     { name: "Diseases", href: "/diseases" },
     { name: "Self-Care", href: "/self-care" },
     { name: "Blog", href: "/blog" },
     { name: "Know Your Body", href: "/body-explorer" },
-    { name: "Diet Planner", href: "/diet-planner" },
     { name: "Contact", href: "/contact" },
   ];
 

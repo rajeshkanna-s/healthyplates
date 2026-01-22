@@ -277,10 +277,10 @@ const Blog = () => {
               Health & Wellness Insights
             </div>
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 sm:mb-6 tracking-tight">
-              Expert Health <span className="text-primary">Articles</span>
+              Health <span className="text-primary">Articles</span>
             </h1>
             <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Discover evidence-based insights on nutrition, wellness, and healthy living from our expert contributors
+              Discover evidence-based insights on nutrition, wellness, and healthy living from our health contributors
             </p>
           </div>
 
