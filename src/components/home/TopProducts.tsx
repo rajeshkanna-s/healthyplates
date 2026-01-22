@@ -89,7 +89,7 @@ const TopProducts = () => {
     <section className="py-16 md:py-24 bg-gradient-subtle">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-section">Top Food Products This Week</h2>
+          <h2 className="text-section">To Know Food Items Benefits</h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             Discover our most popular and highly-rated natural ingredients, carefully selected for their 
             exceptional health benefits and nutritional value.
