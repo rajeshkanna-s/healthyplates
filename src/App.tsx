@@ -27,6 +27,10 @@ import TermsConditions from "./pages/TermsConditions";
 import Disclaimer from "./pages/Disclaimer";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
+import InternalOrgans from "./pages/InternalOrgans";
+import BodyParts from "./pages/BodyParts";
+import BMICalculator from "./pages/BMICalculator";
+import CalorieCalculator from "./pages/CalorieCalculator";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +55,11 @@ const App = () => (
             <Route path="blog/:id" element={<BlogDetail />} />
             <Route path="body-explorer" element={<BodyExplorer />} />
             <Route path="diet-planner" element={<DietPlanner />} />
+            {/* Know Your Body Sub-Pages */}
+            <Route path="internal-organs" element={<InternalOrgans />} />
+            <Route path="body-parts" element={<BodyParts />} />
+            <Route path="bmi-calculator" element={<BMICalculator />} />
+            <Route path="calorie-calculator" element={<CalorieCalculator />} />
             <Route path="admin" element={<Admin />} />
             {/* Redirect old data-entry route to admin */}
             <Route path="data-entry" element={<Admin />} />

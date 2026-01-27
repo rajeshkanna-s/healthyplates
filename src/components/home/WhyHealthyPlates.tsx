@@ -189,7 +189,7 @@ const WhyHealthyPlates = () => {
                     Visual Learning Experience
                   </li>
                 </ul>
-                <a href="/body-explorer">
+                <a href="/internal-organs">
                   <button className="bg-gradient-to-r from-purple-600 to-violet-500 hover:from-purple-700 hover:to-violet-600 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2 mx-auto lg:mx-0">
                     Explore Internal Organs
                     <Activity className="w-5 h-5" />
@@ -255,7 +255,7 @@ const WhyHealthyPlates = () => {
                     Educational Content
                   </li>
                 </ul>
-                <a href="/body-explorer">
+                <a href="/body-parts">
                   <button className="bg-gradient-to-r from-cyan-600 to-teal-500 hover:from-cyan-700 hover:to-teal-600 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2 mx-auto lg:mx-0">
                     View Body Diagrams
                     <User className="w-5 h-5" />
@@ -321,7 +321,7 @@ const WhyHealthyPlates = () => {
                     Instant Calculation
                   </li>
                 </ul>
-                <a href="/body-explorer">
+                <a href="/bmi-calculator">
                   <button className="bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-700 hover:to-amber-600 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2 mx-auto lg:mx-0">
                     Calculate Your BMI Now
                     <Calculator className="w-5 h-5" />
@@ -387,7 +387,7 @@ const WhyHealthyPlates = () => {
                     Weight Goal Support
                   </li>
                 </ul>
-                <a href="/body-explorer">
+                <a href="/calorie-calculator">
                   <button className="bg-gradient-to-r from-rose-600 to-pink-500 hover:from-rose-700 hover:to-pink-600 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2 mx-auto lg:mx-0">
                     Calculate Daily Calories
                     <Flame className="w-5 h-5" />
