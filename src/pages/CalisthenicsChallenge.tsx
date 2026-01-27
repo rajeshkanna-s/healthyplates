@@ -217,14 +217,13 @@ const CalisthenicsChallenge = () => {
                       if (val === '') {
                         setProfile(p => ({ ...p, age: 0 }));
                       } else if (/^\d+$/.test(val)) {
-                        setProfile(p => ({ ...p, age: parseInt(val) }));
+                        const num = Math.min(80, parseInt(val));
+                        setProfile(p => ({ ...p, age: num }));
                       }
                     }}
                     onBlur={() => {
                       if (profile.age < 10) {
                         setProfile(p => ({ ...p, age: 10 }));
-                      } else if (profile.age > 80) {
-                        setProfile(p => ({ ...p, age: 80 }));
                       }
                     }}
                   />
@@ -267,14 +266,13 @@ const CalisthenicsChallenge = () => {
                       if (val === '') {
                         setProfile(p => ({ ...p, height_cm: 0 }));
                       } else if (/^\d+$/.test(val)) {
-                        setProfile(p => ({ ...p, height_cm: parseInt(val) }));
+                        const num = Math.min(250, parseInt(val));
+                        setProfile(p => ({ ...p, height_cm: num }));
                       }
                     }}
                     onBlur={() => {
                       if (profile.height_cm < 10) {
                         setProfile(p => ({ ...p, height_cm: 10 }));
-                      } else if (profile.height_cm > 250) {
-                        setProfile(p => ({ ...p, height_cm: 250 }));
                       }
                     }}
                   />
@@ -294,15 +292,14 @@ const CalisthenicsChallenge = () => {
                       } else if (/^\d*\.?\d*$/.test(val)) {
                         const num = parseFloat(val);
                         if (!isNaN(num)) {
-                          setProfile(p => ({ ...p, weight_kg: num }));
+                          const clamped = Math.min(300, num);
+                          setProfile(p => ({ ...p, weight_kg: clamped }));
                         }
                       }
                     }}
                     onBlur={() => {
                       if (profile.weight_kg < 10) {
                         setProfile(p => ({ ...p, weight_kg: 10 }));
-                      } else if (profile.weight_kg > 300) {
-                        setProfile(p => ({ ...p, weight_kg: 300 }));
                       }
                     }}
                   />
