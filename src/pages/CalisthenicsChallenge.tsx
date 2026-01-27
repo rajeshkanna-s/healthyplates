@@ -18,9 +18,10 @@ import { Progress } from '@/components/ui/progress';
 import { 
   ChartContainer, 
   ChartTooltip, 
-  ChartTooltipContent 
+  ChartTooltipContent,
+  ChartConfig
 } from '@/components/ui/chart';
-import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, PieChart, Pie, Cell, CartesianGrid, Legend, Tooltip } from 'recharts';
 
 import { 
   UserProfile, 
@@ -204,14 +205,24 @@ const CalisthenicsChallenge = () => {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="age">Age</Label>
+                  <Label htmlFor="age">Age (10-80)</Label>
                   <Input 
                     id="age"
                     type="number"
-                    min={16}
-                    max={75}
+                    min={10}
+                    max={80}
                     value={profile.age}
-                    onChange={(e) => setProfile(p => ({ ...p, age: Math.min(75, Math.max(16, parseInt(e.target.value) || 16)) }))}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === '') {
+                        setProfile(p => ({ ...p, age: 10 }));
+                      } else {
+                        const num = parseInt(val);
+                        if (!isNaN(num)) {
+                          setProfile(p => ({ ...p, age: Math.min(80, Math.max(10, num)) }));
+                        }
+                      }
+                    }}
                   />
                 </div>
               </div>
@@ -240,25 +251,45 @@ const CalisthenicsChallenge = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="height">Height (cm)</Label>
+                  <Label htmlFor="height">Height (cm) - 10 to 250</Label>
                   <Input 
                     id="height"
                     type="number"
-                    min={120}
-                    max={220}
+                    min={10}
+                    max={250}
                     value={profile.height_cm}
-                    onChange={(e) => setProfile(p => ({ ...p, height_cm: Math.min(220, Math.max(120, parseInt(e.target.value) || 120)) }))}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === '') {
+                        setProfile(p => ({ ...p, height_cm: 10 }));
+                      } else {
+                        const num = parseInt(val);
+                        if (!isNaN(num)) {
+                          setProfile(p => ({ ...p, height_cm: Math.min(250, Math.max(10, num)) }));
+                        }
+                      }
+                    }}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="weight">Weight (kg)</Label>
+                  <Label htmlFor="weight">Weight (kg) - 10 to 300</Label>
                   <Input 
                     id="weight"
                     type="number"
-                    min={30}
-                    max={200}
+                    min={10}
+                    max={300}
                     value={profile.weight_kg}
-                    onChange={(e) => setProfile(p => ({ ...p, weight_kg: Math.min(200, Math.max(30, parseFloat(e.target.value) || 30)) }))}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === '') {
+                        setProfile(p => ({ ...p, weight_kg: 10 }));
+                      } else {
+                        const num = parseFloat(val);
+                        if (!isNaN(num)) {
+                          setProfile(p => ({ ...p, weight_kg: Math.min(300, Math.max(10, num)) }));
+                        }
+                      }
+                    }}
                   />
                 </div>
               </div>
@@ -398,79 +429,126 @@ const CalisthenicsChallenge = () => {
               </div>
 
               <div>
-                <Label htmlFor="pushups">Max Push-ups (AMRAP)</Label>
+                <Label htmlFor="pushups">Max Push-ups (AMRAP) - up to 1000</Label>
                 <p className="text-sm text-muted-foreground mb-2">How many push-ups can you do without stopping?</p>
                 <Input 
                   id="pushups"
                   type="number"
                   min={0}
-                  max={100}
+                  max={1000}
                   value={baseline.max_pushups}
-                  onChange={(e) => setBaseline(b => ({ ...b, max_pushups: Math.min(100, parseInt(e.target.value) || 0) }))}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === '') {
+                      setBaseline(b => ({ ...b, max_pushups: 0 }));
+                    } else {
+                      const num = parseInt(val);
+                      if (!isNaN(num)) {
+                        setBaseline(b => ({ ...b, max_pushups: Math.min(1000, Math.max(0, num)) }));
+                      }
+                    }
+                  }}
                 />
               </div>
 
               <div>
-                <Label htmlFor="squats">Max Bodyweight Squats (AMRAP)</Label>
+                <Label htmlFor="squats">Max Bodyweight Squats (AMRAP) - up to 1000</Label>
                 <p className="text-sm text-muted-foreground mb-2">How many air squats can you do without stopping?</p>
                 <Input 
                   id="squats"
                   type="number"
                   min={0}
-                  max={200}
+                  max={1000}
                   value={baseline.max_bodyweight_squat}
-                  onChange={(e) => setBaseline(b => ({ ...b, max_bodyweight_squat: Math.min(200, parseInt(e.target.value) || 0) }))}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === '') {
+                      setBaseline(b => ({ ...b, max_bodyweight_squat: 0 }));
+                    } else {
+                      const num = parseInt(val);
+                      if (!isNaN(num)) {
+                        setBaseline(b => ({ ...b, max_bodyweight_squat: Math.min(1000, Math.max(0, num)) }));
+                      }
+                    }
+                  }}
                 />
               </div>
 
               <div>
-                <Label htmlFor="plank">Max Plank Hold (seconds)</Label>
+                <Label htmlFor="plank">Max Plank Hold (seconds) - up to 1000</Label>
                 <p className="text-sm text-muted-foreground mb-2">How long can you hold a front plank?</p>
                 <Input 
                   id="plank"
                   type="number"
                   min={0}
-                  max={600}
+                  max={1000}
                   value={baseline.max_plank_sec}
-                  onChange={(e) => setBaseline(b => ({ ...b, max_plank_sec: Math.min(600, parseInt(e.target.value) || 0) }))}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === '') {
+                      setBaseline(b => ({ ...b, max_plank_sec: 0 }));
+                    } else {
+                      const num = parseInt(val);
+                      if (!isNaN(num)) {
+                        setBaseline(b => ({ ...b, max_plank_sec: Math.min(1000, Math.max(0, num)) }));
+                      }
+                    }
+                  }}
                 />
               </div>
 
               {profile.equipment.includes('pullup_bar') && (
                 <div>
-                  <Label htmlFor="pullups">Max Pull-ups (AMRAP)</Label>
+                  <Label htmlFor="pullups">Max Pull-ups (AMRAP) - up to 100</Label>
                   <p className="text-sm text-muted-foreground mb-2">How many pull-ups can you do? (0 is okay!)</p>
                   <Input 
                     id="pullups"
                     type="number"
                     min={0}
-                    max={30}
+                    max={100}
                     value={baseline.max_pullups}
-                    onChange={(e) => setBaseline(b => ({ ...b, max_pullups: Math.min(30, parseInt(e.target.value) || 0) }))}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === '') {
+                        setBaseline(b => ({ ...b, max_pullups: 0 }));
+                      } else {
+                        const num = parseInt(val);
+                        if (!isNaN(num)) {
+                          setBaseline(b => ({ ...b, max_pullups: Math.min(100, Math.max(0, num)) }));
+                        }
+                      }
+                    }}
                   />
                 </div>
               )}
 
               <div>
-                <Label>Preferred Effort Level (RPE)</Label>
-                <p className="text-sm text-muted-foreground mb-2">How hard do you want your workouts to feel? (6=Easy, 9=Very Hard)</p>
-                <div className="flex gap-2 mt-2">
-                  {[6, 7, 8, 9].map(rpe => (
-                    <Button
-                      key={rpe}
-                      variant={baseline.rpe_preference === rpe ? 'default' : 'outline'}
-                      className={baseline.rpe_preference === rpe ? 'bg-green-600 hover:bg-green-700' : ''}
-                      onClick={() => setBaseline(b => ({ ...b, rpe_preference: rpe }))}
-                    >
-                      {rpe}
-                    </Button>
-                  ))}
-                </div>
-                <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                  <span>Easy</span>
-                  <span>Moderate</span>
-                  <span>Hard</span>
-                  <span>Very Hard</span>
+                <Label className="mb-2 block">Preferred Effort Level (RPE)</Label>
+                <p className="text-sm text-muted-foreground mb-4">How hard do you want your workouts to feel?</p>
+                <div className="bg-gradient-to-r from-green-100 via-yellow-100 via-orange-100 to-red-100 dark:from-green-900/30 dark:via-yellow-900/30 dark:via-orange-900/30 dark:to-red-900/30 rounded-xl p-4">
+                  <div className="grid grid-cols-4 gap-2">
+                    {[
+                      { value: 6, label: 'Easy', emoji: '😊', color: 'bg-green-500 hover:bg-green-600' },
+                      { value: 7, label: 'Moderate', emoji: '💪', color: 'bg-yellow-500 hover:bg-yellow-600' },
+                      { value: 8, label: 'Hard', emoji: '🔥', color: 'bg-orange-500 hover:bg-orange-600' },
+                      { value: 9, label: 'Very Hard', emoji: '😤', color: 'bg-red-500 hover:bg-red-600' }
+                    ].map(({ value, label, emoji, color }) => (
+                      <button
+                        key={value}
+                        type="button"
+                        onClick={() => setBaseline(b => ({ ...b, rpe_preference: value }))}
+                        className={`flex flex-col items-center p-3 rounded-lg transition-all ${
+                          baseline.rpe_preference === value 
+                            ? `${color} text-white scale-105 shadow-lg ring-2 ring-offset-2 ring-offset-background` 
+                            : 'bg-background/80 hover:bg-background border border-border hover:shadow-md'
+                        }`}
+                      >
+                        <span className="text-2xl mb-1">{emoji}</span>
+                        <span className="text-xl font-bold">{value}</span>
+                        <span className="text-xs mt-1 font-medium">{label}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -708,32 +786,84 @@ const CalisthenicsChallenge = () => {
 
                                 <div className="space-y-3">
                                   {day.exercises.map((ex, i) => (
-                                    <div key={i} className="p-3 border rounded-lg">
-                                      <div className="flex items-center justify-between mb-2">
-                                        <span className="font-medium">{ex.name}</span>
-                                        <Badge variant="outline">{ex.category}</Badge>
+                                    <div key={i} className="p-4 border rounded-lg bg-gradient-to-r from-background to-muted/30">
+                                      <div className="flex items-start gap-4">
+                                        {/* Exercise Visual */}
+                                        <div className={`w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                                          ex.category === 'push' ? 'bg-gradient-to-br from-orange-400 to-orange-600' :
+                                          ex.category === 'pull' ? 'bg-gradient-to-br from-blue-400 to-blue-600' :
+                                          ex.category === 'legs' ? 'bg-gradient-to-br from-green-400 to-green-600' :
+                                          ex.category === 'core' ? 'bg-gradient-to-br from-purple-400 to-purple-600' :
+                                          'bg-gradient-to-br from-red-400 to-red-600'
+                                        }`}>
+                                          <span className="text-3xl">
+                                            {ex.category === 'push' ? '💪' :
+                                             ex.category === 'pull' ? '🏋️' :
+                                             ex.category === 'legs' ? '🦵' :
+                                             ex.category === 'core' ? '🎯' :
+                                             '🔥'}
+                                          </span>
+                                        </div>
+                                        
+                                        <div className="flex-1">
+                                          <div className="flex items-center justify-between mb-2">
+                                            <span className="font-semibold text-lg">{ex.name}</span>
+                                            <Badge 
+                                              className={`${
+                                                ex.category === 'push' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300' :
+                                                ex.category === 'pull' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' :
+                                                ex.category === 'legs' ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' :
+                                                ex.category === 'core' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300' :
+                                                'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
+                                              }`}
+                                            >
+                                              {ex.category.toUpperCase()}
+                                            </Badge>
+                                          </div>
+                                          
+                                          {/* Target Muscles */}
+                                          <div className="flex flex-wrap gap-1 mb-3">
+                                            {ex.target_muscles.map((muscle, idx) => (
+                                              <span key={idx} className="text-xs px-2 py-0.5 bg-muted rounded-full text-muted-foreground">
+                                                {muscle}
+                                              </span>
+                                            ))}
+                                          </div>
+                                          
+                                          {/* Exercise Details */}
+                                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3 bg-background rounded-lg border">
+                                            <div className="text-center">
+                                              <div className="text-xl font-bold text-primary">{ex.sets}</div>
+                                              <div className="text-xs text-muted-foreground">Sets</div>
+                                            </div>
+                                            <div className="text-center">
+                                              <div className="text-xl font-bold text-primary">
+                                                {Array.isArray(ex.reps_per_set) 
+                                                  ? ex.reps_per_set[0] 
+                                                  : `${ex.reps_per_set.hold_sec}s`}
+                                              </div>
+                                              <div className="text-xs text-muted-foreground">
+                                                {Array.isArray(ex.reps_per_set) ? 'Reps' : 'Hold'}
+                                              </div>
+                                            </div>
+                                            <div className="text-center">
+                                              <div className="text-xl font-bold text-primary">{ex.rest_sec}s</div>
+                                              <div className="text-xs text-muted-foreground">Rest</div>
+                                            </div>
+                                            <div className="text-center">
+                                              <div className="text-xl font-bold text-primary">{ex.tempo}</div>
+                                              <div className="text-xs text-muted-foreground">Tempo</div>
+                                            </div>
+                                          </div>
+                                          
+                                          {ex.notes && (
+                                            <p className="text-sm text-muted-foreground mt-2 italic flex items-center gap-1">
+                                              <TrendingUp className="w-3 h-3" />
+                                              {ex.notes}
+                                            </p>
+                                          )}
+                                        </div>
                                       </div>
-                                      <div className="grid grid-cols-4 gap-2 text-sm text-muted-foreground">
-                                        <div>
-                                          <span className="font-medium text-foreground">{ex.sets}</span> sets
-                                        </div>
-                                        <div>
-                                          <span className="font-medium text-foreground">
-                                            {Array.isArray(ex.reps_per_set) 
-                                              ? ex.reps_per_set[0] 
-                                              : `${ex.reps_per_set.hold_sec}s`}
-                                          </span> {Array.isArray(ex.reps_per_set) ? 'reps' : 'hold'}
-                                        </div>
-                                        <div>
-                                          <span className="font-medium text-foreground">{ex.rest_sec}s</span> rest
-                                        </div>
-                                        <div>
-                                          <span className="font-medium text-foreground">{ex.tempo}</span> tempo
-                                        </div>
-                                      </div>
-                                      {ex.notes && (
-                                        <p className="text-xs text-muted-foreground mt-2 italic">{ex.notes}</p>
-                                      )}
                                     </div>
                                   ))}
                                 </div>
@@ -763,34 +893,66 @@ const CalisthenicsChallenge = () => {
                   <Card>
                     <CardHeader>
                       <CardTitle className="text-lg">Volume Over Time</CardTitle>
+                      <CardDescription>Track your training volume progression</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <div className="h-64">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <LineChart data={volumeData}>
-                            <XAxis dataKey="date" tick={{ fontSize: 10 }} />
-                            <YAxis />
+                      {volumeData.length > 0 ? (
+                        <ChartContainer
+                          config={{
+                            volume: {
+                              label: "Volume",
+                              color: "hsl(var(--primary))",
+                            },
+                          } satisfies ChartConfig}
+                          className="h-64 w-full"
+                        >
+                          <LineChart data={volumeData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                            <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                            <XAxis 
+                              dataKey="date" 
+                              tick={{ fontSize: 10 }} 
+                              tickFormatter={(value) => {
+                                const date = new Date(value);
+                                return `${date.getDate()}/${date.getMonth() + 1}`;
+                              }}
+                            />
+                            <YAxis tick={{ fontSize: 10 }} />
                             <ChartTooltip content={<ChartTooltipContent />} />
                             <Line 
                               type="monotone" 
                               dataKey="volume" 
-                              stroke="hsl(var(--primary))" 
+                              stroke="var(--color-volume)"
                               strokeWidth={2}
-                              dot={{ r: 3 }}
+                              dot={{ r: 4, fill: "var(--color-volume)" }}
+                              activeDot={{ r: 6 }}
                             />
                           </LineChart>
-                        </ResponsiveContainer>
-                      </div>
+                        </ChartContainer>
+                      ) : (
+                        <div className="h-64 flex items-center justify-center text-muted-foreground">
+                          No volume data available
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
 
                   <Card>
                     <CardHeader>
                       <CardTitle className="text-lg">Muscle Group Distribution</CardTitle>
+                      <CardDescription>Breakdown of targeted muscle groups</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <div className="h-64">
-                        <ResponsiveContainer width="100%" height="100%">
+                      {muscleData.length > 0 ? (
+                        <ChartContainer
+                          config={muscleData.reduce((acc, item) => {
+                            acc[item.muscle] = {
+                              label: item.muscle,
+                              color: item.color,
+                            };
+                            return acc;
+                          }, {} as ChartConfig)}
+                          className="h-64 w-full"
+                        >
                           <PieChart>
                             <Pie
                               data={muscleData}
@@ -799,19 +961,53 @@ const CalisthenicsChallenge = () => {
                               cx="50%"
                               cy="50%"
                               outerRadius={80}
-                              label={({ muscle }) => muscle}
+                              innerRadius={40}
+                              paddingAngle={2}
+                              label={({ muscle, value }) => `${muscle}: ${value}`}
+                              labelLine={{ stroke: 'hsl(var(--muted-foreground))', strokeWidth: 1 }}
                             >
                               {muscleData.map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={entry.color} />
                               ))}
                             </Pie>
-                            <ChartTooltip />
+                            <Tooltip 
+                              formatter={(value, name) => [`${value} exercises`, name]}
+                              contentStyle={{ 
+                                backgroundColor: 'hsl(var(--background))', 
+                                border: '1px solid hsl(var(--border))',
+                                borderRadius: '8px'
+                              }}
+                            />
                           </PieChart>
-                        </ResponsiveContainer>
-                      </div>
+                        </ChartContainer>
+                      ) : (
+                        <div className="h-64 flex items-center justify-center text-muted-foreground">
+                          No muscle distribution data available
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                 </div>
+                
+                {/* Legend for muscle distribution */}
+                {muscleData.length > 0 && (
+                  <Card className="mt-4">
+                    <CardContent className="pt-4">
+                      <div className="flex flex-wrap gap-3 justify-center">
+                        {muscleData.map((item, idx) => (
+                          <div key={idx} className="flex items-center gap-2">
+                            <div 
+                              className="w-3 h-3 rounded-full" 
+                              style={{ backgroundColor: item.color }}
+                            />
+                            <span className="text-sm">{item.muscle}</span>
+                            <span className="text-xs text-muted-foreground">({item.value})</span>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
               </TabsContent>
 
               <TabsContent value="library" className="mt-4">
@@ -823,16 +1019,75 @@ const CalisthenicsChallenge = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {plan.exercise_library.map((ex, i) => (
-                        <div key={i} className="p-3 border rounded-lg">
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="font-medium text-sm">{ex.name}</span>
-                            <Badge variant="outline" className="text-xs">{ex.difficulty}</Badge>
+                        <div key={i} className="p-4 border rounded-xl bg-gradient-to-br from-background to-muted/20 hover:shadow-lg transition-shadow">
+                          <div className="flex items-start gap-3">
+                            {/* Exercise Icon */}
+                            <div className={`w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                              ex.category === 'push' ? 'bg-gradient-to-br from-orange-400 to-orange-600' :
+                              ex.category === 'pull' ? 'bg-gradient-to-br from-blue-400 to-blue-600' :
+                              ex.category === 'legs' ? 'bg-gradient-to-br from-green-400 to-green-600' :
+                              ex.category === 'core' ? 'bg-gradient-to-br from-purple-400 to-purple-600' :
+                              'bg-gradient-to-br from-red-400 to-red-600'
+                            }`}>
+                              <span className="text-2xl">
+                                {ex.category === 'push' ? '💪' :
+                                 ex.category === 'pull' ? '🏋️' :
+                                 ex.category === 'legs' ? '🦵' :
+                                 ex.category === 'core' ? '🎯' :
+                                 '🔥'}
+                              </span>
+                            </div>
+                            
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between gap-2 mb-1">
+                                <span className="font-semibold text-sm truncate">{ex.name}</span>
+                              </div>
+                              <div className="flex gap-2 mb-2">
+                                <Badge 
+                                  variant="outline" 
+                                  className={`text-xs ${
+                                    ex.difficulty === 'beginner' ? 'border-green-500 text-green-600' :
+                                    ex.difficulty === 'intermediate' ? 'border-yellow-500 text-yellow-600' :
+                                    'border-red-500 text-red-600'
+                                  }`}
+                                >
+                                  {ex.difficulty}
+                                </Badge>
+                                <Badge 
+                                  className={`text-xs ${
+                                    ex.category === 'push' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300' :
+                                    ex.category === 'pull' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300' :
+                                    ex.category === 'legs' ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300' :
+                                    ex.category === 'core' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300' :
+                                    'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300'
+                                  }`}
+                                >
+                                  {ex.category}
+                                </Badge>
+                              </div>
+                              <div className="text-xs text-muted-foreground">
+                                {ex.primary_muscles.slice(0, 3).join(', ')}
+                              </div>
+                            </div>
                           </div>
-                          <div className="text-xs text-muted-foreground">
-                            {ex.primary_muscles.slice(0, 3).join(', ')}
-                          </div>
+                          
+                          {/* Progression info */}
+                          {(ex.progressions.easier || ex.progressions.harder) && (
+                            <div className="mt-3 pt-3 border-t text-xs space-y-1">
+                              {ex.progressions.easier && (
+                                <div className="flex items-center gap-1 text-muted-foreground">
+                                  <span className="text-green-500">⬇</span> Easier: {ex.progressions.easier}
+                                </div>
+                              )}
+                              {ex.progressions.harder && (
+                                <div className="flex items-center gap-1 text-muted-foreground">
+                                  <span className="text-red-500">⬆</span> Harder: {ex.progressions.harder}
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
