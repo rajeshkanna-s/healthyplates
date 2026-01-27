@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Brain, Heart, Activity, Droplets, Apple, Sparkles, X, ZoomIn, Wind, Filter, RotateCcw, User, Bone, Calculator, Scale, Ruler, Flame, Users, Target } from "lucide-react";
+import { Brain, Heart, Activity, Droplets, Apple, Sparkles, X, ZoomIn, Wind, Filter, RotateCcw, User, Bone, Calculator, Scale, Ruler, Flame, Users, Target, Dumbbell } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
@@ -1439,7 +1439,7 @@ export default function BodyExplorer() {
 
         {/* Tabs for switching between views */}
         <Tabs defaultValue="organs" className="w-full">
-          <TabsList className="grid w-full max-w-3xl mx-auto grid-cols-5 mb-8">
+          <TabsList className="grid w-full max-w-4xl mx-auto grid-cols-6 mb-8">
             <TabsTrigger value="organs" className="flex items-center gap-1 text-xs sm:text-sm">
               <Heart className="h-4 w-4" />
               <span className="hidden sm:inline">Internal</span> Organs
@@ -1459,6 +1459,10 @@ export default function BodyExplorer() {
             <TabsTrigger value="macro-calc" className="flex items-center gap-1 text-xs sm:text-sm">
               <Target className="h-4 w-4" />
               Macro
+            </TabsTrigger>
+            <TabsTrigger value="calisthenics" className="flex items-center gap-1 text-xs sm:text-sm">
+              <Dumbbell className="h-4 w-4" />
+              Calisthenics
             </TabsTrigger>
           </TabsList>
 
@@ -1843,6 +1847,50 @@ export default function BodyExplorer() {
           {/* Macro Calculator Tab */}
           <TabsContent value="macro-calc" className="animate-fade-in">
             <MacroCalculatorTab />
+          </TabsContent>
+
+          {/* Calisthenics Challenge Tab */}
+          <TabsContent value="calisthenics" className="animate-fade-in">
+            <div className="max-w-2xl mx-auto text-center">
+              <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-blue-200 dark:border-blue-800">
+                <CardContent className="p-8">
+                  <div className="p-4 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                    <Dumbbell className="w-10 h-10 text-white" />
+                  </div>
+                  <h2 className="text-3xl font-bold text-blue-800 dark:text-blue-200 mb-4">
+                    Calisthenics Workout Challenge
+                  </h2>
+                  <p className="text-lg text-blue-600 dark:text-blue-400 mb-6">
+                    Build strength without a gym! Get a personalized bodyweight workout program 
+                    based on your fitness level, goals, and available equipment.
+                  </p>
+                  <ul className="grid grid-cols-2 gap-3 text-sm text-muted-foreground mb-8 max-w-md mx-auto">
+                    <li className="flex items-center gap-2">
+                      <Heart className="w-4 h-4 text-blue-600" />
+                      7, 14 or 30 Day Plans
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Heart className="w-4 h-4 text-blue-600" />
+                      30+ Exercises
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Heart className="w-4 h-4 text-blue-600" />
+                      Injury-Safe Options
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Heart className="w-4 h-4 text-blue-600" />
+                      PDF & Excel Export
+                    </li>
+                  </ul>
+                  <a href="/calisthenics-challenge">
+                    <button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2 mx-auto">
+                      Start Calisthenics Challenge
+                      <Dumbbell className="w-5 h-5" />
+                    </button>
+                  </a>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
         </Tabs>

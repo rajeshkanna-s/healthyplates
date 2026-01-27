@@ -1,4 +1,4 @@
-import { Heart, Shield, Brain, Zap, Activity, Calculator, Flame, User, Target } from 'lucide-react';
+import { Heart, Shield, Brain, Zap, Activity, Calculator, Flame, User, Target, Dumbbell } from 'lucide-react';
 
 const WhyHealthyPlates = () => {
   const features = [
@@ -475,6 +475,72 @@ const WhyHealthyPlates = () => {
                 </div>
                 <div className="absolute -bottom-4 -left-4 bg-white dark:bg-gray-800 rounded-full px-4 py-2 shadow-lg border border-green-200 dark:border-green-800">
                   <span className="text-green-600 font-bold text-sm">Goal-Based</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Calisthenics Workout Challenge Promotion */}
+        <div className="mt-12 bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 p-1 rounded-3xl shadow-2xl">
+          <div className="bg-card rounded-[22px] p-8 md:p-12 relative overflow-hidden">
+            <div className="absolute inset-0 opacity-5">
+              <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-500 rounded-full blur-3xl transform -translate-x-1/2 translate-y-1/2"></div>
+            </div>
+            
+            <div className="relative z-10 flex flex-col lg:flex-row items-center gap-8">
+              <div className="flex-1 text-center lg:text-left">
+                <div className="inline-flex items-center gap-2 bg-blue-500/10 text-blue-600 dark:text-blue-400 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                  <Dumbbell className="w-4 h-4" />
+                  FREE Calisthenics Challenge
+                </div>
+                <h3 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                  Start Your <span className="text-blue-600">Bodyweight</span> Workout Challenge!
+                </h3>
+                <p className="text-lg text-muted-foreground mb-6 max-w-xl">
+                  Build strength without a gym! Get a personalized calisthenics program based on your fitness level, 
+                  goals, and available equipment. Includes progression tracking, PDF & Excel exports.
+                </p>
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-muted-foreground mb-8">
+                  <li className="flex items-center gap-2">
+                    <Heart className="w-4 h-4 text-blue-600" />
+                    7, 14 or 30 Day Programs
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Heart className="w-4 h-4 text-blue-600" />
+                    30+ Bodyweight Exercises
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Heart className="w-4 h-4 text-blue-600" />
+                    Injury-Safe Substitutions
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Heart className="w-4 h-4 text-blue-600" />
+                    PDF & Excel Export
+                  </li>
+                </ul>
+                <a href="/calisthenics-challenge">
+                  <button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2 mx-auto lg:mx-0">
+                    Start Calisthenics Challenge
+                    <Dumbbell className="w-5 h-5" />
+                  </button>
+                </a>
+              </div>
+
+              <div className="hidden lg:block relative">
+                <div className="w-72 h-72 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-3xl flex items-center justify-center shadow-xl">
+                  <div className="text-center p-6">
+                    <div className="text-6xl mb-4">💪</div>
+                    <div className="text-2xl font-bold text-blue-600 mb-2">Calisthenics</div>
+                    <div className="text-sm text-muted-foreground">No Gym Required</div>
+                  </div>
+                </div>
+                <div className="absolute -top-4 -right-4 bg-white dark:bg-gray-800 rounded-full px-4 py-2 shadow-lg border border-blue-200 dark:border-blue-800">
+                  <span className="text-blue-600 font-bold text-sm">100% Free</span>
+                </div>
+                <div className="absolute -bottom-4 -left-4 bg-white dark:bg-gray-800 rounded-full px-4 py-2 shadow-lg border border-indigo-200 dark:border-indigo-800">
+                  <span className="text-indigo-600 font-bold text-sm">Personalized</span>
                 </div>
               </div>
             </div>
