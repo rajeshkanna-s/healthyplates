@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Brain, Heart, Activity, Droplets, Apple, Sparkles, X, ZoomIn, Wind, Filter, RotateCcw, User, Bone, Calculator, Scale, Ruler, Flame, Users } from "lucide-react";
+import { Brain, Heart, Activity, Droplets, Apple, Sparkles, X, ZoomIn, Wind, Filter, RotateCcw, User, Bone, Calculator, Scale, Ruler, Flame, Users, Target } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
@@ -1129,6 +1129,266 @@ function DailyCalorieCalculator() {
   );
 }
 
+// Macro Calculator Tab Component
+function MacroCalculatorTab() {
+  const [sex, setSex] = useState<"male" | "female">("male");
+  const [age, setAge] = useState<string>("");
+  const [weight, setWeight] = useState<string>("");
+  const [height, setHeight] = useState<string>("");
+  const [activityLevel, setActivityLevel] = useState<string>("1.55");
+  const [goal, setGoal] = useState<string>("maintain");
+  const [result, setResult] = useState<{
+    bmr: number;
+    tdee: number;
+    goalCalories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+  } | null>(null);
+
+  const activityMultipliers: { [key: string]: { label: string; description: string } } = {
+    "1.2": { label: "Sedentary", description: "Desk job, little exercise" },
+    "1.375": { label: "Lightly Active", description: "Light exercise 1-3 days/week" },
+    "1.55": { label: "Moderate", description: "Gym 3-5 times/week" },
+    "1.725": { label: "Very Active", description: "Heavy workouts daily" },
+    "1.9": { label: "Super Active", description: "Athlete or physical job" },
+  };
+
+  const goalAdjustments: { [key: string]: { factor: number; label: string; proteinMultiplier: number } } = {
+    loss: { factor: 0.80, label: "Fat Loss (-20%)", proteinMultiplier: 1.8 },
+    maintain: { factor: 1.0, label: "Maintenance", proteinMultiplier: 1.6 },
+    gain: { factor: 1.10, label: "Muscle Gain (+10%)", proteinMultiplier: 2.0 },
+  };
+
+  const calculateMacros = () => {
+    const weightKg = parseFloat(weight);
+    const heightCm = parseFloat(height);
+    const ageYears = parseInt(age);
+
+    if (!weightKg || !heightCm || !ageYears) return;
+
+    // BMR using Mifflin-St Jeor
+    let bmr: number;
+    if (sex === "male") {
+      bmr = 10 * weightKg + 6.25 * heightCm - 5 * ageYears + 5;
+    } else {
+      bmr = 10 * weightKg + 6.25 * heightCm - 5 * ageYears - 161;
+    }
+
+    // TDEE
+    const tdee = bmr * parseFloat(activityLevel);
+
+    // Goal calories
+    const goalCalories = tdee * goalAdjustments[goal].factor;
+
+    // Macros
+    const proteinGrams = weightKg * goalAdjustments[goal].proteinMultiplier;
+    const proteinCalories = proteinGrams * 4;
+    const fatCalories = goalCalories * 0.25;
+    const fatGrams = fatCalories / 9;
+    const carbsCalories = goalCalories - proteinCalories - fatCalories;
+    const carbsGrams = carbsCalories / 4;
+
+    setResult({
+      bmr: Math.round(bmr),
+      tdee: Math.round(tdee),
+      goalCalories: Math.round(goalCalories),
+      protein: Math.round(proteinGrams),
+      carbs: Math.round(carbsGrams),
+      fat: Math.round(fatGrams),
+    });
+  };
+
+  const resetCalculator = () => {
+    setSex("male");
+    setAge("");
+    setWeight("");
+    setHeight("");
+    setActivityLevel("1.55");
+    setGoal("maintain");
+    setResult(null);
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto">
+      <Card className="mb-8 bg-gradient-to-r from-lime-50 to-green-50 dark:from-lime-950/30 dark:to-green-950/30 border-lime-200 dark:border-lime-800">
+        <CardContent className="p-6">
+          <h2 className="text-2xl font-bold text-lime-800 dark:text-lime-200 flex items-center gap-2">
+            <Target className="w-6 h-6" />
+            Macro Calculator
+          </h2>
+          <p className="text-lime-600 dark:text-lime-400">
+            Calculate your daily protein, carbs, and fat targets based on your fitness goals
+          </p>
+        </CardContent>
+      </Card>
+
+      <div className="grid lg:grid-cols-2 gap-8">
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle>Enter Your Details</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Gender */}
+            <div className="space-y-2">
+              <Label>Gender</Label>
+              <RadioGroup value={sex} onValueChange={(v) => setSex(v as "male" | "female")} className="flex gap-4">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="male" id="macro-male" />
+                  <Label htmlFor="macro-male">Male</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="female" id="macro-female" />
+                  <Label htmlFor="macro-female">Female</Label>
+                </div>
+              </RadioGroup>
+            </div>
+
+            {/* Age, Weight, Height */}
+            <div className="grid grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="macro-age">Age</Label>
+                <Input id="macro-age" type="number" placeholder="25" value={age} onChange={(e) => setAge(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="macro-weight">Weight (kg)</Label>
+                <Input id="macro-weight" type="number" placeholder="70" value={weight} onChange={(e) => setWeight(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="macro-height">Height (cm)</Label>
+                <Input id="macro-height" type="number" placeholder="175" value={height} onChange={(e) => setHeight(e.target.value)} />
+              </div>
+            </div>
+
+            {/* Activity Level */}
+            <div className="space-y-2">
+              <Label>Activity Level</Label>
+              <Select value={activityLevel} onValueChange={setActivityLevel}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select activity level" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(activityMultipliers).map(([key, { label, description }]) => (
+                    <SelectItem key={key} value={key}>
+                      {label} - {description}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Goal */}
+            <div className="space-y-2">
+              <Label>Fitness Goal</Label>
+              <div className="grid grid-cols-3 gap-2">
+                {Object.entries(goalAdjustments).map(([key, { label }]) => (
+                  <Button
+                    key={key}
+                    variant={goal === key ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setGoal(key)}
+                    className={goal === key ? "bg-lime-600 hover:bg-lime-700" : ""}
+                  >
+                    {label.split(" ")[0]}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <Button onClick={calculateMacros} className="flex-1 bg-gradient-to-r from-lime-600 to-green-600 hover:from-lime-700 hover:to-green-700">
+                <Calculator className="w-4 h-4 mr-2" />
+                Calculate Macros
+              </Button>
+              <Button variant="outline" onClick={resetCalculator}>Reset</Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Results */}
+        <div className="space-y-4">
+          {result ? (
+            <>
+              <Card className="shadow-lg">
+                <CardHeader className="bg-gradient-to-r from-green-600 to-lime-600 text-white rounded-t-lg">
+                  <CardTitle className="flex items-center gap-2">
+                    <Flame className="w-5 h-5" />
+                    Your Daily Targets
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="grid grid-cols-3 gap-4 mb-4">
+                    <div className="text-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                      <div className="text-xl font-bold text-blue-600">{result.bmr}</div>
+                      <div className="text-xs text-muted-foreground">BMR</div>
+                    </div>
+                    <div className="text-center p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                      <div className="text-xl font-bold text-purple-600">{result.tdee}</div>
+                      <div className="text-xs text-muted-foreground">TDEE</div>
+                    </div>
+                    <div className="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border-2 border-green-300">
+                      <div className="text-xl font-bold text-green-600">{result.goalCalories}</div>
+                      <div className="text-xs text-muted-foreground">Target</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Target className="w-5 h-5 text-lime-600" />
+                    Macro Breakdown
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                    <div className="flex justify-between items-center">
+                      <span className="font-semibold text-red-700 dark:text-red-400">Protein</span>
+                      <Badge variant="secondary" className="bg-red-100 text-red-700">{Math.round(result.protein * 4)} kcal</Badge>
+                    </div>
+                    <div className="text-2xl font-bold text-red-600">{result.protein}g</div>
+                  </div>
+                  <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                    <div className="flex justify-between items-center">
+                      <span className="font-semibold text-amber-700 dark:text-amber-400">Carbohydrates</span>
+                      <Badge variant="secondary" className="bg-amber-100 text-amber-700">{Math.round(result.carbs * 4)} kcal</Badge>
+                    </div>
+                    <div className="text-2xl font-bold text-amber-600">{result.carbs}g</div>
+                  </div>
+                  <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                    <div className="flex justify-between items-center">
+                      <span className="font-semibold text-blue-700 dark:text-blue-400">Fat</span>
+                      <Badge variant="secondary" className="bg-blue-100 text-blue-700">{Math.round(result.fat * 9)} kcal</Badge>
+                    </div>
+                    <div className="text-2xl font-bold text-blue-600">{result.fat}g</div>
+                  </div>
+                </CardContent>
+              </Card>
+            </>
+          ) : (
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle>What Are Macros?</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm text-muted-foreground">
+                <p><strong>Protein:</strong> Muscle building & repair (4 cal/gram)</p>
+                <p><strong>Carbohydrates:</strong> Primary energy source (4 cal/gram)</p>
+                <p><strong>Fat:</strong> Hormone balance & energy storage (9 cal/gram)</p>
+                <div className="p-3 bg-lime-50 dark:bg-lime-900/20 rounded-lg mt-4">
+                  <p className="text-lime-700 dark:text-lime-300 font-medium">
+                    Enter your details to get personalized macro targets!
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const internalOrgans: BodyPart[] = [
   { id: "brain-part", name: "Brain", position: { x: 50, y: 5 }, labelPosition: "right", category: "head" },
   { id: "thyroid", name: "Thyroid", position: { x: 50, y: 17 }, labelPosition: "right", category: "torso" },
@@ -1179,7 +1439,7 @@ export default function BodyExplorer() {
 
         {/* Tabs for switching between views */}
         <Tabs defaultValue="organs" className="w-full">
-          <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-4 mb-8">
+          <TabsList className="grid w-full max-w-3xl mx-auto grid-cols-5 mb-8">
             <TabsTrigger value="organs" className="flex items-center gap-1 text-xs sm:text-sm">
               <Heart className="h-4 w-4" />
               <span className="hidden sm:inline">Internal</span> Organs
@@ -1195,6 +1455,10 @@ export default function BodyExplorer() {
             <TabsTrigger value="calorie-calc" className="flex items-center gap-1 text-xs sm:text-sm">
               <Flame className="h-4 w-4" />
               Calorie
+            </TabsTrigger>
+            <TabsTrigger value="macro-calc" className="flex items-center gap-1 text-xs sm:text-sm">
+              <Target className="h-4 w-4" />
+              Macro
             </TabsTrigger>
           </TabsList>
 
@@ -1574,6 +1838,11 @@ export default function BodyExplorer() {
           {/* Daily Calorie Calculator Tab */}
           <TabsContent value="calorie-calc" className="animate-fade-in">
             <DailyCalorieCalculator />
+          </TabsContent>
+
+          {/* Macro Calculator Tab */}
+          <TabsContent value="macro-calc" className="animate-fade-in">
+            <MacroCalculatorTab />
           </TabsContent>
 
         </Tabs>

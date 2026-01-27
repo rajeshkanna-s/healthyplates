@@ -1,4 +1,4 @@
-import { Heart, Shield, Brain, Zap, Activity, Calculator, Flame, User } from 'lucide-react';
+import { Heart, Shield, Brain, Zap, Activity, Calculator, Flame, User, Target } from 'lucide-react';
 
 const WhyHealthyPlates = () => {
   const features = [
@@ -408,6 +408,73 @@ const WhyHealthyPlates = () => {
                 </div>
                 <div className="absolute -bottom-4 -left-4 bg-white dark:bg-gray-800 rounded-full px-4 py-2 shadow-lg border border-pink-200 dark:border-pink-800">
                   <span className="text-pink-600 font-bold text-sm">Science-Based</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Macro Calculator Promotion */}
+        <div className="mt-12 bg-gradient-to-r from-lime-600 via-green-500 to-emerald-600 p-1 rounded-3xl shadow-2xl">
+          <div className="bg-card rounded-[22px] p-8 md:p-12 relative overflow-hidden">
+            <div className="absolute inset-0 opacity-5">
+              <div className="absolute top-0 right-0 w-96 h-96 bg-lime-500 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-green-500 rounded-full blur-3xl transform -translate-x-1/2 translate-y-1/2"></div>
+            </div>
+            
+            <div className="relative z-10 flex flex-col lg:flex-row items-center gap-8">
+              <div className="flex-1 text-center lg:text-left">
+                <div className="inline-flex items-center gap-2 bg-lime-500/10 text-lime-600 dark:text-lime-400 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                  <Target className="w-4 h-4" />
+                  FREE Macro Calculator
+                </div>
+                <h3 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                  Calculate Your <span className="text-lime-600">Daily Macros</span> Now!
+                </h3>
+                <p className="text-lg text-muted-foreground mb-6 max-w-xl">
+                  Get personalized macronutrient targets based on your fitness goals! Whether you want to 
+                  lose fat, maintain weight, or gain muscle - our Macro Calculator gives you exact protein, 
+                  carbs, and fat targets.
+                </p>
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-muted-foreground mb-8">
+                  <li className="flex items-center gap-2">
+                    <Heart className="w-4 h-4 text-lime-600" />
+                    Protein, Carbs & Fat Targets
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Heart className="w-4 h-4 text-lime-600" />
+                    Goal-Based Calculations
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Heart className="w-4 h-4 text-lime-600" />
+                    BMR & TDEE Included
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Heart className="w-4 h-4 text-lime-600" />
+                    Activity Level Adjusted
+                  </li>
+                </ul>
+                <a href="/macro-calculator">
+                  <button className="bg-gradient-to-r from-lime-600 to-green-600 hover:from-lime-700 hover:to-green-700 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2 mx-auto lg:mx-0">
+                    Calculate Your Macros
+                    <Target className="w-5 h-5" />
+                  </button>
+                </a>
+              </div>
+
+              <div className="hidden lg:block relative">
+                <div className="w-72 h-72 bg-gradient-to-br from-lime-100 to-green-100 dark:from-lime-900/30 dark:to-green-900/30 rounded-3xl flex items-center justify-center shadow-xl">
+                  <div className="text-center p-6">
+                    <div className="text-6xl mb-4">🥩</div>
+                    <div className="text-2xl font-bold text-lime-600 mb-2">Macro Calculator</div>
+                    <div className="text-sm text-muted-foreground">Protein • Carbs • Fat</div>
+                  </div>
+                </div>
+                <div className="absolute -top-4 -right-4 bg-white dark:bg-gray-800 rounded-full px-4 py-2 shadow-lg border border-lime-200 dark:border-lime-800">
+                  <span className="text-lime-600 font-bold text-sm">100% Free</span>
+                </div>
+                <div className="absolute -bottom-4 -left-4 bg-white dark:bg-gray-800 rounded-full px-4 py-2 shadow-lg border border-green-200 dark:border-green-800">
+                  <span className="text-green-600 font-bold text-sm">Goal-Based</span>
                 </div>
               </div>
             </div>

@@ -31,6 +31,7 @@ import InternalOrgans from "./pages/InternalOrgans";
 import BodyParts from "./pages/BodyParts";
 import BMICalculator from "./pages/BMICalculator";
 import CalorieCalculator from "./pages/CalorieCalculator";
+import MacroCalculator from "./pages/MacroCalculator";
 
 const queryClient = new QueryClient();
 
@@ -60,6 +61,7 @@ const App = () => (
             <Route path="body-parts" element={<BodyParts />} />
             <Route path="bmi-calculator" element={<BMICalculator />} />
             <Route path="calorie-calculator" element={<CalorieCalculator />} />
+            <Route path="macro-calculator" element={<MacroCalculator />} />
             <Route path="admin" element={<Admin />} />
             {/* Redirect old data-entry route to admin */}
             <Route path="data-entry" element={<Admin />} />
