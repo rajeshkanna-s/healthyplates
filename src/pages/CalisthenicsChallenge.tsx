@@ -211,19 +211,21 @@ const CalisthenicsChallenge = () => {
                     type="text"
                     inputMode="numeric"
                     pattern="[0-9]*"
-                    value={profile.age}
+                    value={profile.age === 0 ? '' : String(profile.age)}
                     onChange={(e) => {
                       const val = e.target.value;
-                      // Allow empty or valid numbers during typing
-                      if (val === '' || /^\d+$/.test(val)) {
-                        const num = val === '' ? 0 : parseInt(val);
-                        setProfile(p => ({ ...p, age: num }));
+                      if (val === '') {
+                        setProfile(p => ({ ...p, age: 0 }));
+                      } else if (/^\d+$/.test(val)) {
+                        setProfile(p => ({ ...p, age: parseInt(val) }));
                       }
                     }}
-                    onBlur={(e) => {
-                      // Validate and clamp on blur
-                      const num = parseInt(e.target.value) || 10;
-                      setProfile(p => ({ ...p, age: Math.min(80, Math.max(10, num)) }));
+                    onBlur={() => {
+                      if (profile.age < 10) {
+                        setProfile(p => ({ ...p, age: 10 }));
+                      } else if (profile.age > 80) {
+                        setProfile(p => ({ ...p, age: 80 }));
+                      }
                     }}
                   />
                 </div>
@@ -259,19 +261,21 @@ const CalisthenicsChallenge = () => {
                     type="text"
                     inputMode="numeric"
                     pattern="[0-9]*"
-                    value={profile.height_cm}
+                    value={profile.height_cm === 0 ? '' : String(profile.height_cm)}
                     onChange={(e) => {
                       const val = e.target.value;
-                      // Allow empty or valid numbers during typing
-                      if (val === '' || /^\d+$/.test(val)) {
-                        const num = val === '' ? 0 : parseInt(val);
-                        setProfile(p => ({ ...p, height_cm: num }));
+                      if (val === '') {
+                        setProfile(p => ({ ...p, height_cm: 0 }));
+                      } else if (/^\d+$/.test(val)) {
+                        setProfile(p => ({ ...p, height_cm: parseInt(val) }));
                       }
                     }}
-                    onBlur={(e) => {
-                      // Validate and clamp on blur
-                      const num = parseInt(e.target.value) || 100;
-                      setProfile(p => ({ ...p, height_cm: Math.min(250, Math.max(10, num)) }));
+                    onBlur={() => {
+                      if (profile.height_cm < 10) {
+                        setProfile(p => ({ ...p, height_cm: 10 }));
+                      } else if (profile.height_cm > 250) {
+                        setProfile(p => ({ ...p, height_cm: 250 }));
+                      }
                     }}
                   />
                 </div>
@@ -282,21 +286,24 @@ const CalisthenicsChallenge = () => {
                     type="text"
                     inputMode="numeric"
                     pattern="[0-9.]*"
-                    value={profile.weight_kg}
+                    value={profile.weight_kg === 0 ? '' : String(profile.weight_kg)}
                     onChange={(e) => {
                       const val = e.target.value;
-                      // Allow empty or valid numbers (including decimals) during typing
-                      if (val === '' || /^\d*\.?\d*$/.test(val)) {
-                        const num = val === '' ? 0 : parseFloat(val);
+                      if (val === '') {
+                        setProfile(p => ({ ...p, weight_kg: 0 }));
+                      } else if (/^\d*\.?\d*$/.test(val)) {
+                        const num = parseFloat(val);
                         if (!isNaN(num)) {
                           setProfile(p => ({ ...p, weight_kg: num }));
                         }
                       }
                     }}
-                    onBlur={(e) => {
-                      // Validate and clamp on blur
-                      const num = parseFloat(e.target.value) || 50;
-                      setProfile(p => ({ ...p, weight_kg: Math.min(300, Math.max(10, num)) }));
+                    onBlur={() => {
+                      if (profile.weight_kg < 10) {
+                        setProfile(p => ({ ...p, weight_kg: 10 }));
+                      } else if (profile.weight_kg > 300) {
+                        setProfile(p => ({ ...p, weight_kg: 300 }));
+                      }
                     }}
                   />
                 </div>
