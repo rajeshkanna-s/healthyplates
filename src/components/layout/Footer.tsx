@@ -30,7 +30,7 @@ const Footer = () => {
   return (
     <footer className="bg-gradient-subtle border-t border-border/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand Section */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
@@ -146,6 +146,51 @@ const Footer = () => {
                 className="text-sm text-muted-foreground hover:text-health transition-colors"
               >
                 Admin
+              </Link>
+            </nav>
+          </div>
+
+          {/* Health Calculators */}
+          <div className="space-y-4">
+            <h4 className="text-lg font-semibold text-foreground">
+              Health Calculators
+            </h4>
+            <nav className="flex flex-col space-y-2">
+              <Link
+                to="/internal-organs"
+                className="text-sm text-muted-foreground hover:text-health transition-colors"
+              >
+                Internal Organs
+              </Link>
+              <Link
+                to="/body-parts"
+                className="text-sm text-muted-foreground hover:text-health transition-colors"
+              >
+                Body Parts
+              </Link>
+              <Link
+                to="/bmi-calculator"
+                className="text-sm text-muted-foreground hover:text-health transition-colors"
+              >
+                BMI Calculator
+              </Link>
+              <Link
+                to="/calorie-calculator"
+                className="text-sm text-muted-foreground hover:text-health transition-colors"
+              >
+                Calorie Calculator
+              </Link>
+              <Link
+                to="/macro-calculator"
+                className="text-sm text-muted-foreground hover:text-health transition-colors"
+              >
+                Macro Calculator
+              </Link>
+              <Link
+                to="/calisthenics-challenge"
+                className="text-sm text-muted-foreground hover:text-health transition-colors"
+              >
+                Calisthenics
               </Link>
             </nav>
           </div>
