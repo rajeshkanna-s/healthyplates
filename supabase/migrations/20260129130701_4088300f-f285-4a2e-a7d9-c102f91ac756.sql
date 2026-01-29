@@ -1,0 +1,122 @@
+INSERT INTO self_care_procedures (title, steps, description, benefits, ingredients, duration, frequency, precautions, image_url, category_id)
+VALUES
+(
+  'Coconut Oil Hot Oil Nourishing Treatment',
+  ARRAY['Warm coconut oil', 'Apply to scalp', 'Massage gently', 'Leave on', 'Wash'],
+  'Warm coconut oil penetrates deep into the hair shaft, strengthening roots and reducing breakage. This is one of the best ancient hair care practices.',
+  ARRAY['Strengthens roots', 'Reduces hair fall', 'Deep nourishment'],
+  ARRAY['Coconut Oil', 'Castor Oil', 'Vitamin E'],
+  '30 minutes',
+  'Weekly once',
+  ARRAY['Do not overheat oil', 'Avoid applying on wet scalp', 'Patch test if sensitive'],
+  'https://res.cloudinary.com/di4yfgmlz/image/upload/v1769691655/SKIN%20CARE/Coconut_Oil_Hot_Oil_Nourishing_Treatment_aayge0.png',
+  'cef994ab-9cf8-4c49-920e-224375f8500f'
+),
+(
+  'Aloe Vera Scalp Repair Mask',
+  ARRAY['Extract aloe gel', 'Apply to scalp', 'Wait', 'Rinse with mild shampoo'],
+  'Aloe Vera reduces itchiness and dandruff while soothing and hydrating the scalp. It supports healthy hair growth.',
+  ARRAY['Anti-dandruff', 'Scalp hydration', 'Promotes growth'],
+  ARRAY['Aloe Vera Gel', 'Olive Oil', 'Tea Tree Oil (few drops)'],
+  '20 minutes',
+  'Weekly twice',
+  ARRAY['Avoid excess tea tree oil', 'Patch test', 'Use fresh aloe'],
+  'https://res.cloudinary.com/di4yfgmlz/image/upload/v1769691657/SKIN%20CARE/Aloe_Vera_Scalp_Repair_Mask_l1ynan.png',
+  'cef994ab-9cf8-4c49-920e-224375f8500f'
+),
+(
+  'Yogurt Protein Boost Pack',
+  ARRAY['Mix ingredients', 'Apply thick layer to hair', 'Let sit', 'Wash thoroughly'],
+  'Yogurt provides natural protein that strengthens weak and damaged hair. Keeps hair smooth and frizz-free.',
+  ARRAY['Protein repair', 'Smoothness', 'Controls frizz'],
+  ARRAY['Yogurt', 'Honey', 'Lemon juice (few drops)'],
+  '25 minutes',
+  'Weekly once',
+  ARRAY['Do not keep yogurt too long', 'Avoid lemon on sensitive scalp', 'Rinse well'],
+  'https://res.cloudinary.com/di4yfgmlz/image/upload/v1769691656/SKIN%20CARE/Yogurt_Protein_Boost_Pack_meeeuz.png',
+  'cef994ab-9cf8-4c49-920e-224375f8500f'
+),
+(
+  'Olive Oil Deep Conditioning Therapy',
+  ARRAY['Warm oil', 'Apply from roots to ends', 'Wrap with towel', 'Wash'],
+  'Olive oil restores moisture in extremely dry or frizzy hair. Adds shine and softness instantly.',
+  ARRAY['Deep conditioning', 'Softness', 'Shine enhancement'],
+  ARRAY['Olive Oil', 'Coconut Oil'],
+  '30 minutes',
+  'Weekly once',
+  ARRAY['Avoid overuse', 'Use mild shampoo to remove oil', 'Do not apply on very oily scalp'],
+  'https://res.cloudinary.com/di4yfgmlz/image/upload/v1769691657/SKIN%20CARE/Olive_Oil_Deep_Conditioning_Therapy_dqf5zu.png',
+  'cef994ab-9cf8-4c49-920e-224375f8500f'
+),
+(
+  'Cucumber Cooling Scalp Hydration',
+  ARRAY['Blend cucumber', 'Apply juice to scalp', 'Leave on', 'Rinse'],
+  'Cucumber refreshes the scalp, reduces heat and irritation, and helps control dandruff.',
+  ARRAY['Cooling', 'Reduces scalp heat', 'Hydrating'],
+  ARRAY['Cucumber Juice', 'Aloe Vera'],
+  '15 minutes',
+  'Weekly twice',
+  ARRAY['Avoid dripping into eyes', 'Use fresh juice', 'Do not apply on infected scalp'],
+  'https://res.cloudinary.com/di4yfgmlz/image/upload/v1769691667/SKIN%20CARE/Cucumber_Cooling_Scalp_Hydration_r0lvgd.png',
+  'cef994ab-9cf8-4c49-920e-224375f8500f'
+),
+(
+  'Fenugreek (Methi) Hair Growth Mask',
+  ARRAY['Soak seeds overnight', 'Grind to paste', 'Apply', 'Rinse'],
+  'Fenugreek is rich in proteins and nicotinic acid that stimulate hair growth and reduce dandruff.',
+  ARRAY['Hair growth', 'Reduces dandruff', 'Strengthens hair'],
+  ARRAY['Fenugreek Seeds', 'Yogurt', 'Coconut Oil'],
+  '20 minutes',
+  'Weekly once',
+  ARRAY['Rinse thoroughly', 'Avoid strong rubbing', 'May smell slightly'],
+  'https://res.cloudinary.com/di4yfgmlz/image/upload/v1769691658/SKIN%20CARE/Fenugreek_Methi_Hair_Growth_Mask_z76r4j.png',
+  'cef994ab-9cf8-4c49-920e-224375f8500f'
+),
+(
+  'Aloe–Coconut Anti-Frizz Serum',
+  ARRAY['Mix aloe and oil', 'Apply small amount', 'Style hair'],
+  'A lightweight natural serum that smoothens frizz and protects hair from dryness and breakage.',
+  ARRAY['Anti-frizz', 'Softness', 'Split-end protection'],
+  ARRAY['Aloe Vera Gel', 'Coconut Oil', 'Vitamin E'],
+  '5 minutes',
+  'Daily',
+  ARRAY['Use small quantity', 'Avoid scalp application', 'Do not use on oily hair roots'],
+  'https://res.cloudinary.com/di4yfgmlz/image/upload/v1769691655/SKIN%20CARE/Aloe_Coconut_Anti-Frizz_Serum_posvpq.png',
+  'cef994ab-9cf8-4c49-920e-224375f8500f'
+),
+(
+  'Banana Smoothening Hair Pack',
+  ARRAY['Mash banana', 'Add yogurt', 'Apply paste', 'Leave on', 'Rinse'],
+  'Banana deeply nourishes dry, rough hair and makes it silky smooth and manageable.',
+  ARRAY['Smoothness', 'Nourishment', 'Reduces roughness'],
+  ARRAY['Banana', 'Yogurt', 'Honey'],
+  '25 minutes',
+  'Weekly once',
+  ARRAY['Blend smoothly to avoid banana chunks', 'Rinse thoroughly', 'Avoid applying to scalp if oily'],
+  'https://res.cloudinary.com/di4yfgmlz/image/upload/v1769691657/SKIN%20CARE/Banana_Smoothening_Hair_Pack_lnpmso.png',
+  'cef994ab-9cf8-4c49-920e-224375f8500f'
+),
+(
+  'Neem Anti-Dandruff Scalp Therapy',
+  ARRAY['Boil neem leaves', 'Cool water', 'Rinse scalp with neem water'],
+  'Neem is a natural antibacterial remedy that eliminates dandruff and scalp infections effectively.',
+  ARRAY['Anti-dandruff', 'Anti-bacterial', 'Scalp cleansing'],
+  ARRAY['Neem Leaves', 'Water'],
+  '10 minutes',
+  'Weekly twice',
+  ARRAY['Do not use concentrated neem paste on sensitive scalp', 'Use lukewarm water', 'Patch test'],
+  'https://res.cloudinary.com/di4yfgmlz/image/upload/v1769691656/SKIN%20CARE/Neem_Anti-Dandruff_Scalp_Therapy_iidpgv.png',
+  'cef994ab-9cf8-4c49-920e-224375f8500f'
+),
+(
+  'Egg Protein Rebuild Treatment',
+  ARRAY['Beat egg', 'Apply mixture', 'Leave on', 'Wash with cold water'],
+  'Eggs provide intense protein nourishment that repairs damaged and chemically treated hair.',
+  ARRAY['Protein strengthening', 'Shine', 'Reduces breakage'],
+  ARRAY['Egg', 'Olive Oil', 'Lemon drops'],
+  '20 minutes',
+  'Monthly once',
+  ARRAY['Use cold water (avoids egg smell)', 'Avoid if allergic', 'Rinse thoroughly'],
+  'https://res.cloudinary.com/di4yfgmlz/image/upload/v1769691655/SKIN%20CARE/Egg_Protein_Rebuild_Treatments_gchdtq.png',
+  'cef994ab-9cf8-4c49-920e-224375f8500f'
+);
