@@ -127,9 +127,8 @@ const Contact = () => {
         <div className="text-center mb-12">
           <h1 className="text-hero mb-6">Get in Touch</h1>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Have questions about nutrition, need personalized advice, or want to
-            share your health journey? We're here to help you achieve your
-            wellness goals.
+            Interested in promotions, advertisements, or receiving updates about our latest health articles? 
+            This contact form is exclusively for business inquiries, partnership opportunities, and newsletter subscriptions.
           </p>
         </div>
 
@@ -139,11 +138,11 @@ const Contact = () => {
             <div className="space-y-6">
               <div>
                 <h2 className="text-2xl font-semibold text-foreground mb-4">
-                  Contact Information
+                  Business Inquiries
                 </h2>
                 <p className="text-muted-foreground mb-6">
-                  Choose your preferred way to reach out to our health and
-                  nutrition experts.
+                  For promotions, advertisements, and article update subscriptions, 
+                  reach out through any of the channels below.
                 </p>
               </div>
 
