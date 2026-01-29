@@ -21,16 +21,19 @@ const Disclaimer = () => {
             </div>
             <h1 className="text-4xl font-bold text-foreground">Medical Disclaimer</h1>
           </div>
-          <p className="text-muted-foreground">Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+          <p className="text-muted-foreground">Last updated: January 29, 2026</p>
         </div>
 
-        {/* Important Notice */}
-        <Alert className="mb-8 border-orange-500 bg-orange-50 dark:bg-orange-950/20">
-          <AlertTriangle className="h-5 w-5 text-orange-600" />
-          <AlertTitle className="text-orange-800 dark:text-orange-400 font-semibold">Important Notice</AlertTitle>
-          <AlertDescription className="text-orange-700 dark:text-orange-300">
-            The content on this website is for informational and educational purposes only. 
-            It is not intended to be a substitute for professional medical advice, diagnosis, or treatment.
+        {/* Critical Notice */}
+        <Alert className="mb-8 border-red-500 bg-red-50 dark:bg-red-950/20">
+          <AlertTriangle className="h-5 w-5 text-red-600" />
+          <AlertTitle className="text-red-800 dark:text-red-400 font-bold text-lg">
+            THIS IS NOT MEDICAL ADVICE
+          </AlertTitle>
+          <AlertDescription className="text-red-700 dark:text-red-300 mt-2">
+            The content on HealthyPlates.in is for informational and educational purposes only. 
+            It is NOT intended to be a substitute for professional medical advice, diagnosis, or treatment. 
+            <strong> Always consult a qualified healthcare provider before making any dietary or lifestyle changes.</strong>
           </AlertDescription>
         </Alert>
 
@@ -39,10 +42,24 @@ const Disclaimer = () => {
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">Not Medical Advice</h2>
             <p className="text-muted-foreground leading-relaxed">
-              The information provided on HealthyPlates, including text, graphics, images, and other materials, 
+              The information provided on HealthyPlates.in, including text, graphics, images, and other materials, 
               is for general informational purposes only and should not be considered medical advice. 
               We are not licensed healthcare providers, and the content does not create a doctor-patient relationship.
             </p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-semibold text-foreground mb-4">Consumer Protection Act Compliance</h2>
+            <p className="text-muted-foreground leading-relaxed">
+              In accordance with the Consumer Protection Act, 2019 of India, we clearly disclose that:
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground mt-4">
+              <li>We do not provide medical diagnosis or treatment</li>
+              <li>Our content is educational and should not replace professional medical care</li>
+              <li>Any dietary suggestions are general in nature and may not be suitable for everyone</li>
+              <li>Individual results may vary significantly based on personal health conditions</li>
+              <li>We are not liable for any health outcomes based on our content</li>
+            </ul>
           </section>
 
           <section>
@@ -66,22 +83,59 @@ const Disclaimer = () => {
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">Food and Health Claims</h2>
             <p className="text-muted-foreground leading-relaxed mb-4">
-              When we discuss health benefits of foods, we use language such as:
+              When we discuss health benefits of foods, we use careful language such as:
             </p>
             <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-              <li><strong>"May help"</strong> or <strong>"May support"</strong> – indicating potential benefits</li>
+              <li><strong>"May help"</strong> or <strong>"May support"</strong> – indicating potential benefits based on general research</li>
               <li><strong>"Associated with"</strong> – indicating research findings, not guarantees</li>
-              <li><strong>"Traditionally used for"</strong> – referring to historical uses</li>
+              <li><strong>"Traditionally used for"</strong> – referring to historical or cultural uses</li>
             </ul>
-            <p className="text-muted-foreground leading-relaxed mt-4">
-              We do not claim that any food, supplement, or practice "cures," "heals," or "treats" any disease or medical condition.
+            <p className="text-muted-foreground leading-relaxed mt-4 font-medium">
+              We do NOT claim that any food, supplement, or practice "cures," "heals," or "treats" any disease or medical condition.
             </p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-semibold text-foreground mb-4">Health Calculators Disclaimer</h2>
+            <p className="text-muted-foreground leading-relaxed">
+              Our BMI Calculator, Calorie Calculator, Macro Calculator, and Diet Planner are for general educational purposes only. 
+              These tools use standard formulas that may not account for individual health conditions, medications, 
+              or other factors. Always verify results with a healthcare professional before making significant dietary changes.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-semibold text-foreground mb-4">Self-Care Procedures Disclaimer</h2>
+            <p className="text-muted-foreground leading-relaxed">
+              Self-care routines for skin, hair, and fitness are shared for educational purposes only. 
+              Before trying any home remedy or new skincare routine:
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground mt-4">
+              <li>Perform a patch test if using new ingredients on skin</li>
+              <li>Consult a dermatologist if you have existing skin conditions</li>
+              <li>Stop immediately if you experience any adverse reactions</li>
+              <li>Consult a fitness professional before starting new exercise routines</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-semibold text-foreground mb-4">Disease-Related Content</h2>
+            <p className="text-muted-foreground leading-relaxed">
+              Information about foods related to specific health conditions is for educational awareness only. 
+              If you have any diagnosed medical condition, you must:
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground mt-4">
+              <li>Follow your doctor's prescribed treatment plan</li>
+              <li>Consult your healthcare provider before making any dietary changes</li>
+              <li>Not use our content as a replacement for medical treatment</li>
+              <li>Inform your doctor about any dietary changes you make</li>
+            </ul>
           </section>
 
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">Emergency Situations</h2>
             <p className="text-muted-foreground leading-relaxed">
-              If you think you may have a medical emergency, call your doctor or emergency services immediately. 
+              If you think you may have a medical emergency, call your doctor or emergency services (108/112 in India) immediately. 
               Do not rely on information from this website for emergency medical needs.
             </p>
           </section>
