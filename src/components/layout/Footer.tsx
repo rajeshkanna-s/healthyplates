@@ -6,6 +6,7 @@ import {
   Instagram,
   Youtube,
   MessageCircle,
+  Linkedin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -94,6 +95,20 @@ const Footer = () => {
                   rel="noopener noreferrer"
                 >
                   <MessageCircle className="h-4 w-4" />
+                </a>
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 w-8 p-0"
+                asChild
+              >
+                <a
+                  href="https://www.linkedin.com/company/healthy-plates"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Linkedin className="h-4 w-4" />
                 </a>
               </Button>
             </div>
