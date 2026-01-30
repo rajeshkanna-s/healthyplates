@@ -29,7 +29,7 @@ const Header = () => {
 
   // Items in the overflow menu (3-dash)
   const overflowNavigation = [
-    { name: "Diseases", href: "/diseases" },
+    { name: "DMF", href: "/diseases" },
     { name: "BMI Calculator", href: "/bmi-calculator" },
     { name: "Calorie Calculator", href: "/calorie-calculator" },
     { name: "Macro Calculator", href: "/macro-calculator" },
