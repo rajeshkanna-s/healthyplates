@@ -1,4 +1,5 @@
 import { Heart, Shield, Brain, Zap, Activity, Calculator, Flame, User, Target, Dumbbell } from 'lucide-react';
+import DailyMealSuggestion from './DailyMealSuggestion';
 
 const WhyHealthyPlates = () => {
   const features = [
@@ -50,6 +51,9 @@ const WhyHealthyPlates = () => {
             </div>
           ))}
         </div>
+
+        {/* Daily Meal Suggestion Widget - Placed before Join section */}
+        <DailyMealSuggestion />
 
         <div className="mt-16 text-center">
           <div className="bg-card p-8 rounded-2xl shadow-health-lg border border-border/50">
