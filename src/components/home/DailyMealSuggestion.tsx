@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useState, useMemo } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Utensils, Target, Leaf, ChevronDown, RefreshCw, Flame, Dumbbell } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -60,8 +60,10 @@ const DailyMealSuggestion = () => {
     return Math.floor(diff / oneDay);
   }, []);
 
+  const queryClient = useQueryClient();
+
   // Fetch meals based on filters
-  const { data: meals, isLoading, refetch } = useQuery({
+  const { data: meals, isLoading } = useQuery({
     queryKey: ['meal-suggestions', goal, dietType, mealTime],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -75,6 +77,10 @@ const DailyMealSuggestion = () => {
       return data as MealSuggestion[];
     },
   });
+
+  const handleRefresh = async () => {
+    await queryClient.invalidateQueries({ queryKey: ['meal-suggestions', goal, dietType, mealTime] });
+  };
 
   // Get daily rotated meals (1-3 based on available)
   const dailyMeals = useMemo(() => {
@@ -207,7 +213,7 @@ const DailyMealSuggestion = () => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => refetch()}
+            onClick={handleRefresh}
             className="text-muted-foreground hover:text-foreground"
           >
             <RefreshCw className="w-4 h-4 mr-1" />
