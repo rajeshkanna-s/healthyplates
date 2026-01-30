@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Utensils, Target, Leaf, ChevronDown, RefreshCw, Flame, Dumbbell } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -219,15 +219,11 @@ const DailyMealSuggestion = () => {
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[1, 2, 3].map(i => (
-              <Card key={i} className="overflow-hidden">
-                <CardHeader className="pb-4">
-                  <Skeleton className="h-6 w-3/4" />
-                </CardHeader>
-                <CardContent>
-                  <Skeleton className="h-4 w-full mb-2" />
-                  <Skeleton className="h-4 w-2/3 mb-4" />
-                  <Skeleton className="h-8 w-1/2" />
-                </CardContent>
+              <Card key={i} className="overflow-hidden p-6">
+                <Skeleton className="h-6 w-3/4 mb-4" />
+                <Skeleton className="h-4 w-full mb-2" />
+                <Skeleton className="h-4 w-2/3 mb-6" />
+                <Skeleton className="h-4 w-1/2" />
               </Card>
             ))}
           </div>
@@ -236,34 +232,33 @@ const DailyMealSuggestion = () => {
             {dailyMeals.map((meal, index) => (
               <Card 
                 key={meal.id} 
-                className="overflow-hidden hover:shadow-health-lg transition-all duration-300 group border-2 border-transparent hover:border-health/20"
+                className="relative overflow-hidden hover:shadow-lg transition-all duration-300 border border-border/60 bg-gradient-to-r from-health/5 via-background to-background"
               >
-                <CardHeader className="pb-3 bg-gradient-to-r from-health/5 to-nutrition/5">
-                  <div className="flex items-start justify-between">
-                    <CardTitle className="text-lg font-bold text-foreground group-hover:text-health transition-colors">
-                      {meal.meal_name}
-                    </CardTitle>
-                    <Badge 
-                      className={`${selectedGoal?.color} text-white text-xs`}
-                    >
-                      Option {index + 1}
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="pt-4">
+                {/* Option Badge - Top Right */}
+                <Badge 
+                  className="absolute top-4 right-4 bg-primary text-primary-foreground text-xs px-3 py-1"
+                >
+                  Option {index + 1}
+                </Badge>
+                
+                <CardContent className="p-6">
+                  {/* Meal Name */}
+                  <h3 className="text-lg font-semibold text-health mb-4 pr-20">
+                    {meal.meal_name}
+                  </h3>
+                  
                   {/* Meal Items */}
-                  <div className="space-y-2 mb-4">
+                  <div className="space-y-2 mb-6 min-h-[60px]">
                     {meal.items.map((item, idx) => (
-                      <div key={idx} className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <span className="w-1.5 h-1.5 rounded-full bg-health flex-shrink-0"></span>
+                      <p key={idx} className="text-sm text-muted-foreground">
                         {item}
-                      </div>
+                      </p>
                     ))}
                   </div>
 
                   {/* Nutrition Info */}
-                  <div className="flex items-center gap-4 pt-4 border-t border-border/50">
-                    <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-6 pt-4">
+                    <div className="flex items-center gap-2">
                       <Flame className="w-4 h-4 text-orange-500" />
                       <span className="text-sm font-medium text-foreground">
                         {meal.calories_min === meal.calories_max 
@@ -272,8 +267,8 @@ const DailyMealSuggestion = () => {
                         }
                       </span>
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <Dumbbell className="w-4 h-4 text-blue-500" />
+                    <div className="flex items-center gap-2">
+                      <Dumbbell className="w-4 h-4 text-health" />
                       <span className="text-sm font-medium text-foreground">
                         {meal.protein_grams}g protein
                       </span>
