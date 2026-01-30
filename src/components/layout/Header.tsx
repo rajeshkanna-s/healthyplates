@@ -1,25 +1,45 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Leaf } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import Logo from "@/assets/HPLogo.png";
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isDesktopMenuOpen, setIsDesktopMenuOpen] = useState(false);
   const location = useLocation();
 
-  const navigation = [
+  // Main navigation items shown in header
+  const mainNavigation = [
     { name: "Home", href: "/" },
     { name: "Diet Planner", href: "/diet-planner" },
     { name: "Grocery List", href: "/grocery-list" },
     { name: "Food Items", href: "/food-products" },
     { name: "Daily Meals", href: "/foods" },
-    { name: "Diseases", href: "/diseases" },
     { name: "Self-Care", href: "/self-care" },
-    { name: "Blog", href: "/blog" },
     { name: "Know Your Body", href: "/body-explorer" },
-    { name: "Contact", href: "/contact" },
   ];
+
+  // Items in the overflow menu (3-dash)
+  const overflowNavigation = [
+    { name: "Diseases", href: "/diseases" },
+    { name: "Blog", href: "/blog" },
+    { name: "Contact", href: "/contact" },
+    { name: "BMI Calculator", href: "/bmi-calculator" },
+    { name: "Calorie Calculator", href: "/calorie-calculator" },
+    { name: "Macro Calculator", href: "/macro-calculator" },
+    { name: "Calisthenics Challenge", href: "/calisthenics-challenge" },
+  ];
+
+  // All items for mobile menu
+  const allNavigation = [...mainNavigation, ...overflowNavigation];
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -53,21 +73,57 @@ const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-1">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  isActive(item.href)
-                    ? "bg-primary text-primary-foreground shadow-md"
-                    : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
+          <div className="hidden md:flex items-center space-x-1">
+            <nav className="flex space-x-1">
+              {mainNavigation.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    isActive(item.href)
+                      ? "bg-primary text-primary-foreground shadow-md"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </nav>
+
+            {/* Desktop 3-dash menu */}
+            <Sheet open={isDesktopMenuOpen} onOpenChange={setIsDesktopMenuOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-10 w-10 p-0 ml-2 bg-green-700 hover:bg-green-800 text-white rounded-md"
+                >
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[280px]">
+                <SheetHeader>
+                  <SheetTitle>More Options</SheetTitle>
+                </SheetHeader>
+                <nav className="flex flex-col space-y-2 mt-6">
+                  {overflowNavigation.map((item) => (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      onClick={() => setIsDesktopMenuOpen(false)}
+                      className={`px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                        isActive(item.href)
+                          ? "bg-primary text-primary-foreground shadow-md"
+                          : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                      }`}
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </nav>
+              </SheetContent>
+            </Sheet>
+          </div>
 
           {/* Mobile menu button */}
           <div className="md:hidden">
@@ -75,7 +131,7 @@ const Header = () => {
               variant="ghost"
               size="sm"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="h-10 w-10 p-0"
+              className="h-10 w-10 p-0 bg-green-700 hover:bg-green-800 text-white"
             >
               {isMobileMenuOpen ? (
                 <X className="h-5 w-5" />
@@ -90,7 +146,7 @@ const Header = () => {
         {isMobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-border/50">
             <nav className="flex flex-col space-y-2">
-              {navigation.map((item) => (
+              {allNavigation.map((item) => (
                 <Link
                   key={item.name}
                   to={item.href}
