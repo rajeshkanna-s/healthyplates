@@ -21,11 +21,14 @@ import {
   Flame,
   Gift,
   IndianRupee,
-  Sparkles
+  Sparkles,
+  FileDown,
+  FileSpreadsheet
 } from 'lucide-react';
 import { useState } from 'react';
 import { GeneratedList, GroceryGroup, GeneratedGroceryItem, UserPreferences } from './types';
 import { groupItemsByCategory, formatQuantity, groupOrder } from './generateGroceryList';
+import { exportToPDF, exportToExcel } from './exportUtils';
 import { toast } from 'sonner';
 
 interface GroceryResultsProps {
@@ -97,6 +100,24 @@ export default function GroceryResults({ list, preferences, onReset }: GroceryRe
     window.print();
   };
 
+  const handleDownloadPDF = () => {
+    try {
+      exportToPDF(list, preferences);
+      toast.success('PDF downloaded successfully!');
+    } catch (error) {
+      toast.error('Failed to download PDF');
+    }
+  };
+
+  const handleDownloadExcel = () => {
+    try {
+      exportToExcel(list, preferences);
+      toast.success('Excel file downloaded successfully!');
+    } catch (error) {
+      toast.error('Failed to download Excel file');
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header with Summary */}
@@ -107,10 +128,18 @@ export default function GroceryResults({ list, preferences, onReset }: GroceryRe
               <ShoppingCart className="w-6 h-6" />
               Your Smart Grocery List
             </CardTitle>
-            <div className="flex gap-2 print:hidden">
+            <div className="flex flex-wrap gap-2 print:hidden">
               <Button variant="outline" size="sm" onClick={handleCopyToClipboard}>
                 {copied ? <Check className="w-4 h-4 mr-1" /> : <Copy className="w-4 h-4 mr-1" />}
                 {copied ? 'Copied!' : 'Copy'}
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleDownloadPDF} className="text-red-600 border-red-200 hover:bg-red-50">
+                <FileDown className="w-4 h-4 mr-1" />
+                PDF
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleDownloadExcel} className="text-green-600 border-green-200 hover:bg-green-50">
+                <FileSpreadsheet className="w-4 h-4 mr-1" />
+                Excel
               </Button>
               <Button variant="outline" size="sm" onClick={handlePrint}>
                 <Printer className="w-4 h-4 mr-1" />
