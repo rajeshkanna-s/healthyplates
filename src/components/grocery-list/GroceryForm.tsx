@@ -160,26 +160,26 @@ export default function GroceryForm({ onGenerate, isLoading }: GroceryFormProps)
             className="grid grid-cols-2 gap-3"
           >
             <Label 
-              htmlFor="low" 
+              htmlFor="budget-low" 
               className={`flex flex-col items-center justify-center gap-1 p-4 rounded-lg border-2 cursor-pointer transition-all ${
                 budget === 'Low' 
                   ? 'border-health bg-health/10' 
                   : 'border-border hover:border-health/50'
               }`}
             >
-              <RadioGroupItem value="Low" id="low" className="sr-only" />
+              <RadioGroupItem value="Low" id="budget-low" className="sr-only" />
               <span className="font-medium">Budget-Friendly</span>
               <span className="text-xs text-muted-foreground">Essential items</span>
             </Label>
             <Label 
-              htmlFor="medium" 
+              htmlFor="budget-medium" 
               className={`flex flex-col items-center justify-center gap-1 p-4 rounded-lg border-2 cursor-pointer transition-all ${
                 budget === 'Medium' 
                   ? 'border-health bg-health/10' 
                   : 'border-border hover:border-health/50'
               }`}
             >
-              <RadioGroupItem value="Medium" id="medium" className="sr-only" />
+              <RadioGroupItem value="Medium" id="budget-medium" className="sr-only" />
               <span className="font-medium">Comfortable</span>
               <span className="text-xs text-muted-foreground">More variety</span>
             </Label>
