@@ -300,6 +300,51 @@ export type Database = {
         }
         Relationships: []
       }
+      meal_suggestions: {
+        Row: {
+          calories_max: number
+          calories_min: number
+          created_at: string
+          diet_type: string
+          goal: string
+          id: string
+          items: string[]
+          meal_name: string
+          meal_time: string
+          protein_grams: number
+          region: string | null
+          updated_at: string
+        }
+        Insert: {
+          calories_max: number
+          calories_min: number
+          created_at?: string
+          diet_type: string
+          goal: string
+          id?: string
+          items?: string[]
+          meal_name: string
+          meal_time: string
+          protein_grams: number
+          region?: string | null
+          updated_at?: string
+        }
+        Update: {
+          calories_max?: number
+          calories_min?: number
+          created_at?: string
+          diet_type?: string
+          goal?: string
+          id?: string
+          items?: string[]
+          meal_name?: string
+          meal_time?: string
+          protein_grams?: number
+          region?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
