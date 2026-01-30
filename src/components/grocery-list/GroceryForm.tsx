@@ -154,36 +154,32 @@ export default function GroceryForm({ onGenerate, isLoading }: GroceryFormProps)
             <IndianRupee className="w-4 h-4 text-health" />
             Budget
           </Label>
-          <RadioGroup 
-            value={budget} 
-            onValueChange={(v) => setBudget(v as 'Low' | 'Medium')}
-            className="grid grid-cols-2 gap-3"
-          >
-            <Label 
-              htmlFor="budget-low" 
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => setBudget('Low')}
               className={`flex flex-col items-center justify-center gap-1 p-4 rounded-lg border-2 cursor-pointer transition-all ${
                 budget === 'Low' 
                   ? 'border-health bg-health/10' 
                   : 'border-border hover:border-health/50'
               }`}
             >
-              <RadioGroupItem value="Low" id="budget-low" className="sr-only" />
               <span className="font-medium">Budget-Friendly</span>
               <span className="text-xs text-muted-foreground">Essential items</span>
-            </Label>
-            <Label 
-              htmlFor="budget-medium" 
+            </button>
+            <button
+              type="button"
+              onClick={() => setBudget('Medium')}
               className={`flex flex-col items-center justify-center gap-1 p-4 rounded-lg border-2 cursor-pointer transition-all ${
                 budget === 'Medium' 
                   ? 'border-health bg-health/10' 
                   : 'border-border hover:border-health/50'
               }`}
             >
-              <RadioGroupItem value="Medium" id="budget-medium" className="sr-only" />
               <span className="font-medium">Comfortable</span>
               <span className="text-xs text-muted-foreground">More variety</span>
-            </Label>
-          </RadioGroup>
+            </button>
+          </div>
         </div>
 
         {/* Duration Selection */}
@@ -383,15 +379,18 @@ export default function GroceryForm({ onGenerate, isLoading }: GroceryFormProps)
           </CollapsibleContent>
         </Collapsible>
 
-        {/* Generate Button */}
-        <Button 
-          onClick={handleSubmit}
-          disabled={isLoading}
-          className="w-full bg-health hover:bg-health/90 text-white py-6 text-lg font-semibold"
-        >
-          <ShoppingCart className="w-5 h-5 mr-2" />
-          {isLoading ? 'Generating...' : 'Generate My Grocery List'}
-        </Button>
+        {/* Generate Button - Always Visible */}
+        <div className="sticky bottom-0 pt-4 pb-2 bg-gradient-to-t from-background via-background to-transparent -mx-6 px-6">
+          <Button 
+            type="button"
+            onClick={handleSubmit}
+            disabled={isLoading}
+            className="w-full bg-green-700 hover:bg-green-800 text-white py-6 text-lg font-semibold shadow-lg"
+          >
+            <ShoppingCart className="w-5 h-5 mr-2" />
+            {isLoading ? 'Generating...' : 'Generate My Grocery List'}
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
