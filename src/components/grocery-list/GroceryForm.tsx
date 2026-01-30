@@ -160,24 +160,24 @@ export default function GroceryForm({ onGenerate, isLoading }: GroceryFormProps)
               onClick={() => setBudget('Low')}
               className={`flex flex-col items-center justify-center gap-1 p-4 rounded-lg border-2 cursor-pointer transition-all ${
                 budget === 'Low' 
-                  ? 'border-health bg-health/10' 
-                  : 'border-border hover:border-health/50'
+                  ? 'border-green-700 bg-green-700/10 text-green-700' 
+                  : 'border-border hover:border-green-700/50'
               }`}
             >
               <span className="font-medium">Budget-Friendly</span>
-              <span className="text-xs text-muted-foreground">Essential items</span>
+              <span className={`text-xs ${budget === 'Low' ? 'text-green-600' : 'text-muted-foreground'}`}>Essential items</span>
             </button>
             <button
               type="button"
               onClick={() => setBudget('Medium')}
               className={`flex flex-col items-center justify-center gap-1 p-4 rounded-lg border-2 cursor-pointer transition-all ${
                 budget === 'Medium' 
-                  ? 'border-health bg-health/10' 
-                  : 'border-border hover:border-health/50'
+                  ? 'border-green-700 bg-green-700/10 text-green-700' 
+                  : 'border-border hover:border-green-700/50'
               }`}
             >
               <span className="font-medium">Comfortable</span>
-              <span className="text-xs text-muted-foreground">More variety</span>
+              <span className={`text-xs ${budget === 'Medium' ? 'text-green-600' : 'text-muted-foreground'}`}>More variety</span>
             </button>
           </div>
         </div>
