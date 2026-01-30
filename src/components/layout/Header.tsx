@@ -30,12 +30,12 @@ const Header = () => {
   // Items in the overflow menu (3-dash)
   const overflowNavigation = [
     { name: "Diseases", href: "/diseases" },
-    { name: "Blog", href: "/blog" },
-    { name: "Contact", href: "/contact" },
     { name: "BMI Calculator", href: "/bmi-calculator" },
     { name: "Calorie Calculator", href: "/calorie-calculator" },
     { name: "Macro Calculator", href: "/macro-calculator" },
     { name: "Calisthenics Challenge", href: "/calisthenics-challenge" },
+    { name: "Blog", href: "/blog" },
+    { name: "Contact", href: "/contact" },
   ];
 
   // All items for mobile menu

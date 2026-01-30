@@ -50,6 +50,7 @@ const DailyMealSuggestion = () => {
   const [goal, setGoal] = useState('weight_loss');
   const [dietType, setDietType] = useState('veg');
   const [mealTime, setMealTime] = useState('breakfast');
+  const [rotationOffset, setRotationOffset] = useState(0);
 
   // Get day of year for daily rotation
   const dayOfYear = useMemo(() => {
@@ -78,16 +79,17 @@ const DailyMealSuggestion = () => {
     },
   });
 
-  const handleRefresh = async () => {
-    await queryClient.invalidateQueries({ queryKey: ['meal-suggestions', goal, dietType, mealTime] });
+  const handleRefresh = () => {
+    // Increment rotation offset to show different meals immediately
+    setRotationOffset(prev => prev + 1);
   };
 
   // Get daily rotated meals (1-3 based on available)
   const dailyMeals = useMemo(() => {
     if (!meals || meals.length === 0) return [];
     
-    // Use day of year to rotate through meals
-    const startIndex = dayOfYear % meals.length;
+    // Use day of year + rotation offset to rotate through meals
+    const startIndex = (dayOfYear + rotationOffset) % meals.length;
     const numMeals = Math.min(3, meals.length);
     const rotatedMeals: MealSuggestion[] = [];
     
@@ -97,7 +99,7 @@ const DailyMealSuggestion = () => {
     }
     
     return rotatedMeals;
-  }, [meals, dayOfYear]);
+  }, [meals, dayOfYear, rotationOffset]);
 
   const selectedGoal = goalOptions.find(g => g.value === goal);
   const selectedDiet = dietOptions.find(d => d.value === dietType);
