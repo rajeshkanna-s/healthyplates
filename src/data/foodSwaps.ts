@@ -1207,6 +1207,566 @@ export const FOOD_SWAPS: FoodSwap[] = [
     ],
     tags: ["habit-change", "night"]
   },
+
+  // ========== BETTER DIGESTION GOAL (15+ items across categories) ==========
+  
+  // Drinks - Digestion
+  {
+    id: 116,
+    usualItem: "Carbonated drinks with meals",
+    category: "drinks",
+    mealType: "Lunch/Dinner",
+    swaps: [
+      { name: "Warm water with meals", whyBetter: "Aids digestion and nutrient absorption without bloating.", tags: ["better-digestion", "hydration"] },
+      { name: "Ginger tea after meals", whyBetter: "Soothes stomach and speeds up digestion naturally.", tags: ["better-digestion", "natural"] }
+    ],
+    tags: ["digestion", "meal-time"]
+  },
+  {
+    id: 117,
+    usualItem: "Milk-heavy drinks at night",
+    category: "drinks",
+    mealType: "Night",
+    swaps: [
+      { name: "Warm water with ajwain", whyBetter: "Helps relieve bloating and aids overnight digestion.", tags: ["better-digestion", "Indian"] },
+      { name: "Fennel seed water (saunf)", whyBetter: "Natural digestive aid that prevents acidity.", tags: ["better-digestion", "natural"] }
+    ],
+    tags: ["night", "digestion"]
+  },
+  
+  // Tea-Coffee - Digestion
+  {
+    id: 118,
+    usualItem: "Coffee first thing on empty stomach",
+    category: "tea-coffee",
+    mealType: "Morning",
+    swaps: [
+      { name: "Warm water with lemon first, coffee after breakfast", whyBetter: "Protects stomach lining and improves morning digestion.", tags: ["better-digestion", "stomach-health"] },
+      { name: "Ginger-lemon tea", whyBetter: "Kickstarts digestion without irritating empty stomach.", tags: ["better-digestion", "immunity"] }
+    ],
+    tags: ["morning", "habit-change"]
+  },
+  {
+    id: 119,
+    usualItem: "Heavy chai right after meals",
+    category: "tea-coffee",
+    mealType: "After-meals",
+    swaps: [
+      { name: "Wait 30-45 mins, then light tea", whyBetter: "Allows proper digestion before tea interferes with iron absorption.", tags: ["better-digestion", "nutrient-absorption"] },
+      { name: "Digestive fennel tea after meals", whyBetter: "Aids digestion instead of hindering nutrient uptake.", tags: ["better-digestion", "natural"] }
+    ],
+    tags: ["Indian", "habit-change"]
+  },
+  
+  // Breakfast - Digestion
+  {
+    id: 120,
+    usualItem: "Heavy fried breakfast daily",
+    category: "breakfast",
+    mealType: "Breakfast",
+    swaps: [
+      { name: "Light idli/dosa with coconut chutney", whyBetter: "Fermented foods aid gut health and easier digestion.", tags: ["better-digestion", "probiotics", "lighter"] },
+      { name: "Papaya with seeds", whyBetter: "Contains digestive enzymes that improve gut function.", tags: ["better-digestion", "enzymes"] }
+    ],
+    tags: ["South-Indian", "gut-health"]
+  },
+  {
+    id: 121,
+    usualItem: "Skipping fiber at breakfast",
+    category: "breakfast",
+    mealType: "Breakfast",
+    swaps: [
+      { name: "Oats with banana and chia seeds", whyBetter: "High fiber keeps bowel movements regular.", tags: ["better-digestion", "fiber"] },
+      { name: "Whole grain toast with avocado", whyBetter: "Healthy fats and fiber support smooth digestion.", tags: ["better-digestion", "fiber", "healthy-fats"] }
+    ],
+    tags: ["fiber", "gut-health"]
+  },
+  
+  // Rice-Roti - Digestion
+  {
+    id: 122,
+    usualItem: "Very spicy curries daily",
+    category: "rice-roti",
+    mealType: "Lunch/Dinner",
+    swaps: [
+      { name: "Moderate spice with cooling curd/raita", whyBetter: "Probiotics in curd balance spice and aid digestion.", tags: ["better-digestion", "probiotics"] },
+      { name: "Add jeera rice instead of plain rice", whyBetter: "Cumin aids digestion and reduces bloating.", tags: ["better-digestion", "Indian"] }
+    ],
+    tags: ["Indian", "spicy"]
+  },
+  {
+    id: 123,
+    usualItem: "Eating very fast at meals",
+    category: "rice-roti",
+    mealType: "Lunch/Dinner",
+    swaps: [
+      { name: "Chew each bite 20-30 times", whyBetter: "Proper chewing starts digestion in mouth, reduces stomach load.", tags: ["better-digestion", "mindful-eating"] },
+      { name: "Put spoon down between bites", whyBetter: "Slowing down improves enzyme action and nutrient absorption.", tags: ["better-digestion", "habit-change"] }
+    ],
+    tags: ["habit-change", "mindful-eating"]
+  },
+  
+  // Snacks - Digestion
+  {
+    id: 124,
+    usualItem: "Heavy fried snacks in evening",
+    category: "snacks",
+    mealType: "Evening",
+    swaps: [
+      { name: "Papaya or pineapple chunks", whyBetter: "Natural digestive enzymes prepare stomach for dinner.", tags: ["better-digestion", "enzymes", "natural"] },
+      { name: "Murmura (puffed rice) chaat with veggies", whyBetter: "Light, easy to digest, and satisfies crunch craving.", tags: ["better-digestion", "lighter"] }
+    ],
+    tags: ["evening", "light-snacks"]
+  },
+  {
+    id: 125,
+    usualItem: "Eating snacks immediately after lunch",
+    category: "snacks",
+    mealType: "Afternoon",
+    swaps: [
+      { name: "Wait 2-3 hours before snacking", whyBetter: "Allows complete digestion before adding more food.", tags: ["better-digestion", "habit-change"] },
+      { name: "Light fruit if hungry", whyBetter: "Easy to digest without interfering with lunch digestion.", tags: ["better-digestion", "natural"] }
+    ],
+    tags: ["habit-change", "timing"]
+  },
+  
+  // Sweets - Digestion  
+  {
+    id: 126,
+    usualItem: "Heavy desserts immediately after meals",
+    category: "sweets",
+    mealType: "Dessert",
+    swaps: [
+      { name: "Fennel seeds (saunf) after meals", whyBetter: "Traditional digestive that freshens breath and aids digestion.", tags: ["better-digestion", "Indian", "natural"] },
+      { name: "Small piece of jaggery with ghee", whyBetter: "Ayurvedic combo that supports digestion without heavy sugar.", tags: ["better-digestion", "Ayurvedic"] }
+    ],
+    tags: ["Indian", "traditional"]
+  },
+  
+  // Fast Food - Digestion
+  {
+    id: 127,
+    usualItem: "Fast food without any veggies",
+    category: "fast-food",
+    mealType: "Lunch/Dinner",
+    swaps: [
+      { name: "Add extra veggies to your order", whyBetter: "Fiber helps offset heavy, processed food effects on gut.", tags: ["better-digestion", "fiber"] },
+      { name: "Have salad before main course", whyBetter: "Enzymes from raw veggies prepare stomach for heavier food.", tags: ["better-digestion", "enzymes"] }
+    ],
+    tags: ["fast-food", "hack"]
+  },
+  
+  // Office-Night - Digestion
+  {
+    id: 128,
+    usualItem: "Eating dinner at 10 PM or later",
+    category: "office-night",
+    mealType: "Night",
+    swaps: [
+      { name: "Finish dinner by 8 PM", whyBetter: "Body digests better when active, not when preparing for sleep.", tags: ["better-digestion", "circadian"] },
+      { name: "If late, have soup or khichdi only", whyBetter: "Light, easily digestible meal for late-night eating.", tags: ["better-digestion", "lighter"] }
+    ],
+    tags: ["late-night", "habit-change"]
+  },
+  {
+    id: 129,
+    usualItem: "Lying down immediately after dinner",
+    category: "office-night",
+    mealType: "Night",
+    swaps: [
+      { name: "Short 10-15 min walk after dinner", whyBetter: "Gentle movement aids digestion and prevents bloating.", tags: ["better-digestion", "active"] },
+      { name: "Sit upright for 30 mins post meal", whyBetter: "Gravity helps food move through digestive tract properly.", tags: ["better-digestion", "habit-change"] }
+    ],
+    tags: ["night", "habit-change"]
+  },
+
+  // ========== BUILD MUSCLE GOAL (15+ items across categories) ==========
+  
+  // Drinks - Muscle
+  {
+    id: 130,
+    usualItem: "Plain water post-workout",
+    category: "drinks",
+    mealType: "Post-workout",
+    swaps: [
+      { name: "Chocolate milk or banana smoothie", whyBetter: "Combines protein and carbs for muscle recovery.", tags: ["build-muscle", "recovery", "protein"] },
+      { name: "Sattu drink with banana", whyBetter: "Traditional protein-rich drink perfect for muscle repair.", tags: ["build-muscle", "protein", "Indian"] }
+    ],
+    tags: ["workout", "recovery"]
+  },
+  {
+    id: 131,
+    usualItem: "Energy drinks for gym",
+    category: "drinks",
+    mealType: "Pre-workout",
+    swaps: [
+      { name: "Black coffee 30 mins before workout", whyBetter: "Natural energy boost without sugar crash, aids performance.", tags: ["build-muscle", "more-energy", "natural"] },
+      { name: "Banana with peanut butter smoothie", whyBetter: "Sustained energy and protein for better workout.", tags: ["build-muscle", "more-energy"] }
+    ],
+    tags: ["gym", "pre-workout"]
+  },
+  
+  // Tea-Coffee - Muscle
+  {
+    id: 132,
+    usualItem: "Sugar-loaded protein shake",
+    category: "tea-coffee",
+    mealType: "Post-workout",
+    swaps: [
+      { name: "Plain milk + 2 eggs blended + banana", whyBetter: "Real protein without processed powder or excess sugar.", tags: ["build-muscle", "protein", "natural"] },
+      { name: "Paneer shake with minimal sugar", whyBetter: "High casein protein for slow muscle repair.", tags: ["build-muscle", "protein"] }
+    ],
+    tags: ["protein", "post-workout"]
+  },
+  
+  // Breakfast - Muscle
+  {
+    id: 133,
+    usualItem: "Only carbs for breakfast (toast/paratha only)",
+    category: "breakfast",
+    mealType: "Breakfast",
+    swaps: [
+      { name: "Add 2-3 eggs with your breakfast", whyBetter: "Complete protein to start muscle protein synthesis early.", tags: ["build-muscle", "protein"] },
+      { name: "Paneer bhurji with whole wheat paratha", whyBetter: "20+ grams protein to fuel muscle growth.", tags: ["build-muscle", "protein", "Indian"] }
+    ],
+    tags: ["protein", "morning"]
+  },
+  {
+    id: 134,
+    usualItem: "Light breakfast before gym",
+    category: "breakfast",
+    mealType: "Breakfast",
+    swaps: [
+      { name: "Oats with protein powder and banana", whyBetter: "Balanced carbs and protein for better workout performance.", tags: ["build-muscle", "more-energy", "pre-workout"] },
+      { name: "Sprouts with peanuts and toast", whyBetter: "Plant protein combo that fuels morning workouts.", tags: ["build-muscle", "protein", "veg"] }
+    ],
+    tags: ["gym", "pre-workout"]
+  },
+  {
+    id: 135,
+    usualItem: "Skipping breakfast completely",
+    category: "breakfast",
+    mealType: "Breakfast",
+    swaps: [
+      { name: "At least a glass of milk + 2 boiled eggs", whyBetter: "Prevents muscle breakdown from overnight fasting.", tags: ["build-muscle", "protein", "quick"] },
+      { name: "Greek yogurt with nuts and seeds", whyBetter: "Quick protein-rich breakfast for muscle maintenance.", tags: ["build-muscle", "protein"] }
+    ],
+    tags: ["quick", "essential"]
+  },
+  
+  // Rice-Roti - Muscle
+  {
+    id: 136,
+    usualItem: "Only dal-rice for lunch",
+    category: "rice-roti",
+    mealType: "Lunch",
+    swaps: [
+      { name: "Dal-rice + extra paneer/chicken piece", whyBetter: "Increases protein content significantly for muscle growth.", tags: ["build-muscle", "protein"] },
+      { name: "Double dal portion with rice", whyBetter: "Easy way to add 15-20g more protein to your meal.", tags: ["build-muscle", "protein", "budget-friendly"] }
+    ],
+    tags: ["Indian", "muscle-building"]
+  },
+  {
+    id: 137,
+    usualItem: "Avoiding eggs in diet",
+    category: "rice-roti",
+    mealType: "Lunch/Dinner",
+    swaps: [
+      { name: "Egg curry with roti", whyBetter: "Complete protein with all essential amino acids for muscles.", tags: ["build-muscle", "protein"] },
+      { name: "Soya chunk curry with rice", whyBetter: "Plant-based high protein alternative for vegetarians.", tags: ["build-muscle", "protein", "veg"] }
+    ],
+    tags: ["protein", "Indian"]
+  },
+  
+  // Snacks - Muscle
+  {
+    id: 138,
+    usualItem: "Empty calorie snacks like chips",
+    category: "snacks",
+    mealType: "Snack",
+    swaps: [
+      { name: "Roasted chana (black gram)", whyBetter: "High protein snack that supports muscle building.", tags: ["build-muscle", "protein", "Indian"] },
+      { name: "Boiled eggs with pepper", whyBetter: "6g protein per egg, perfect muscle-building snack.", tags: ["build-muscle", "protein", "quick"] }
+    ],
+    tags: ["protein", "gym-snack"]
+  },
+  {
+    id: 139,
+    usualItem: "Sweet biscuits with tea",
+    category: "snacks",
+    mealType: "Snack",
+    swaps: [
+      { name: "Peanut butter on whole grain crackers", whyBetter: "Protein and healthy fats for muscle repair.", tags: ["build-muscle", "protein", "healthy-fats"] },
+      { name: "Handful of almonds and walnuts", whyBetter: "Essential fats and protein for muscle recovery.", tags: ["build-muscle", "protein", "healthy-fats"] }
+    ],
+    tags: ["protein", "tea-time"]
+  },
+  {
+    id: 140,
+    usualItem: "No protein in evening snack",
+    category: "snacks",
+    mealType: "Evening",
+    swaps: [
+      { name: "Sprouts chaat with lemon", whyBetter: "Easy protein boost between meals.", tags: ["build-muscle", "protein", "Indian"] },
+      { name: "Paneer tikka (grilled)", whyBetter: "20g protein in a tasty evening snack.", tags: ["build-muscle", "protein"] }
+    ],
+    tags: ["protein", "muscle-building"]
+  },
+  
+  // Sweets - Muscle
+  {
+    id: 141,
+    usualItem: "Sugar sweets after workout",
+    category: "sweets",
+    mealType: "Post-workout",
+    swaps: [
+      { name: "Dates with peanut butter", whyBetter: "Natural sugars plus protein for muscle recovery.", tags: ["build-muscle", "natural", "recovery"] },
+      { name: "Banana with almond butter", whyBetter: "Carbs for glycogen + protein for muscle repair.", tags: ["build-muscle", "recovery"] }
+    ],
+    tags: ["post-workout", "recovery"]
+  },
+  
+  // Fast Food - Muscle
+  {
+    id: 142,
+    usualItem: "Veg burger with no protein",
+    category: "fast-food",
+    mealType: "Lunch",
+    swaps: [
+      { name: "Grilled chicken burger", whyBetter: "25+ grams protein per serving for muscle building.", tags: ["build-muscle", "protein"] },
+      { name: "Paneer tikka wrap", whyBetter: "High protein vegetarian option at fast food outlets.", tags: ["build-muscle", "protein", "veg"] }
+    ],
+    tags: ["fast-food", "protein"]
+  },
+  
+  // Office-Night - Muscle
+  {
+    id: 143,
+    usualItem: "Light dinner with only veggies",
+    category: "office-night",
+    mealType: "Dinner",
+    swaps: [
+      { name: "Add fish/chicken/paneer to dinner", whyBetter: "Night protein supports muscle repair during sleep.", tags: ["build-muscle", "protein", "recovery"] },
+      { name: "Egg white omelette with veggies", whyBetter: "Low fat, high protein for overnight muscle synthesis.", tags: ["build-muscle", "protein", "lighter"] }
+    ],
+    tags: ["dinner", "muscle-building"]
+  },
+  {
+    id: 144,
+    usualItem: "Nothing after evening gym",
+    category: "office-night",
+    mealType: "Post-workout",
+    swaps: [
+      { name: "Milk with banana within 30 mins", whyBetter: "Muscle recovery window - don't miss it!", tags: ["build-muscle", "recovery", "protein"] },
+      { name: "Cheese sandwich with whole grain bread", whyBetter: "Quick protein and carbs for muscle repair.", tags: ["build-muscle", "protein", "quick"] }
+    ],
+    tags: ["post-workout", "essential"]
+  },
+
+  // ========== SUGAR CONTROL GOAL (15+ items across categories) ==========
+  
+  // Drinks - Sugar Control
+  {
+    id: 145,
+    usualItem: "Fruit juice with breakfast",
+    category: "drinks",
+    mealType: "Breakfast",
+    swaps: [
+      { name: "Whole fruit instead of juice", whyBetter: "Fiber slows sugar absorption, prevents glucose spikes.", tags: ["sugar-control", "fiber", "natural"] },
+      { name: "Vegetable juice with minimal fruit", whyBetter: "Lower sugar content while still refreshing.", tags: ["sugar-control", "vitamins"] }
+    ],
+    tags: ["breakfast", "blood-sugar"]
+  },
+  {
+    id: 146,
+    usualItem: "Sweetened beverages between meals",
+    category: "drinks",
+    mealType: "Anytime",
+    swaps: [
+      { name: "Plain water or herbal tea", whyBetter: "Zero sugar keeps blood glucose stable between meals.", tags: ["sugar-control", "hydration"] },
+      { name: "Cinnamon water", whyBetter: "Cinnamon may help improve insulin sensitivity.", tags: ["sugar-control", "natural"] }
+    ],
+    tags: ["snacking", "blood-sugar"]
+  },
+  
+  // Tea-Coffee - Sugar Control
+  {
+    id: 147,
+    usualItem: "Tea/coffee with 2-3 spoons sugar",
+    category: "tea-coffee",
+    mealType: "Anytime",
+    swaps: [
+      { name: "Gradually reduce to 1/2 spoon, then none", whyBetter: "Slow reduction helps taste buds adapt without cravings.", tags: ["sugar-control", "habit-change"] },
+      { name: "Add cinnamon or cardamom for sweetness", whyBetter: "Natural flavor without sugar, may help blood sugar.", tags: ["sugar-control", "natural"] }
+    ],
+    tags: ["daily", "habit-change"]
+  },
+  {
+    id: 148,
+    usualItem: "Flavored coffee drinks from cafes",
+    category: "tea-coffee",
+    mealType: "Anytime",
+    swaps: [
+      { name: "Plain black coffee or espresso", whyBetter: "Near-zero sugar while keeping the caffeine benefit.", tags: ["sugar-control", "weight-loss"] },
+      { name: "Cappuccino with no added sugar", whyBetter: "Milk provides natural sweetness without sugar spikes.", tags: ["sugar-control", "lighter"] }
+    ],
+    tags: ["cafe", "blood-sugar"]
+  },
+  
+  // Breakfast - Sugar Control
+  {
+    id: 149,
+    usualItem: "White bread/refined flour breakfast",
+    category: "breakfast",
+    mealType: "Breakfast",
+    swaps: [
+      { name: "Multi-grain or millet-based breakfast", whyBetter: "Complex carbs release sugar slowly into bloodstream.", tags: ["sugar-control", "fiber"] },
+      { name: "Besan chilla with veggies", whyBetter: "Protein-rich, low glycemic breakfast option.", tags: ["sugar-control", "protein", "Indian"] }
+    ],
+    tags: ["blood-sugar", "glycemic"]
+  },
+  {
+    id: 150,
+    usualItem: "Sweet breakfast cereals",
+    category: "breakfast",
+    mealType: "Breakfast",
+    swaps: [
+      { name: "Steel-cut oats with nuts, no sugar", whyBetter: "Low glycemic index, keeps blood sugar stable for hours.", tags: ["sugar-control", "fiber"] },
+      { name: "Poha with vegetables and peanuts", whyBetter: "Flattened rice with protein slows glucose absorption.", tags: ["sugar-control", "Indian", "balanced"] }
+    ],
+    tags: ["breakfast", "glycemic"]
+  },
+  {
+    id: 151,
+    usualItem: "Jam/honey on toast",
+    category: "breakfast",
+    mealType: "Breakfast",
+    swaps: [
+      { name: "Peanut butter or avocado on toast", whyBetter: "Healthy fats slow digestion and prevent sugar spikes.", tags: ["sugar-control", "healthy-fats"] },
+      { name: "Scrambled eggs on toast", whyBetter: "Protein-first breakfast keeps blood sugar steady.", tags: ["sugar-control", "protein"] }
+    ],
+    tags: ["toast", "blood-sugar"]
+  },
+  
+  // Rice-Roti - Sugar Control
+  {
+    id: 152,
+    usualItem: "Large portion of white rice",
+    category: "rice-roti",
+    mealType: "Lunch/Dinner",
+    swaps: [
+      { name: "Small rice portion + more vegetables", whyBetter: "Fiber from veggies slows rice carb absorption.", tags: ["sugar-control", "fiber", "portion-control"] },
+      { name: "Replace half rice with dal", whyBetter: "Protein and fiber combination improves blood sugar response.", tags: ["sugar-control", "protein"] }
+    ],
+    tags: ["Indian", "blood-sugar"]
+  },
+  {
+    id: 153,
+    usualItem: "Potatoes in every meal",
+    category: "rice-roti",
+    mealType: "Lunch/Dinner",
+    swaps: [
+      { name: "Replace with cauliflower or bottle gourd", whyBetter: "Much lower glycemic impact, similar texture satisfaction.", tags: ["sugar-control", "low-glycemic"] },
+      { name: "Mix potato with other non-starchy veggies", whyBetter: "Reduces overall glycemic load of the meal.", tags: ["sugar-control", "balanced"] }
+    ],
+    tags: ["vegetables", "glycemic"]
+  },
+  
+  // Snacks - Sugar Control
+  {
+    id: 154,
+    usualItem: "Biscuits and cookies for snacks",
+    category: "snacks",
+    mealType: "Snack",
+    swaps: [
+      { name: "Handful of nuts and seeds", whyBetter: "Protein and fats don't spike blood sugar at all.", tags: ["sugar-control", "healthy-fats", "protein"] },
+      { name: "Cucumber with hung curd dip", whyBetter: "Low carb, high protein snack for stable energy.", tags: ["sugar-control", "protein"] }
+    ],
+    tags: ["tea-time", "blood-sugar"]
+  },
+  {
+    id: 155,
+    usualItem: "Banana as only snack",
+    category: "snacks",
+    mealType: "Snack",
+    swaps: [
+      { name: "Apple with peanut butter", whyBetter: "Lower glycemic fruit + fat slows sugar absorption.", tags: ["sugar-control", "healthy-fats"] },
+      { name: "Guava or berries", whyBetter: "Lower sugar fruits with more fiber.", tags: ["sugar-control", "fiber", "low-glycemic"] }
+    ],
+    tags: ["fruit", "blood-sugar"]
+  },
+  {
+    id: 156,
+    usualItem: "Packaged fruit yogurt",
+    category: "snacks",
+    mealType: "Snack",
+    swaps: [
+      { name: "Plain curd with cinnamon and a few berries", whyBetter: "Much less sugar, cinnamon may help insulin response.", tags: ["sugar-control", "probiotics"] },
+      { name: "Greek yogurt with nuts", whyBetter: "High protein, low sugar snack option.", tags: ["sugar-control", "protein"] }
+    ],
+    tags: ["yogurt", "blood-sugar"]
+  },
+  
+  // Sweets - Sugar Control
+  {
+    id: 157,
+    usualItem: "Indian sweets (mithai) regularly",
+    category: "sweets",
+    mealType: "Snack",
+    swaps: [
+      { name: "Dates with nuts (1-2 pieces)", whyBetter: "Natural sweetness with fiber, much smaller portion.", tags: ["sugar-control", "natural", "portion-control"] },
+      { name: "Dark chocolate (2 small squares)", whyBetter: "Less sugar than milk chocolate, satisfies sweet craving.", tags: ["sugar-control", "antioxidants"] }
+    ],
+    tags: ["sweets", "craving"]
+  },
+  {
+    id: 158,
+    usualItem: "Dessert after every meal",
+    category: "sweets",
+    mealType: "Dessert",
+    swaps: [
+      { name: "Fresh fruit only", whyBetter: "Natural sugar with fiber causes smaller glucose spike.", tags: ["sugar-control", "fiber", "natural"] },
+      { name: "Skip dessert, have with next meal protein", whyBetter: "Protein before/with sugar reduces blood glucose spike.", tags: ["sugar-control", "habit-change"] }
+    ],
+    tags: ["habit-change", "blood-sugar"]
+  },
+  
+  // Fast Food - Sugar Control
+  {
+    id: 159,
+    usualItem: "Burger meal with sugary drink",
+    category: "fast-food",
+    mealType: "Lunch",
+    swaps: [
+      { name: "Burger with water or diet drink", whyBetter: "Eliminating liquid sugar makes huge difference.", tags: ["sugar-control", "weight-loss"] },
+      { name: "Skip the bun, eat as salad bowl", whyBetter: "Removes refined carbs that spike blood sugar.", tags: ["sugar-control", "low-carb"] }
+    ],
+    tags: ["fast-food", "blood-sugar"]
+  },
+  
+  // Office-Night - Sugar Control
+  {
+    id: 160,
+    usualItem: "Sweet snacks when stressed at work",
+    category: "office-night",
+    mealType: "Snack",
+    swaps: [
+      { name: "Mixed nuts or cheese cubes", whyBetter: "Satisfies craving without blood sugar rollercoaster.", tags: ["sugar-control", "protein", "healthy-fats"] },
+      { name: "Carrot sticks with hummus", whyBetter: "Crunchy, savory - breaks the sweet habit loop.", tags: ["sugar-control", "fiber"] }
+    ],
+    tags: ["office", "stress-eating"]
+  },
+  {
+    id: 161,
+    usualItem: "Late-night sweet cravings",
+    category: "office-night",
+    mealType: "Night",
+    swaps: [
+      { name: "Warm milk with a pinch of turmeric", whyBetter: "Protein curbs craving, no added sugar.", tags: ["sugar-control", "better-sleep"] },
+      { name: "Few almonds and small dark chocolate piece", whyBetter: "Healthy fat + minimal sugar satisfies without spike.", tags: ["sugar-control", "portion-control"] }
+    ],
+    tags: ["late-night", "craving"]
+  },
 ];
 
 export const QUICK_TIPS = [
