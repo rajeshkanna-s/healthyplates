@@ -1,4 +1,4 @@
-import { SleepEntry, STORAGE_KEY } from './types';
+import { SleepEntry, SleepTag, STORAGE_KEY, GOAL_STORAGE_KEY, LAST_EXPORT_KEY } from './types';
 
 export const generateId = (): string => {
   return `sleep_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -13,7 +13,7 @@ export const calculateDuration = (bedtime: string, wakeTime: string): number => 
   
   // Handle cross-midnight sleep (e.g., 11:30 PM to 6:30 AM)
   if (wakeTotalMinutes < bedTotalMinutes) {
-    wakeTotalMinutes += 24 * 60; // Add 24 hours in minutes
+    wakeTotalMinutes += 24 * 60;
   }
   
   return wakeTotalMinutes - bedTotalMinutes;
@@ -42,12 +42,19 @@ export const formatDate = (dateString: string): string => {
   });
 };
 
+export const formatShortDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+  });
+};
+
 export const loadEntries = (): SleepEntry[] => {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       const entries = JSON.parse(stored);
-      // Sort by date, newest first
       return entries.sort((a: SleepEntry, b: SleepEntry) => 
         new Date(b.date).getTime() - new Date(a.date).getTime()
       );
@@ -66,6 +73,29 @@ export const saveEntries = (entries: SleepEntry[]): void => {
   }
 };
 
+// Goal functions
+export const loadGoal = (): number => {
+  try {
+    const stored = localStorage.getItem(GOAL_STORAGE_KEY);
+    return stored ? parseInt(stored, 10) : 450; // Default 7h 30m
+  } catch {
+    return 450;
+  }
+};
+
+export const saveGoal = (minutes: number): void => {
+  localStorage.setItem(GOAL_STORAGE_KEY, minutes.toString());
+};
+
+// Last export timestamp
+export const getLastExportTime = (): string | null => {
+  return localStorage.getItem(LAST_EXPORT_KEY);
+};
+
+export const setLastExportTime = (): void => {
+  localStorage.setItem(LAST_EXPORT_KEY, new Date().toISOString());
+};
+
 export const exportToJSON = (entries: SleepEntry[]): void => {
   const dataStr = JSON.stringify(entries, null, 2);
   const blob = new Blob([dataStr], { type: 'application/json' });
@@ -81,6 +111,8 @@ export const exportToJSON = (entries: SleepEntry[]): void => {
   link.click();
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
+  
+  setLastExportTime();
 };
 
 export const validateImportData = (data: unknown): SleepEntry[] | null => {
@@ -107,6 +139,7 @@ export const validateImportData = (data: unknown): SleepEntry[] | null => {
         duration: item.duration,
         quality: item.quality,
         notes: item.notes || '',
+        tags: Array.isArray(item.tags) ? item.tags : [],
         createdAt: item.createdAt || new Date().toISOString(),
         updatedAt: item.updatedAt || new Date().toISOString(),
       });
@@ -124,7 +157,6 @@ export const getAverageStats = (entries: SleepEntry[]): { avgDuration: number; t
   const totalDuration = entries.reduce((sum, entry) => sum + entry.duration, 0);
   const avgDuration = totalDuration / entries.length;
   
-  // Last 7 days
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
   
@@ -133,9 +165,107 @@ export const getAverageStats = (entries: SleepEntry[]): { avgDuration: number; t
     ? last7Days.reduce((sum, entry) => sum + entry.duration, 0) / last7Days.length 
     : 0;
   
+  return { avgDuration, totalDays: entries.length, last7DaysAvg };
+};
+
+// Streak calculations
+export const calculateStreaks = (entries: SleepEntry[]): { currentStreak: number; bestStreak: number } => {
+  if (entries.length === 0) return { currentStreak: 0, bestStreak: 0 };
+  
+  const sortedDates = [...new Set(entries.map(e => e.date))].sort((a, b) => 
+    new Date(b).getTime() - new Date(a).getTime()
+  );
+  
+  if (sortedDates.length === 0) return { currentStreak: 0, bestStreak: 0 };
+  
+  let currentStreak = 0;
+  let bestStreak = 0;
+  let tempStreak = 1;
+  
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  
+  const latestDate = new Date(sortedDates[0]);
+  latestDate.setHours(0, 0, 0, 0);
+  
+  // Check if current streak is active (entry today or yesterday)
+  const isStreakActive = latestDate.getTime() === today.getTime() || 
+                         latestDate.getTime() === yesterday.getTime();
+  
+  for (let i = 0; i < sortedDates.length - 1; i++) {
+    const currentDate = new Date(sortedDates[i]);
+    const nextDate = new Date(sortedDates[i + 1]);
+    const diffDays = Math.round((currentDate.getTime() - nextDate.getTime()) / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 1) {
+      tempStreak++;
+    } else {
+      if (i === 0 || tempStreak > 1) {
+        bestStreak = Math.max(bestStreak, tempStreak);
+      }
+      tempStreak = 1;
+    }
+  }
+  
+  bestStreak = Math.max(bestStreak, tempStreak);
+  currentStreak = isStreakActive ? tempStreak : 0;
+  
+  // If only one entry and it's today/yesterday, streak is 1
+  if (sortedDates.length === 1 && isStreakActive) {
+    currentStreak = 1;
+  }
+  
+  return { currentStreak, bestStreak };
+};
+
+// Goal progress calculations
+export const getGoalProgress = (entries: SleepEntry[], goalMinutes: number, days: number = 7) => {
+  const cutoffDate = new Date();
+  cutoffDate.setDate(cutoffDate.getDate() - days);
+  
+  const recentEntries = entries.filter(e => new Date(e.date) >= cutoffDate);
+  const metGoal = recentEntries.filter(e => e.duration >= goalMinutes);
+  
   return {
-    avgDuration,
-    totalDays: entries.length,
-    last7DaysAvg,
+    totalDays: recentEntries.length,
+    daysMetGoal: metGoal.length,
+    percentage: recentEntries.length > 0 ? (metGoal.length / recentEntries.length) * 100 : 0,
   };
+};
+
+// Tag analysis
+export const getTagAnalysis = (entries: SleepEntry[]): { tag: SleepTag; avgDuration: number; count: number }[] => {
+  const tagData: Record<SleepTag, { total: number; count: number }> = {
+    caffeine: { total: 0, count: 0 },
+    screen_time: { total: 0, count: 0 },
+    exercise: { total: 0, count: 0 },
+    stress: { total: 0, count: 0 },
+    alcohol: { total: 0, count: 0 },
+    late_meal: { total: 0, count: 0 },
+  };
+  
+  entries.forEach(entry => {
+    entry.tags?.forEach(tag => {
+      tagData[tag].total += entry.duration;
+      tagData[tag].count++;
+    });
+  });
+  
+  return Object.entries(tagData)
+    .filter(([, data]) => data.count > 0)
+    .map(([tag, data]) => ({
+      tag: tag as SleepTag,
+      avgDuration: Math.round(data.total / data.count),
+      count: data.count,
+    }))
+    .sort((a, b) => b.count - a.count);
+};
+
+// Get last entry's times for quick fill
+export const getLastEntryTimes = (entries: SleepEntry[]): { bedtime: string; wakeTime: string } | null => {
+  if (entries.length === 0) return null;
+  const last = entries[0];
+  return { bedtime: last.bedtime, wakeTime: last.wakeTime };
 };

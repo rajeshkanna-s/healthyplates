@@ -1,10 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Download, Upload, AlertTriangle, Database } from 'lucide-react';
+import { Download, Upload, AlertTriangle, Database, Clock } from 'lucide-react';
 import { SleepEntry } from './types';
-import { exportToJSON, validateImportData } from './utils';
+import { exportToJSON, validateImportData, getLastExportTime, setLastExportTime } from './utils';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,7 +26,23 @@ const ImportExportSection: React.FC<ImportExportSectionProps> = ({ entries, onIm
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [pendingImport, setPendingImport] = useState<SleepEntry[] | null>(null);
   const [showImportDialog, setShowImportDialog] = useState(false);
+  const [lastExport, setLastExport] = useState<string | null>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    setLastExport(getLastExportTime());
+  }, []);
+
+  const formatLastExport = (isoString: string) => {
+    const date = new Date(isoString);
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+    });
+  };
 
   const handleExport = () => {
     if (entries.length === 0) {
@@ -38,6 +54,8 @@ const ImportExportSection: React.FC<ImportExportSectionProps> = ({ entries, onIm
       return;
     }
     exportToJSON(entries);
+    setLastExportTime();
+    setLastExport(new Date().toISOString());
     toast({
       title: "Export successful!",
       description: `Exported ${entries.length} sleep entries to JSON file.`,
@@ -128,7 +146,7 @@ const ImportExportSection: React.FC<ImportExportSectionProps> = ({ entries, onIm
           <div className="flex flex-wrap gap-3">
             <Button onClick={handleExport} variant="outline">
               <Download className="w-4 h-4 mr-2" />
-              Export Sleep Data (JSON)
+              Export Sleep Data ({entries.length} entries)
             </Button>
 
             <Button 
@@ -144,8 +162,16 @@ const ImportExportSection: React.FC<ImportExportSectionProps> = ({ entries, onIm
               accept=".json"
               onChange={handleFileSelect}
               className="hidden"
+              aria-label="Import sleep data JSON file"
             />
           </div>
+
+          {lastExport && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground pt-2">
+              <Clock className="w-4 h-4" />
+              <span>Last export: {formatLastExport(lastExport)}</span>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -159,7 +185,7 @@ const ImportExportSection: React.FC<ImportExportSectionProps> = ({ entries, onIm
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-col sm:flex-row gap-2">
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleImportMerge} className="bg-blue-600 hover:bg-blue-700">
+            <AlertDialogAction onClick={handleImportMerge} className="bg-primary hover:bg-primary/90">
               Merge with Existing
             </AlertDialogAction>
             <AlertDialogAction onClick={handleImportReplace} className="bg-destructive hover:bg-destructive/90">

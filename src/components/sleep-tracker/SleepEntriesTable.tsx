@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Edit, Trash2, Moon } from 'lucide-react';
-import { SleepEntry, QUALITY_OPTIONS } from './types';
-import { formatDate, formatTime, formatDuration } from './utils';
+import { Edit, Trash2, Moon, ChevronDown, ChevronUp, Check } from 'lucide-react';
+import { SleepEntry, QUALITY_OPTIONS, TAG_OPTIONS, DateFilter, SortOption, SleepQuality } from './types';
+import { formatDate, formatTime, formatDuration, loadGoal } from './utils';
+import SleepFilters from './SleepFilters';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,6 +18,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 
 interface SleepEntriesTableProps {
   entries: SleepEntry[];
@@ -41,6 +47,61 @@ const getQualityBadge = (quality: SleepEntry['quality']) => {
 };
 
 const SleepEntriesTable: React.FC<SleepEntriesTableProps> = ({ entries, onEdit, onDelete }) => {
+  const [dateFilter, setDateFilter] = useState<DateFilter>('all');
+  const [sortOption, setSortOption] = useState<SortOption>('date_desc');
+  const [qualityFilter, setQualityFilter] = useState<SleepQuality | 'all'>('all');
+  const [expandedNotes, setExpandedNotes] = useState<Set<string>>(new Set());
+
+  const goal = loadGoal();
+
+  const filteredAndSortedEntries = useMemo(() => {
+    let filtered = [...entries];
+    
+    // Date filter
+    if (dateFilter !== 'all') {
+      const cutoffDate = new Date();
+      cutoffDate.setDate(cutoffDate.getDate() - (dateFilter === '7days' ? 7 : 30));
+      filtered = filtered.filter(e => new Date(e.date) >= cutoffDate);
+    }
+    
+    // Quality filter
+    if (qualityFilter !== 'all') {
+      filtered = filtered.filter(e => e.quality === qualityFilter);
+    }
+    
+    // Sort
+    filtered.sort((a, b) => {
+      switch (sortOption) {
+        case 'date_asc':
+          return new Date(a.date).getTime() - new Date(b.date).getTime();
+        case 'duration_desc':
+          return b.duration - a.duration;
+        case 'duration_asc':
+          return a.duration - b.duration;
+        default:
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+      }
+    });
+    
+    return filtered;
+  }, [entries, dateFilter, sortOption, qualityFilter]);
+
+  const resetFilters = () => {
+    setDateFilter('all');
+    setSortOption('date_desc');
+    setQualityFilter('all');
+  };
+
+  const toggleNotes = (id: string) => {
+    const newExpanded = new Set(expandedNotes);
+    if (newExpanded.has(id)) {
+      newExpanded.delete(id);
+    } else {
+      newExpanded.add(id);
+    }
+    setExpandedNotes(newExpanded);
+  };
+
   if (entries.length === 0) {
     return (
       <Card>
@@ -55,15 +116,43 @@ const SleepEntriesTable: React.FC<SleepEntriesTableProps> = ({ entries, onEdit, 
     );
   }
 
+  const renderTags = (entry: SleepEntry) => {
+    if (!entry.tags || entry.tags.length === 0) return null;
+    return (
+      <div className="flex flex-wrap gap-1 mt-1">
+        {entry.tags.map(tag => {
+          const tagInfo = TAG_OPTIONS.find(t => t.value === tag);
+          return (
+            <span key={tag} className="text-xs bg-muted px-1.5 py-0.5 rounded" title={tagInfo?.label}>
+              {tagInfo?.emoji}
+            </span>
+          );
+        })}
+      </div>
+    );
+  };
+
+  const meetsGoal = (duration: number) => duration >= goal;
+
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-lg flex items-center gap-2">
           <Moon className="w-5 h-5 text-primary" />
-          Your Sleep Entries ({entries.length})
+          Your Sleep Entries ({filteredAndSortedEntries.length} of {entries.length})
         </CardTitle>
       </CardHeader>
       <CardContent>
+        <SleepFilters
+          dateFilter={dateFilter}
+          sortOption={sortOption}
+          qualityFilter={qualityFilter}
+          onDateFilterChange={setDateFilter}
+          onSortChange={setSortOption}
+          onQualityFilterChange={setQualityFilter}
+          onReset={resetFilters}
+        />
+
         {/* Desktop Table */}
         <div className="hidden md:block overflow-x-auto">
           <Table>
@@ -74,27 +163,38 @@ const SleepEntriesTable: React.FC<SleepEntriesTableProps> = ({ entries, onEdit, 
                 <TableHead>Wake Time</TableHead>
                 <TableHead>Duration</TableHead>
                 <TableHead>Quality</TableHead>
-                <TableHead>Notes</TableHead>
+                <TableHead>Tags/Notes</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {entries.map((entry) => (
-                <TableRow key={entry.id}>
+              {filteredAndSortedEntries.map((entry) => (
+                <TableRow key={entry.id} className={meetsGoal(entry.duration) ? 'bg-primary/5' : ''}>
                   <TableCell className="font-medium">{formatDate(entry.date)}</TableCell>
                   <TableCell>{formatTime(entry.bedtime)}</TableCell>
                   <TableCell>{formatTime(entry.wakeTime)}</TableCell>
-                  <TableCell className="font-semibold">{formatDuration(entry.duration)}</TableCell>
+                  <TableCell>
+                    <span className="font-semibold flex items-center gap-1">
+                      {formatDuration(entry.duration)}
+                      {meetsGoal(entry.duration) && <Check className="w-4 h-4 text-primary" />}
+                    </span>
+                  </TableCell>
                   <TableCell>{getQualityBadge(entry.quality)}</TableCell>
-                  <TableCell className="max-w-[200px] truncate">{entry.notes || '—'}</TableCell>
+                  <TableCell className="max-w-[200px]">
+                    {renderTags(entry)}
+                    {entry.notes && (
+                      <p className="text-sm text-muted-foreground truncate mt-1">{entry.notes}</p>
+                    )}
+                    {!entry.notes && (!entry.tags || entry.tags.length === 0) && '—'}
+                  </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Button size="sm" variant="ghost" onClick={() => onEdit(entry)}>
+                      <Button size="sm" variant="ghost" onClick={() => onEdit(entry)} aria-label="Edit entry">
                         <Edit className="w-4 h-4" />
                       </Button>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
-                          <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive">
+                          <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" aria-label="Delete entry">
                             <Trash2 className="w-4 h-4" />
                           </Button>
                         </AlertDialogTrigger>
@@ -121,22 +221,25 @@ const SleepEntriesTable: React.FC<SleepEntriesTableProps> = ({ entries, onEdit, 
 
         {/* Mobile Cards */}
         <div className="md:hidden space-y-3">
-          {entries.map((entry) => (
-            <div key={entry.id} className="border rounded-lg p-4 space-y-3">
+          {filteredAndSortedEntries.map((entry) => (
+            <div key={entry.id} className={`border rounded-lg p-4 space-y-3 ${meetsGoal(entry.duration) ? 'border-primary/30 bg-primary/5' : ''}`}>
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="font-medium">{formatDate(entry.date)}</p>
+                  <p className="font-medium flex items-center gap-1">
+                    {formatDate(entry.date)}
+                    {meetsGoal(entry.duration) && <Check className="w-4 h-4 text-primary" />}
+                  </p>
                   <p className="text-sm text-muted-foreground">
                     {formatTime(entry.bedtime)} → {formatTime(entry.wakeTime)}
                   </p>
                 </div>
                 <div className="flex gap-1">
-                  <Button size="sm" variant="ghost" onClick={() => onEdit(entry)}>
+                  <Button size="sm" variant="ghost" onClick={() => onEdit(entry)} aria-label="Edit entry">
                     <Edit className="w-4 h-4" />
                   </Button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive">
+                      <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" aria-label="Delete entry">
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </AlertDialogTrigger>
@@ -159,8 +262,29 @@ const SleepEntriesTable: React.FC<SleepEntriesTableProps> = ({ entries, onEdit, 
                 <div className="text-lg font-semibold">{formatDuration(entry.duration)}</div>
                 {getQualityBadge(entry.quality)}
               </div>
+              {renderTags(entry)}
               {entry.notes && (
-                <p className="text-sm text-muted-foreground bg-muted p-2 rounded">{entry.notes}</p>
+                <Collapsible>
+                  <CollapsibleTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-6 text-xs p-0"
+                      onClick={() => toggleNotes(entry.id)}
+                    >
+                      {expandedNotes.has(entry.id) ? (
+                        <><ChevronUp className="w-3 h-3 mr-1" /> Hide notes</>
+                      ) : (
+                        <><ChevronDown className="w-3 h-3 mr-1" /> View notes</>
+                      )}
+                    </Button>
+                  </CollapsibleTrigger>
+                  {expandedNotes.has(entry.id) && (
+                    <CollapsibleContent>
+                      <p className="text-sm text-muted-foreground bg-muted p-2 rounded mt-2">{entry.notes}</p>
+                    </CollapsibleContent>
+                  )}
+                </Collapsible>
               )}
             </div>
           ))}

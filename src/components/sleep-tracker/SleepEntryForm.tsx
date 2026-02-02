@@ -5,22 +5,25 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Save, X } from 'lucide-react';
-import { SleepEntry, SleepQuality, QUALITY_OPTIONS } from './types';
-import { calculateDuration, formatDuration, generateId } from './utils';
+import { Plus, Save, X, Clock } from 'lucide-react';
+import { SleepEntry, SleepQuality, SleepTag, QUALITY_OPTIONS } from './types';
+import { calculateDuration, formatDuration, generateId, getLastEntryTimes } from './utils';
+import SleepTagsInput from './SleepTagsInput';
 
 interface SleepEntryFormProps {
   editingEntry: SleepEntry | null;
+  entries: SleepEntry[];
   onSave: (entry: SleepEntry) => void;
   onCancel: () => void;
 }
 
-const SleepEntryForm: React.FC<SleepEntryFormProps> = ({ editingEntry, onSave, onCancel }) => {
+const SleepEntryForm: React.FC<SleepEntryFormProps> = ({ editingEntry, entries, onSave, onCancel }) => {
   const [date, setDate] = useState('');
   const [bedtime, setBedtime] = useState('');
   const [wakeTime, setWakeTime] = useState('');
   const [quality, setQuality] = useState<SleepQuality>('good');
   const [notes, setNotes] = useState('');
+  const [tags, setTags] = useState<SleepTag[]>([]);
   const [duration, setDuration] = useState<number>(0);
 
   useEffect(() => {
@@ -30,6 +33,7 @@ const SleepEntryForm: React.FC<SleepEntryFormProps> = ({ editingEntry, onSave, o
       setWakeTime(editingEntry.wakeTime);
       setQuality(editingEntry.quality);
       setNotes(editingEntry.notes);
+      setTags(editingEntry.tags || []);
       setDuration(editingEntry.duration);
     } else {
       clearForm();
@@ -50,7 +54,16 @@ const SleepEntryForm: React.FC<SleepEntryFormProps> = ({ editingEntry, onSave, o
     setWakeTime('06:00');
     setQuality('good');
     setNotes('');
+    setTags([]);
     setDuration(calculateDuration('22:00', '06:00'));
+  };
+
+  const useLastTimes = () => {
+    const lastTimes = getLastEntryTimes(entries);
+    if (lastTimes) {
+      setBedtime(lastTimes.bedtime);
+      setWakeTime(lastTimes.wakeTime);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -69,6 +82,7 @@ const SleepEntryForm: React.FC<SleepEntryFormProps> = ({ editingEntry, onSave, o
       duration,
       quality,
       notes,
+      tags,
       createdAt: editingEntry?.createdAt || now,
       updatedAt: now,
     };
@@ -111,7 +125,21 @@ const SleepEntryForm: React.FC<SleepEntryFormProps> = ({ editingEntry, onSave, o
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="bedtime">Bedtime</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="bedtime">Bedtime</Label>
+                {entries.length > 0 && !editingEntry && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 text-xs"
+                    onClick={useLastTimes}
+                  >
+                    <Clock className="w-3 h-3 mr-1" />
+                    Use last
+                  </Button>
+                )}
+              </div>
               <Input
                 id="bedtime"
                 type="time"
@@ -171,6 +199,8 @@ const SleepEntryForm: React.FC<SleepEntryFormProps> = ({ editingEntry, onSave, o
               />
             </div>
           </div>
+
+          <SleepTagsInput selectedTags={tags} onTagsChange={setTags} />
 
           <div className="flex flex-wrap gap-2 pt-2">
             <Button type="submit">

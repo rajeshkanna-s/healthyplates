@@ -8,6 +8,10 @@ import { loadEntries, saveEntries } from '@/components/sleep-tracker/utils';
 import SleepEntryForm from '@/components/sleep-tracker/SleepEntryForm';
 import SleepEntriesTable from '@/components/sleep-tracker/SleepEntriesTable';
 import SleepStats from '@/components/sleep-tracker/SleepStats';
+import SleepGoal from '@/components/sleep-tracker/SleepGoal';
+import SleepStreaks from '@/components/sleep-tracker/SleepStreaks';
+import SleepTrends from '@/components/sleep-tracker/SleepTrends';
+import TagAnalysis from '@/components/sleep-tracker/TagAnalysis';
 import ImportExportSection from '@/components/sleep-tracker/ImportExportSection';
 
 const SleepTracker = () => {
@@ -22,15 +26,12 @@ const SleepTracker = () => {
     let updatedEntries: SleepEntry[];
     
     if (editingEntry) {
-      // Update existing entry
       updatedEntries = entries.map((e) => (e.id === entry.id ? entry : e));
       setEditingEntry(null);
     } else {
-      // Add new entry
       updatedEntries = [entry, ...entries];
     }
     
-    // Sort by date, newest first
     updatedEntries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     
     setEntries(updatedEntries);
@@ -45,7 +46,6 @@ const SleepTracker = () => {
 
   const handleEditEntry = (entry: SleepEntry) => {
     setEditingEntry(entry);
-    // Scroll to form
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -55,13 +55,11 @@ const SleepTracker = () => {
     if (replace) {
       updatedEntries = importedEntries;
     } else {
-      // Merge: add imported entries that don't exist (by id)
       const existingIds = new Set(entries.map((e) => e.id));
       const newEntries = importedEntries.filter((e) => !existingIds.has(e.id));
       updatedEntries = [...entries, ...newEntries];
     }
     
-    // Sort by date, newest first
     updatedEntries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     
     setEntries(updatedEntries);
@@ -119,10 +117,27 @@ const SleepTracker = () => {
             <SleepStats entries={entries} />
           </div>
 
+          {/* Goal and Streaks */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <SleepGoal entries={entries} />
+            <SleepStreaks entries={entries} />
+          </div>
+
+          {/* Trends Chart */}
+          <div className="mb-6">
+            <SleepTrends entries={entries} />
+          </div>
+
+          {/* Tag Analysis */}
+          <div className="mb-6">
+            <TagAnalysis entries={entries} />
+          </div>
+
           {/* Entry Form */}
           <div className="mb-6">
             <SleepEntryForm
               editingEntry={editingEntry}
+              entries={entries}
               onSave={handleSaveEntry}
               onCancel={() => setEditingEntry(null)}
             />
