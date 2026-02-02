@@ -216,13 +216,10 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ gender, onComplete, onBac
                     onClick={() => {
                       if (currentAnswer !== undefined) {
                         handleAnswer(currentAnswer);
-                        toast({
-                          title: "Answer Saved!",
-                          description: `Your response for "${categoryLabels[currentQuestion.category]}" has been recorded.`,
-                        });
                       }
+                      handleComplete();
                     }}
-                    disabled={currentAnswer === undefined}
+                    disabled={!allMandatoryAnswered}
                     className="gap-2 bg-green-700 hover:bg-green-800"
                   >
                     <CheckCircle className="h-4 w-4" />
