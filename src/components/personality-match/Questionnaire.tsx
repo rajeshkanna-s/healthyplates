@@ -188,7 +188,7 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ gender, onComplete, onBac
             </Button>
 
             <div className="flex gap-2">
-              {/* For optional questions: show Skip and Submit buttons */}
+              {/* For optional questions: show Submit, Skip, and Next buttons */}
               {showOptional && !isLastQuestion && (
                 <>
                   <Button
@@ -200,7 +200,23 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ gender, onComplete, onBac
                     Skip
                   </Button>
                   <Button
-                    onClick={goNext}
+                    onClick={() => {
+                      if (currentAnswer !== undefined) {
+                        handleAnswer(currentAnswer);
+                      }
+                      goNext();
+                    }}
+                    className="gap-2"
+                  >
+                    Next
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      if (currentAnswer !== undefined) {
+                        handleAnswer(currentAnswer);
+                      }
+                    }}
                     disabled={currentAnswer === undefined}
                     className="gap-2 bg-green-700 hover:bg-green-800"
                   >
@@ -210,21 +226,44 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ gender, onComplete, onBac
                 </>
               )}
 
-              {/* Last question in optional section OR end of mandatory section */}
-              {isLastQuestion || (!showOptional && allMandatoryAnswered && currentIndex === mandatoryQuestions.length - 1) ? (
+              {/* Last question in optional section */}
+              {showOptional && isLastQuestion && (
                 <div className="flex gap-2">
-                  {!showOptional && (
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setShowOptional(true);
-                        setCurrentIndex(0);
-                      }}
-                      className="gap-2"
-                    >
-                      Answer Optional Questions
-                    </Button>
-                  )}
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      // Skip last and complete
+                      handleComplete();
+                    }}
+                    className="gap-2"
+                  >
+                    <SkipForward className="h-4 w-4" />
+                    Skip & Complete
+                  </Button>
+                  <Button
+                    onClick={handleComplete}
+                    disabled={!allMandatoryAnswered}
+                    className="gap-2 bg-green-700 hover:bg-green-800"
+                  >
+                    <CheckCircle className="h-4 w-4" />
+                    Submit & Complete
+                  </Button>
+                </div>
+              )}
+
+              {/* End of mandatory section */}
+              {!showOptional && allMandatoryAnswered && currentIndex === mandatoryQuestions.length - 1 && (
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setShowOptional(true);
+                      setCurrentIndex(0);
+                    }}
+                    className="gap-2"
+                  >
+                    Answer Optional Questions
+                  </Button>
                   <Button
                     onClick={handleComplete}
                     disabled={!allMandatoryAnswered}
@@ -234,7 +273,10 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ gender, onComplete, onBac
                     Complete Assessment
                   </Button>
                 </div>
-              ) : !showOptional ? (
+              )}
+
+              {/* Regular mandatory questions (not last) */}
+              {!showOptional && !(allMandatoryAnswered && currentIndex === mandatoryQuestions.length - 1) && (
                 <Button
                   onClick={goNext}
                   disabled={!canGoNext}
@@ -243,7 +285,7 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ gender, onComplete, onBac
                   Next
                   <ChevronRight className="h-4 w-4" />
                 </Button>
-              ) : null}
+              )}
             </div>
           </CardFooter>
         </Card>
