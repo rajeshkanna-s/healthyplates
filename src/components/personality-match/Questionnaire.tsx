@@ -7,6 +7,7 @@ import { Slider } from '@/components/ui/slider';
 import { ChevronLeft, ChevronRight, SkipForward, CheckCircle, AlertCircle } from 'lucide-react';
 import { personalityQuestions, categoryLabels, getMandatoryQuestions, getOptionalQuestions } from './questionsData';
 import { Question } from './types';
+import { toast } from '@/hooks/use-toast';
 
 interface QuestionnaireProps {
   gender: 'male' | 'female';
@@ -215,6 +216,10 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ gender, onComplete, onBac
                     onClick={() => {
                       if (currentAnswer !== undefined) {
                         handleAnswer(currentAnswer);
+                        toast({
+                          title: "Answer Saved!",
+                          description: `Your response for "${categoryLabels[currentQuestion.category]}" has been recorded.`,
+                        });
                       }
                     }}
                     disabled={currentAnswer === undefined}
