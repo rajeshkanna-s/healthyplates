@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -9,11 +9,23 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import Logo from "@/assets/HPLogo.png";
+
+interface NavItem {
+  name: string;
+  href?: string;
+  children?: { name: string; href: string }[];
+}
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDesktopMenuOpen, setIsDesktopMenuOpen] = useState(false);
+  const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const location = useLocation();
 
   // Main navigation items shown in header
@@ -27,21 +39,42 @@ const Header = () => {
     { name: "Know Your Body", href: "/body-explorer" },
   ];
 
-  // Items in the overflow menu (3-dash)
-  const overflowNavigation = [
-    { name: "Challenges", href: "/challenges" },
+  // Grouped navigation for overflow menu
+  const overflowNavigation: NavItem[] = [
+    {
+      name: "Challenges",
+      children: [
+        { name: "HealthyPlates Challenges", href: "/challenges" },
+        { name: "Calisthenics Challenge", href: "/calisthenics-challenge" },
+        { name: "Personality Match", href: "/personality-match" },
+      ],
+    },
+    {
+      name: "Tracker",
+      children: [
+        { name: "Daily Mood Tracker", href: "/mood-tracker" },
+        { name: "Sleep Tracking", href: "/sleep-tracker" },
+        { name: "Goal Tracker", href: "/goal-tracker" },
+        { name: "Bookshelf Tracker", href: "/bookshelf-tracker" },
+        { name: "Weekly Planner", href: "/weekly-planner" },
+        { name: "Habit Tracker", href: "/habit-tracker" },
+      ],
+    },
     { name: "DMF", href: "/diseases" },
     { name: "BMI Calculator", href: "/bmi-calculator" },
     { name: "Calorie Calculator", href: "/calorie-calculator" },
     { name: "Macro Calculator", href: "/macro-calculator" },
-    { name: "Calisthenics Challenge", href: "/calisthenics-challenge" },
-    { name: "Personality Match", href: "/personality-match" },
     { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
   ];
 
-  // All items for mobile menu
-  const allNavigation = [...mainNavigation, ...overflowNavigation];
+  // Flatten for mobile menu
+  const allNavigation = [
+    ...mainNavigation,
+    ...overflowNavigation.flatMap((item) =>
+      item.children ? item.children : [{ name: item.name, href: item.href! }]
+    ),
+  ];
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -108,20 +141,55 @@ const Header = () => {
                   <SheetTitle>More Options</SheetTitle>
                 </SheetHeader>
                 <nav className="flex flex-col space-y-2 mt-6">
-                  {overflowNavigation.map((item) => (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      onClick={() => setIsDesktopMenuOpen(false)}
-                      className={`px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
-                        isActive(item.href)
-                          ? "bg-primary text-primary-foreground shadow-md"
-                          : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                      }`}
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
+                  {overflowNavigation.map((item) =>
+                    item.children ? (
+                      <Collapsible
+                        key={item.name}
+                        open={openSubmenu === item.name}
+                        onOpenChange={(open) =>
+                          setOpenSubmenu(open ? item.name : null)
+                        }
+                      >
+                        <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-all duration-200">
+                          {item.name}
+                          <ChevronDown
+                            className={`h-4 w-4 transition-transform ${
+                              openSubmenu === item.name ? "rotate-180" : ""
+                            }`}
+                          />
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="pl-4 mt-1 space-y-1">
+                          {item.children.map((child) => (
+                            <Link
+                              key={child.name}
+                              to={child.href}
+                              onClick={() => setIsDesktopMenuOpen(false)}
+                              className={`block px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                                isActive(child.href)
+                                  ? "bg-primary text-primary-foreground shadow-md"
+                                  : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                              }`}
+                            >
+                              {child.name}
+                            </Link>
+                          ))}
+                        </CollapsibleContent>
+                      </Collapsible>
+                    ) : (
+                      <Link
+                        key={item.name}
+                        to={item.href!}
+                        onClick={() => setIsDesktopMenuOpen(false)}
+                        className={`px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                          isActive(item.href!)
+                            ? "bg-primary text-primary-foreground shadow-md"
+                            : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                        }`}
+                      >
+                        {item.name}
+                      </Link>
+                    )
+                  )}
                 </nav>
               </SheetContent>
             </Sheet>
