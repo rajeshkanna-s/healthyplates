@@ -44,6 +44,8 @@ import GoalTracker from "./pages/GoalTracker";
 import BookshelfTracker from "./pages/BookshelfTracker";
 import WeeklyPlanner from "./pages/WeeklyPlanner";
 import HabitTrackerPage from "./pages/HabitTrackerPage";
+import SmartFoodSwaps from "./pages/SmartFoodSwaps";
+import HealthyPlateBuilder from "./pages/HealthyPlateBuilder";
 
 const queryClient = new QueryClient();
 
@@ -75,6 +77,8 @@ const App = () => (
             <Route path="bmi-calculator" element={<BMICalculator />} />
             <Route path="calorie-calculator" element={<CalorieCalculator />} />
             <Route path="macro-calculator" element={<MacroCalculator />} />
+            <Route path="smart-food-swaps" element={<SmartFoodSwaps />} />
+            <Route path="healthy-plate-builder" element={<HealthyPlateBuilder />} />
             <Route path="calisthenics-challenge" element={<CalisthenicsChallenge />} />
             <Route path="grocery-list" element={<SmartGroceryList />} />
             <Route path="personality-match" element={<PersonalityMatch />} />
