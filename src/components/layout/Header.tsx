@@ -34,6 +34,7 @@ const Header = () => {
     { name: "Calorie Calculator", href: "/calorie-calculator" },
     { name: "Macro Calculator", href: "/macro-calculator" },
     { name: "Calisthenics Challenge", href: "/calisthenics-challenge" },
+    { name: "Personality Match", href: "/personality-match" },
     { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
   ];

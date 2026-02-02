@@ -35,6 +35,7 @@ import CalorieCalculator from "./pages/CalorieCalculator";
 import MacroCalculator from "./pages/MacroCalculator";
 import CalisthenicsChallenge from "./pages/CalisthenicsChallenge";
 import SmartGroceryList from "./pages/SmartGroceryList";
+import PersonalityMatch from "./pages/PersonalityMatch";
 
 const queryClient = new QueryClient();
 
@@ -68,6 +69,7 @@ const App = () => (
             <Route path="macro-calculator" element={<MacroCalculator />} />
             <Route path="calisthenics-challenge" element={<CalisthenicsChallenge />} />
             <Route path="grocery-list" element={<SmartGroceryList />} />
+            <Route path="personality-match" element={<PersonalityMatch />} />
             <Route path="admin" element={<Admin />} />
             {/* Redirect old data-entry route to admin */}
             <Route path="data-entry" element={<Admin />} />
