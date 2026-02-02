@@ -15,14 +15,22 @@ interface MoodEntryFormProps {
   entries: MoodEntry[];
   onSave: (entry: MoodEntry) => void;
   onCancel: () => void;
+  prefilledDate?: string;
 }
 
-const MoodEntryForm: React.FC<MoodEntryFormProps> = ({ editingEntry, entries, onSave, onCancel }) => {
+const MoodEntryForm: React.FC<MoodEntryFormProps> = ({ editingEntry, entries, onSave, onCancel, prefilledDate }) => {
   const [date, setDate] = useState('');
   const [mood, setMood] = useState<MoodLevel>(3);
   const [tags, setTags] = useState<MoodTag[]>([]);
   const [notes, setNotes] = useState('');
   const [existingEntry, setExistingEntry] = useState<MoodEntry | null>(null);
+
+  // Handle prefilled date from calendar
+  useEffect(() => {
+    if (prefilledDate && !editingEntry) {
+      setDate(prefilledDate);
+    }
+  }, [prefilledDate, editingEntry]);
 
   useEffect(() => {
     if (editingEntry) {
