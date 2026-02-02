@@ -188,17 +188,29 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ gender, onComplete, onBac
             </Button>
 
             <div className="flex gap-2">
-              {showOptional && !currentQuestion.isMandatory && !isLastQuestion && (
-                <Button
-                  variant="ghost"
-                  onClick={skipOptional}
-                  className="gap-2"
-                >
-                  <SkipForward className="h-4 w-4" />
-                  Skip
-                </Button>
+              {/* For optional questions: show Skip and Submit buttons */}
+              {showOptional && !isLastQuestion && (
+                <>
+                  <Button
+                    variant="outline"
+                    onClick={skipOptional}
+                    className="gap-2"
+                  >
+                    <SkipForward className="h-4 w-4" />
+                    Skip
+                  </Button>
+                  <Button
+                    onClick={goNext}
+                    disabled={currentAnswer === undefined}
+                    className="gap-2 bg-green-700 hover:bg-green-800"
+                  >
+                    <CheckCircle className="h-4 w-4" />
+                    Submit
+                  </Button>
+                </>
               )}
 
+              {/* Last question in optional section OR end of mandatory section */}
               {isLastQuestion || (!showOptional && allMandatoryAnswered && currentIndex === mandatoryQuestions.length - 1) ? (
                 <div className="flex gap-2">
                   {!showOptional && (
@@ -222,7 +234,7 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ gender, onComplete, onBac
                     Complete Assessment
                   </Button>
                 </div>
-              ) : (
+              ) : !showOptional ? (
                 <Button
                   onClick={goNext}
                   disabled={!canGoNext}
@@ -231,7 +243,7 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ gender, onComplete, onBac
                   Next
                   <ChevronRight className="h-4 w-4" />
                 </Button>
-              )}
+              ) : null}
             </div>
           </CardFooter>
         </Card>
