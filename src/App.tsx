@@ -38,6 +38,12 @@ import SmartGroceryList from "./pages/SmartGroceryList";
 import PersonalityMatch from "./pages/PersonalityMatch";
 import Challenges from "./pages/Challenges";
 import ChallengeDetail from "./pages/ChallengeDetail";
+import MoodTracker from "./pages/MoodTracker";
+import SleepTracker from "./pages/SleepTracker";
+import GoalTracker from "./pages/GoalTracker";
+import BookshelfTracker from "./pages/BookshelfTracker";
+import WeeklyPlanner from "./pages/WeeklyPlanner";
+import HabitTrackerPage from "./pages/HabitTrackerPage";
 
 const queryClient = new QueryClient();
 
@@ -74,6 +80,13 @@ const App = () => (
             <Route path="personality-match" element={<PersonalityMatch />} />
             <Route path="challenges" element={<Challenges />} />
             <Route path="challenges/:id" element={<ChallengeDetail />} />
+            {/* Tracker Pages */}
+            <Route path="mood-tracker" element={<MoodTracker />} />
+            <Route path="sleep-tracker" element={<SleepTracker />} />
+            <Route path="goal-tracker" element={<GoalTracker />} />
+            <Route path="bookshelf-tracker" element={<BookshelfTracker />} />
+            <Route path="weekly-planner" element={<WeeklyPlanner />} />
+            <Route path="habit-tracker" element={<HabitTrackerPage />} />
             <Route path="admin" element={<Admin />} />
             {/* Redirect old data-entry route to admin */}
             <Route path="data-entry" element={<Admin />} />
