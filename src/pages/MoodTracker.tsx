@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Smile, Shield, Info } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Smile, Shield, Info, Calendar, BarChart3, List } from 'lucide-react';
 import { MoodEntry } from '@/components/mood-tracker/types';
 import { loadEntries, saveEntries } from '@/components/mood-tracker/utils';
 import MoodEntryForm from '@/components/mood-tracker/MoodEntryForm';
@@ -12,10 +13,17 @@ import MoodStreaks from '@/components/mood-tracker/MoodStreaks';
 import MoodTrends from '@/components/mood-tracker/MoodTrends';
 import MoodTagAnalysis from '@/components/mood-tracker/MoodTagAnalysis';
 import MoodImportExport from '@/components/mood-tracker/MoodImportExport';
+import MoodCalendar from '@/components/mood-tracker/MoodCalendar';
+import MoodSummary from '@/components/mood-tracker/MoodSummary';
+import TagComparison from '@/components/mood-tracker/TagComparison';
+import SleepMoodCorrelation from '@/components/mood-tracker/SleepMoodCorrelation';
+import MoodExportOptions from '@/components/mood-tracker/MoodExportOptions';
 
 const MoodTracker = () => {
   const [entries, setEntries] = useState<MoodEntry[]>([]);
   const [editingEntry, setEditingEntry] = useState<MoodEntry | null>(null);
+  const [prefilledDate, setPrefilledDate] = useState<string | undefined>();
+  const formRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setEntries(loadEntries());
@@ -41,6 +49,7 @@ const MoodTracker = () => {
     
     setEntries(updatedEntries);
     saveEntries(updatedEntries);
+    setPrefilledDate(undefined);
   };
 
   const handleDeleteEntry = (id: string) => {
@@ -51,7 +60,14 @@ const MoodTracker = () => {
 
   const handleEditEntry = (entry: MoodEntry) => {
     setEditingEntry(entry);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setPrefilledDate(undefined);
+    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const handleAddEntryFromCalendar = (date: string) => {
+    setPrefilledDate(date);
+    setEditingEntry(null);
+    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const handleImport = (importedEntries: MoodEntry[], replace: boolean) => {
@@ -104,7 +120,7 @@ const MoodTracker = () => {
                   <ul className="text-muted-foreground space-y-1">
                     <li>• All your mood data is stored <strong>only in your browser</strong></li>
                     <li>• We don't upload or store your data on any server</li>
-                    <li>• Export your data as JSON to backup or move to another device</li>
+                    <li>• Export your data as JSON or CSV to backup or move to another device</li>
                     <li>• If you clear browser data without exporting, entries will be lost</li>
                   </ul>
                 </div>
@@ -116,7 +132,7 @@ const MoodTracker = () => {
           <Alert className="mb-6">
             <Info className="h-4 w-4" />
             <AlertDescription>
-              <strong>How to use:</strong> Log your mood each day using the form below. Track patterns with context tags like Work, Sleep, or Exercise. View your trends and export your data anytime.
+              <strong>How to use:</strong> Log your mood each day using the form below. Track patterns with context tags like Work, Sleep, or Exercise. View your trends in the calendar and charts, then export your data anytime.
             </AlertDescription>
           </Alert>
 
@@ -125,24 +141,64 @@ const MoodTracker = () => {
             <MoodStats entries={entries} />
           </div>
 
+          {/* Summary & Insights */}
+          <div className="mb-6">
+            <MoodSummary entries={entries} />
+          </div>
+
           {/* Streaks and Trends */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             <MoodStreaks entries={entries} />
             <MoodTrends entries={entries} />
           </div>
 
-          {/* Tag Analysis */}
-          <div className="mb-6">
-            <MoodTagAnalysis entries={entries} />
-          </div>
+          {/* Calendar & Tag Analysis Tabs */}
+          <Tabs defaultValue="calendar" className="mb-6">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="calendar" className="flex items-center gap-2">
+                <Calendar className="w-4 h-4" />
+                <span className="hidden sm:inline">Calendar</span>
+              </TabsTrigger>
+              <TabsTrigger value="tags" className="flex items-center gap-2">
+                <BarChart3 className="w-4 h-4" />
+                <span className="hidden sm:inline">Tag Insights</span>
+              </TabsTrigger>
+              <TabsTrigger value="sleep" className="flex items-center gap-2">
+                <List className="w-4 h-4" />
+                <span className="hidden sm:inline">Sleep Connection</span>
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="calendar" className="mt-4">
+              <MoodCalendar
+                entries={entries}
+                onEditEntry={handleEditEntry}
+                onDeleteEntry={handleDeleteEntry}
+                onAddEntry={handleAddEntryFromCalendar}
+              />
+            </TabsContent>
+            
+            <TabsContent value="tags" className="mt-4 space-y-6">
+              <MoodTagAnalysis entries={entries} />
+              <TagComparison entries={entries} />
+            </TabsContent>
+            
+            <TabsContent value="sleep" className="mt-4">
+              <SleepMoodCorrelation moodEntries={entries} />
+            </TabsContent>
+          </Tabs>
 
           {/* Entry Form */}
-          <div className="mb-6">
+          <div className="mb-6" ref={formRef}>
             <MoodEntryForm
               editingEntry={editingEntry}
               entries={entries}
               onSave={handleSaveEntry}
-              onCancel={() => setEditingEntry(null)}
+              onCancel={() => {
+                setEditingEntry(null);
+                setPrefilledDate(undefined);
+              }}
+              prefilledDate={prefilledDate}
             />
           </div>
 
@@ -153,6 +209,11 @@ const MoodTracker = () => {
               onEdit={handleEditEntry}
               onDelete={handleDeleteEntry}
             />
+          </div>
+
+          {/* Export Options */}
+          <div className="mb-6">
+            <MoodExportOptions entries={entries} />
           </div>
 
           {/* Import/Export Section */}
