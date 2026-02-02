@@ -64,6 +64,8 @@ const Header = () => {
     { name: "BMI Calculator", href: "/bmi-calculator" },
     { name: "Calorie Calculator", href: "/calorie-calculator" },
     { name: "Macro Calculator", href: "/macro-calculator" },
+    { name: "Smart Food Swaps", href: "/smart-food-swaps" },
+    { name: "HealthyPlate Builder", href: "/healthy-plate-builder" },
     { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
   ];
