@@ -14,6 +14,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import Logo from "@/assets/HPLogo.png";
 
 interface NavItem {
@@ -26,6 +27,7 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDesktopMenuOpen, setIsDesktopMenuOpen] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
+  const [mobileOpenSubmenu, setMobileOpenSubmenu] = useState<string | null>(null);
   const location = useLocation();
 
   // Main navigation items shown in header
@@ -70,15 +72,50 @@ const Header = () => {
     { name: "Contact", href: "/contact" },
   ];
 
-  // Flatten for mobile menu
-  const allNavigation = [
-    ...mainNavigation,
-    ...overflowNavigation.flatMap((item) =>
-      item.children ? item.children : [{ name: item.name, href: item.href! }]
-    ),
+  // Full mobile navigation with grouping
+  const mobileNavigation: NavItem[] = [
+    { name: "Home", href: "/" },
+    { name: "Diet Planner", href: "/diet-planner" },
+    { name: "Grocery List", href: "/grocery-list" },
+    { name: "Food Items", href: "/food-products" },
+    { name: "Daily Meals", href: "/foods" },
+    { name: "Self-Care", href: "/self-care" },
+    { name: "Know Your Body", href: "/body-explorer" },
+    {
+      name: "Challenges",
+      children: [
+        { name: "HealthyPlates Challenges", href: "/challenges" },
+        { name: "Calisthenics Challenge", href: "/calisthenics-challenge" },
+        { name: "Personality Match", href: "/personality-match" },
+      ],
+    },
+    {
+      name: "Tracker",
+      children: [
+        { name: "Daily Mood Tracker", href: "/mood-tracker" },
+        { name: "Sleep Tracking", href: "/sleep-tracker" },
+        { name: "Goal Tracker", href: "/goal-tracker" },
+        { name: "Bookshelf Tracker", href: "/bookshelf-tracker" },
+        { name: "Weekly Planner", href: "/weekly-planner" },
+        { name: "Habit Tracker", href: "/habit-tracker" },
+      ],
+    },
+    { name: "DMF", href: "/diseases" },
+    { name: "BMI Calculator", href: "/bmi-calculator" },
+    { name: "Calorie Calculator", href: "/calorie-calculator" },
+    { name: "Macro Calculator", href: "/macro-calculator" },
+    { name: "Smart Food Swaps", href: "/smart-food-swaps" },
+    { name: "HealthyPlate Builder", href: "/healthy-plate-builder" },
+    { name: "Blog", href: "/blog" },
+    { name: "Contact", href: "/contact" },
   ];
 
   const isActive = (path: string) => location.pathname === path;
+
+  const handleMobileNavClick = () => {
+    setIsMobileMenuOpen(false);
+    setMobileOpenSubmenu(null);
+  };
 
   return (
     <header className="bg-background/95 backdrop-blur-sm border-b border-border/50 sticky top-0 z-50 shadow-health">
@@ -142,57 +179,59 @@ const Header = () => {
                 <SheetHeader>
                   <SheetTitle>More Options</SheetTitle>
                 </SheetHeader>
-                <nav className="flex flex-col space-y-2 mt-6">
-                  {overflowNavigation.map((item) =>
-                    item.children ? (
-                      <Collapsible
-                        key={item.name}
-                        open={openSubmenu === item.name}
-                        onOpenChange={(open) =>
-                          setOpenSubmenu(open ? item.name : null)
-                        }
-                      >
-                        <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-all duration-200">
-                          {item.name}
-                          <ChevronDown
-                            className={`h-4 w-4 transition-transform ${
-                              openSubmenu === item.name ? "rotate-180" : ""
-                            }`}
-                          />
-                        </CollapsibleTrigger>
-                        <CollapsibleContent className="pl-4 mt-1 space-y-1">
-                          {item.children.map((child) => (
-                            <Link
-                              key={child.name}
-                              to={child.href}
-                              onClick={() => setIsDesktopMenuOpen(false)}
-                              className={`block px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                                isActive(child.href)
-                                  ? "bg-primary text-primary-foreground shadow-md"
-                                  : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                <ScrollArea className="h-[calc(100vh-100px)] mt-6">
+                  <nav className="flex flex-col space-y-2 pr-4">
+                    {overflowNavigation.map((item) =>
+                      item.children ? (
+                        <Collapsible
+                          key={item.name}
+                          open={openSubmenu === item.name}
+                          onOpenChange={(open) =>
+                            setOpenSubmenu(open ? item.name : null)
+                          }
+                        >
+                          <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-all duration-200">
+                            {item.name}
+                            <ChevronDown
+                              className={`h-4 w-4 transition-transform ${
+                                openSubmenu === item.name ? "rotate-180" : ""
                               }`}
-                            >
-                              {child.name}
-                            </Link>
-                          ))}
-                        </CollapsibleContent>
-                      </Collapsible>
-                    ) : (
-                      <Link
-                        key={item.name}
-                        to={item.href!}
-                        onClick={() => setIsDesktopMenuOpen(false)}
-                        className={`px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
-                          isActive(item.href!)
-                            ? "bg-primary text-primary-foreground shadow-md"
-                            : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                        }`}
-                      >
-                        {item.name}
-                      </Link>
-                    )
-                  )}
-                </nav>
+                            />
+                          </CollapsibleTrigger>
+                          <CollapsibleContent className="pl-4 mt-1 space-y-1">
+                            {item.children.map((child) => (
+                              <Link
+                                key={child.name}
+                                to={child.href}
+                                onClick={() => setIsDesktopMenuOpen(false)}
+                                className={`block px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                                  isActive(child.href)
+                                    ? "bg-primary text-primary-foreground shadow-md"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                                }`}
+                              >
+                                {child.name}
+                              </Link>
+                            ))}
+                          </CollapsibleContent>
+                        </Collapsible>
+                      ) : (
+                        <Link
+                          key={item.name}
+                          to={item.href!}
+                          onClick={() => setIsDesktopMenuOpen(false)}
+                          className={`px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                            isActive(item.href!)
+                              ? "bg-primary text-primary-foreground shadow-md"
+                              : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                          }`}
+                        >
+                          {item.name}
+                        </Link>
+                      )
+                    )}
+                  </nav>
+                </ScrollArea>
               </SheetContent>
             </Sheet>
           </div>
@@ -214,25 +253,62 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation with Scroll and Submenus */}
         {isMobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-border/50">
-            <nav className="flex flex-col space-y-2">
-              {allNavigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
-                    isActive(item.href)
-                      ? "bg-primary text-primary-foreground shadow-md"
-                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                  }`}
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </nav>
+            <ScrollArea className="h-[calc(100vh-150px)] max-h-[500px]">
+              <nav className="flex flex-col space-y-1 pr-4">
+                {mobileNavigation.map((item) =>
+                  item.children ? (
+                    <Collapsible
+                      key={item.name}
+                      open={mobileOpenSubmenu === item.name}
+                      onOpenChange={(open) =>
+                        setMobileOpenSubmenu(open ? item.name : null)
+                      }
+                    >
+                      <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-all duration-200">
+                        {item.name}
+                        <ChevronDown
+                          className={`h-4 w-4 transition-transform ${
+                            mobileOpenSubmenu === item.name ? "rotate-180" : ""
+                          }`}
+                        />
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="pl-4 mt-1 space-y-1">
+                        {item.children.map((child) => (
+                          <Link
+                            key={child.name}
+                            to={child.href}
+                            onClick={handleMobileNavClick}
+                            className={`block px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                              isActive(child.href)
+                                ? "bg-primary text-primary-foreground shadow-md"
+                                : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                            }`}
+                          >
+                            {child.name}
+                          </Link>
+                        ))}
+                      </CollapsibleContent>
+                    </Collapsible>
+                  ) : (
+                    <Link
+                      key={item.name}
+                      to={item.href!}
+                      onClick={handleMobileNavClick}
+                      className={`px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                        isActive(item.href!)
+                          ? "bg-primary text-primary-foreground shadow-md"
+                          : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                      }`}
+                    >
+                      {item.name}
+                    </Link>
+                  )
+                )}
+              </nav>
+            </ScrollArea>
           </div>
         )}
       </div>
