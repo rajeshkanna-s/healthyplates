@@ -16,9 +16,23 @@ export default defineConfig(({ mode }) => ({
       react: path.resolve(__dirname, "./node_modules/react"),
       "react-dom": path.resolve(__dirname, "./node_modules/react-dom"),
     },
-    dedupe: ["react", "react-dom", "react/jsx-runtime"],
+    dedupe: [
+      "react",
+      "react-dom",
+      "react/jsx-runtime",
+      "@radix-ui/react-tooltip",
+      "@radix-ui/react-primitive",
+      "@radix-ui/react-context",
+    ],
   },
   optimizeDeps: {
-    include: ["react", "react-dom", "react/jsx-runtime", "recharts"],
+    include: [
+      "react",
+      "react-dom",
+      "react/jsx-runtime",
+      "recharts",
+      "@radix-ui/react-tooltip",
+    ],
+    force: true,
   },
 }));
