@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { CheckCircle2, Plus, Edit2, Trash2, Shield, Download, Upload, ChevronLeft, ChevronRight, Flame, Trophy } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { format, startOfWeek, addDays, addWeeks, subWeeks, isSameDay, parseISO, differenceInDays } from 'date-fns';
@@ -513,9 +513,9 @@ const HabitTrackerPage = () => {
             </Card>
           ) : (
             <Card>
-              <CardContent className="pt-4 sm:pt-6 px-2 sm:px-6">
-                <ScrollArea className="w-full" type="always">
-                  <div className="min-w-[520px] pb-4">
+              <CardContent className="pt-4 sm:pt-6 px-2 sm:px-6 overflow-x-auto">
+                <ScrollArea className="w-full whitespace-nowrap" type="always">
+                  <div className="min-w-[520px] pb-4 inline-block">
                     {/* Header row with dates */}
                     <div className="grid grid-cols-[90px_repeat(7,44px)_56px] sm:grid-cols-[minmax(120px,160px)_repeat(7,minmax(44px,1fr))_minmax(60px,80px)] gap-1 sm:gap-2 mb-4 pb-2 border-b">
                       <div className="font-medium text-xs sm:text-sm">Habit</div>
@@ -580,6 +580,7 @@ const HabitTrackerPage = () => {
                       );
                     })}
                   </div>
+                  <ScrollBar orientation="horizontal" />
                 </ScrollArea>
               </CardContent>
             </Card>
