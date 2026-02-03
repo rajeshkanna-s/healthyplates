@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
   Search, Star, ArrowRight, Lightbulb, Filter, Heart, 
   RefreshCw, Sparkles, CheckCircle2 
@@ -194,13 +195,13 @@ const SmartFoodSwaps = () => {
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Left: Food Items List */}
           <div className="space-y-3">
-            <h2 className="text-lg font-semibold mb-3">
+            <h2 className="text-base sm:text-lg font-semibold mb-3">
               I usually eat/drink... ({filteredItems.length} items)
             </h2>
             
             {filteredItems.length === 0 ? (
-              <Card className="p-8 text-center">
-                <p className="text-muted-foreground">
+              <Card className="p-6 sm:p-8 text-center">
+                <p className="text-muted-foreground text-sm sm:text-base">
                   {showFavorites 
                     ? "No favorites yet. Click the star icon on any swap to save it!"
                     : "No items found. Try adjusting your filters."
@@ -208,49 +209,52 @@ const SmartFoodSwaps = () => {
                 </p>
               </Card>
             ) : (
-              <div className="space-y-2 max-h-[600px] overflow-y-auto pr-2">
-                {filteredItems.map(item => (
-                  <Card
-                    key={item.id}
-                    className={cn(
-                      "cursor-pointer transition-all hover:shadow-md",
-                      selectedItem?.id === item.id && "ring-2 ring-green-600 bg-green-50 dark:bg-green-950/20"
-                    )}
-                    onClick={() => setSelectedItem(item)}
-                  >
-                    <CardContent className="py-3 px-4 flex items-center justify-between">
-                      <div className="flex-1">
-                        <p className="font-medium">{item.usualItem}</p>
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          <Badge variant="secondary" className="text-xs">
-                            {SWAP_CATEGORIES.find(c => c.id === item.category)?.icon}{" "}
-                            {SWAP_CATEGORIES.find(c => c.id === item.category)?.label}
-                          </Badge>
-                          <Badge variant="outline" className="text-xs">
-                            {item.swaps.length} swap{item.swaps.length > 1 ? 's' : ''}
-                          </Badge>
+              <ScrollArea className="h-[400px] sm:h-[500px] lg:h-[600px] pr-2" type="always">
+                <div className="space-y-2 pr-2">
+                  {filteredItems.map(item => (
+                    <Card
+                      key={item.id}
+                      className={cn(
+                        "cursor-pointer transition-all hover:shadow-md",
+                        selectedItem?.id === item.id && "ring-2 ring-green-600 bg-green-50 dark:bg-green-950/20"
+                      )}
+                      onClick={() => setSelectedItem(item)}
+                    >
+                      <CardContent className="py-2 sm:py-3 px-3 sm:px-4 flex items-center justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm sm:text-base truncate">{item.usualItem}</p>
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            <Badge variant="secondary" className="text-[10px] sm:text-xs">
+                              {SWAP_CATEGORIES.find(c => c.id === item.category)?.icon}{" "}
+                              <span className="hidden sm:inline">{SWAP_CATEGORIES.find(c => c.id === item.category)?.label}</span>
+                            </Badge>
+                            <Badge variant="outline" className="text-[10px] sm:text-xs">
+                              {item.swaps.length} swap{item.swaps.length > 1 ? 's' : ''}
+                            </Badge>
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleFavorite(item.id);
-                          }}
-                        >
-                          <Star className={cn(
-                            "h-4 w-4",
-                            favorites.includes(item.id) && "fill-yellow-500 text-yellow-500"
-                          )} />
-                        </Button>
-                        <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                        <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleFavorite(item.id);
+                            }}
+                          >
+                            <Star className={cn(
+                              "h-4 w-4",
+                              favorites.includes(item.id) && "fill-yellow-500 text-yellow-500"
+                            )} />
+                          </Button>
+                          <ArrowRight className="h-4 w-4 text-muted-foreground hidden sm:block" />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </ScrollArea>
             )}
           </div>
 
