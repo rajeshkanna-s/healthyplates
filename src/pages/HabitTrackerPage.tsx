@@ -515,9 +515,9 @@ const HabitTrackerPage = () => {
             <Card>
               <CardContent className="pt-4 sm:pt-6 px-2 sm:px-6 overflow-x-auto">
                 <ScrollArea className="w-full whitespace-nowrap" type="always">
-                  <div className="min-w-[520px] pb-4 inline-block">
+                  <div className="min-w-[600px] pb-4 inline-block">
                     {/* Header row with dates */}
-                    <div className="grid grid-cols-[90px_repeat(7,44px)_56px] sm:grid-cols-[minmax(120px,160px)_repeat(7,minmax(44px,1fr))_minmax(60px,80px)] gap-1 sm:gap-2 mb-4 pb-2 border-b">
+                    <div className="grid grid-cols-[150px_repeat(7,44px)_56px] sm:grid-cols-[minmax(120px,160px)_repeat(7,minmax(44px,1fr))_minmax(60px,80px)] gap-1 sm:gap-2 mb-4 pb-2 border-b">
                       <div className="font-medium text-xs sm:text-sm">Habit</div>
                       {weekDates.map(date => (
                         <div key={date.toISOString()} className="text-center">
@@ -534,10 +534,10 @@ const HabitTrackerPage = () => {
                     {activeHabits.map(habit => {
                       const streak = calculateStreak(habit);
                       return (
-                        <div key={habit.id} className="grid grid-cols-[90px_repeat(7,44px)_56px] sm:grid-cols-[minmax(120px,160px)_repeat(7,minmax(44px,1fr))_minmax(60px,80px)] gap-1 sm:gap-2 items-center py-2 border-b last:border-0">
-                          <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+                        <div key={habit.id} className="grid grid-cols-[150px_repeat(7,44px)_56px] sm:grid-cols-[minmax(120px,160px)_repeat(7,minmax(44px,1fr))_minmax(60px,80px)] gap-1 sm:gap-2 items-center py-2 border-b last:border-0">
+                          <div className="flex items-center gap-1 sm:gap-2">
                             <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full flex-shrink-0" style={{ backgroundColor: habit.color }} />
-                            <span className="text-xs sm:text-sm font-medium truncate">{habit.name}</span>
+                            <span className="text-xs sm:text-sm font-medium whitespace-nowrap">{habit.name}</span>
                             <div className="flex gap-0.5 ml-auto flex-shrink-0">
                               <Button size="sm" variant="ghost" className="h-5 w-5 sm:h-6 sm:w-6 p-0" onClick={() => handleEdit(habit)}>
                                 <Edit2 className="w-3 h-3" />
