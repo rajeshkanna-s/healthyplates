@@ -46,6 +46,7 @@ import WeeklyPlanner from "./pages/WeeklyPlanner";
 import HabitTrackerPage from "./pages/HabitTrackerPage";
 import SmartFoodSwaps from "./pages/SmartFoodSwaps";
 import HealthyPlateBuilder from "./pages/HealthyPlateBuilder";
+import ExpenseTracker from "./pages/ExpenseTracker";
 
 const queryClient = new QueryClient();
 
@@ -91,6 +92,7 @@ const App = () => (
             <Route path="bookshelf-tracker" element={<BookshelfTracker />} />
             <Route path="weekly-planner" element={<WeeklyPlanner />} />
             <Route path="habit-tracker" element={<HabitTrackerPage />} />
+            <Route path="expense-tracker" element={<ExpenseTracker />} />
             <Route path="admin" element={<Admin />} />
             {/* Redirect old data-entry route to admin */}
             <Route path="data-entry" element={<Admin />} />
