@@ -515,9 +515,9 @@ const HabitTrackerPage = () => {
             <Card>
               <CardContent className="pt-4 sm:pt-6 px-2 sm:px-6">
                 <ScrollArea className="w-full" type="always">
-                  <div className="min-w-[500px] sm:min-w-[600px] pb-4">
+                  <div className="min-w-[580px] pb-4">
                     {/* Header row with dates */}
-                    <div className="grid grid-cols-[minmax(120px,160px)_repeat(7,minmax(36px,1fr))_minmax(60px,80px)] gap-1 sm:gap-2 mb-4 pb-2 border-b">
+                    <div className="grid grid-cols-[100px_repeat(7,40px)_60px] sm:grid-cols-[minmax(120px,160px)_repeat(7,minmax(44px,1fr))_minmax(60px,80px)] gap-1 sm:gap-2 mb-4 pb-2 border-b">
                       <div className="font-medium text-xs sm:text-sm">Habit</div>
                       {weekDates.map(date => (
                         <div key={date.toISOString()} className="text-center">
@@ -534,7 +534,7 @@ const HabitTrackerPage = () => {
                     {activeHabits.map(habit => {
                       const streak = calculateStreak(habit);
                       return (
-                        <div key={habit.id} className="grid grid-cols-[minmax(120px,160px)_repeat(7,minmax(36px,1fr))_minmax(60px,80px)] gap-1 sm:gap-2 items-center py-2 border-b last:border-0">
+                        <div key={habit.id} className="grid grid-cols-[100px_repeat(7,40px)_60px] sm:grid-cols-[minmax(120px,160px)_repeat(7,minmax(44px,1fr))_minmax(60px,80px)] gap-1 sm:gap-2 items-center py-2 border-b last:border-0">
                           <div className="flex items-center gap-1 sm:gap-2 min-w-0">
                             <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full flex-shrink-0" style={{ backgroundColor: habit.color }} />
                             <span className="text-xs sm:text-sm font-medium truncate">{habit.name}</span>
