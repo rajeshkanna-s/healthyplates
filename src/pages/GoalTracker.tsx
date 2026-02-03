@@ -11,6 +11,7 @@ import { Progress } from '@/components/ui/progress';
 import { Slider } from '@/components/ui/slider';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Target, Plus, Edit2, Trash2, CheckCircle, Shield, Download, Upload, Search, Filter } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
@@ -468,59 +469,60 @@ const GoalTracker = () => {
               </CardContent>
             </Card>
           ) : (
-            <div className="space-y-4">
-              {filteredGoals.map((goal) => (
-                <Card key={goal.id} className="overflow-hidden">
-                  <CardContent className="p-4">
-                    <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-start gap-3 mb-2">
-                          <div className={`w-3 h-3 rounded-full mt-1.5 ${getStatusColor(goal.status)}`} />
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-lg">{goal.title}</h3>
-                            <div className="flex flex-wrap gap-2 mt-1">
-                              <Badge variant="outline">{goal.category}</Badge>
-                              <Badge className={getPriorityColor(goal.priority)}>{goal.priority}</Badge>
-                              <Badge variant="secondary">{statuses.find(s => s.value === goal.status)?.label}</Badge>
+            <ScrollArea className="h-[calc(100vh-400px)] min-h-[300px]" type="always">
+              <div className="space-y-4 pr-2">
+                {filteredGoals.map((goal) => (
+                  <Card key={goal.id} className="overflow-hidden">
+                    <CardContent className="p-3 sm:p-4">
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-start gap-2 sm:gap-3">
+                          <div className={`w-3 h-3 rounded-full mt-1.5 flex-shrink-0 ${getStatusColor(goal.status)}`} />
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-base sm:text-lg break-words">{goal.title}</h3>
+                            <div className="flex flex-wrap gap-1 sm:gap-2 mt-1">
+                              <Badge variant="outline" className="text-[10px] sm:text-xs">{goal.category}</Badge>
+                              <Badge className={`${getPriorityColor(goal.priority)} text-[10px] sm:text-xs`}>{goal.priority}</Badge>
+                              <Badge variant="secondary" className="text-[10px] sm:text-xs">{statuses.find(s => s.value === goal.status)?.label}</Badge>
                             </div>
                           </div>
                         </div>
                         {goal.description && (
-                          <p className="text-sm text-muted-foreground mb-2 ml-6">{goal.description}</p>
+                          <p className="text-xs sm:text-sm text-muted-foreground ml-5 sm:ml-6 break-words">{goal.description}</p>
                         )}
-                        <div className="ml-6 space-y-2">
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm text-muted-foreground">Progress:</span>
-                            <div className="flex-1 max-w-[200px]">
+                        <div className="ml-5 sm:ml-6 space-y-2">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-xs sm:text-sm text-muted-foreground">Progress:</span>
+                            <div className="flex-1 min-w-[80px] max-w-[200px]">
                               <Progress value={goal.progress} className="h-2" />
                             </div>
-                            <span className="text-sm font-medium">{goal.progress}%</span>
+                            <span className="text-xs sm:text-sm font-medium">{goal.progress}%</span>
                           </div>
                           {goal.targetDate && (
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-[10px] sm:text-xs text-muted-foreground">
                               Target: {new Date(goal.targetDate).toLocaleDateString()}
                             </p>
                           )}
                         </div>
-                      </div>
-                      <div className="flex gap-2 ml-6 md:ml-0">
-                        {goal.status !== 'completed' && (
-                          <Button size="sm" variant="outline" onClick={() => handleMarkComplete(goal.id)}>
-                            <CheckCircle className="w-4 h-4" />
+                        <div className="flex gap-2 ml-5 sm:ml-6">
+                          {goal.status !== 'completed' && (
+                            <Button size="sm" variant="outline" className="h-8 text-xs" onClick={() => handleMarkComplete(goal.id)}>
+                              <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                              <span className="hidden xs:inline">Complete</span>
+                            </Button>
+                          )}
+                          <Button size="sm" variant="outline" className="h-8" onClick={() => handleEdit(goal)}>
+                            <Edit2 className="w-3 h-3 sm:w-4 sm:h-4" />
                           </Button>
-                        )}
-                        <Button size="sm" variant="outline" onClick={() => handleEdit(goal)}>
-                          <Edit2 className="w-4 h-4" />
-                        </Button>
-                        <Button size="sm" variant="outline" onClick={() => handleDelete(goal.id)}>
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                          <Button size="sm" variant="outline" className="h-8" onClick={() => handleDelete(goal.id)}>
+                            <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </ScrollArea>
           )}
         </div>
       </div>

@@ -513,36 +513,36 @@ const HabitTrackerPage = () => {
             </Card>
           ) : (
             <Card>
-              <CardContent className="pt-6">
-                <ScrollArea className="w-full">
-                  <div className="min-w-[600px]">
+              <CardContent className="pt-4 sm:pt-6 px-2 sm:px-6">
+                <ScrollArea className="w-full" type="always">
+                  <div className="min-w-[500px] sm:min-w-[600px] pb-4">
                     {/* Header row with dates */}
-                    <div className="grid grid-cols-[200px_repeat(7,1fr)_100px] gap-2 mb-4 pb-2 border-b">
-                      <div className="font-medium text-sm">Habit</div>
+                    <div className="grid grid-cols-[minmax(120px,160px)_repeat(7,minmax(36px,1fr))_minmax(60px,80px)] gap-1 sm:gap-2 mb-4 pb-2 border-b">
+                      <div className="font-medium text-xs sm:text-sm">Habit</div>
                       {weekDates.map(date => (
                         <div key={date.toISOString()} className="text-center">
-                          <div className="text-xs text-muted-foreground">{format(date, 'EEE')}</div>
-                          <div className={`text-sm font-medium ${isSameDay(date, new Date()) ? 'text-primary' : ''}`}>
+                          <div className="text-[10px] sm:text-xs text-muted-foreground">{format(date, 'EEE').slice(0, 2)}</div>
+                          <div className={`text-xs sm:text-sm font-medium ${isSameDay(date, new Date()) ? 'text-primary' : ''}`}>
                             {format(date, 'd')}
                           </div>
                         </div>
                       ))}
-                      <div className="text-center text-sm font-medium">Streak</div>
+                      <div className="text-center text-[10px] sm:text-sm font-medium">Streak</div>
                     </div>
 
                     {/* Habit rows */}
                     {activeHabits.map(habit => {
                       const streak = calculateStreak(habit);
                       return (
-                        <div key={habit.id} className="grid grid-cols-[200px_repeat(7,1fr)_100px] gap-2 items-center py-2 border-b last:border-0">
-                          <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: habit.color }} />
-                            <span className="text-sm font-medium truncate">{habit.name}</span>
-                            <div className="flex gap-1 ml-auto">
-                              <Button size="sm" variant="ghost" className="h-6 w-6 p-0" onClick={() => handleEdit(habit)}>
+                        <div key={habit.id} className="grid grid-cols-[minmax(120px,160px)_repeat(7,minmax(36px,1fr))_minmax(60px,80px)] gap-1 sm:gap-2 items-center py-2 border-b last:border-0">
+                          <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+                            <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full flex-shrink-0" style={{ backgroundColor: habit.color }} />
+                            <span className="text-xs sm:text-sm font-medium truncate">{habit.name}</span>
+                            <div className="flex gap-0.5 ml-auto flex-shrink-0">
+                              <Button size="sm" variant="ghost" className="h-5 w-5 sm:h-6 sm:w-6 p-0" onClick={() => handleEdit(habit)}>
                                 <Edit2 className="w-3 h-3" />
                               </Button>
-                              <Button size="sm" variant="ghost" className="h-6 w-6 p-0" onClick={() => handleDelete(habit.id)}>
+                              <Button size="sm" variant="ghost" className="h-5 w-5 sm:h-6 sm:w-6 p-0" onClick={() => handleDelete(habit.id)}>
                                 <Trash2 className="w-3 h-3" />
                               </Button>
                             </div>
@@ -555,7 +555,7 @@ const HabitTrackerPage = () => {
                               <div key={dateStr} className="flex justify-center">
                                 <button
                                   onClick={() => toggleCompletion(habit.id, dateStr)}
-                                  className={`w-8 h-8 rounded-lg border-2 flex items-center justify-center transition-all ${
+                                  className={`w-6 h-6 sm:w-8 sm:h-8 rounded-lg border-2 flex items-center justify-center transition-all ${
                                     isCompleted
                                       ? 'border-transparent'
                                       : isToday
@@ -564,17 +564,17 @@ const HabitTrackerPage = () => {
                                   }`}
                                   style={{ backgroundColor: isCompleted ? habit.color : undefined }}
                                 >
-                                  {isCompleted && <CheckCircle2 className="w-5 h-5 text-white" />}
+                                  {isCompleted && <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-white" />}
                                 </button>
                               </div>
                             );
                           })}
                           <div className="text-center">
-                            <div className="flex items-center justify-center gap-1">
-                              <Flame className="w-4 h-4 text-orange-500" />
-                              <span className="text-sm font-medium">{streak.current}</span>
+                            <div className="flex items-center justify-center gap-0.5">
+                              <Flame className="w-3 h-3 sm:w-4 sm:h-4 text-orange-500" />
+                              <span className="text-xs sm:text-sm font-medium">{streak.current}</span>
                             </div>
-                            <div className="text-xs text-muted-foreground">Best: {streak.best}</div>
+                            <div className="text-[10px] sm:text-xs text-muted-foreground">Best: {streak.best}</div>
                           </div>
                         </div>
                       );

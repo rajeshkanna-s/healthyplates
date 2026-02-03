@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { BookOpen, Plus, Edit2, Trash2, Star, Shield, Download, Upload, Search, Filter, BookMarked, BookCheck } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
@@ -561,52 +562,54 @@ const BookshelfTracker = () => {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid md:grid-cols-2 gap-4">
-              {filteredBooks.map((book) => (
-                <Card key={book.id} className="overflow-hidden">
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-3">
-                      <div className={`w-2 h-full min-h-[80px] rounded-full ${getStatusColor(book.status)}`} />
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-lg truncate">{book.title}</h3>
-                        <p className="text-sm text-muted-foreground">{book.author}</p>
-                        <div className="flex flex-wrap gap-1.5 mt-2">
-                          <Badge variant="outline" className="text-xs">{book.category}</Badge>
-                          <Badge variant="secondary" className="text-xs">{book.format}</Badge>
-                          <Badge variant="secondary" className="text-xs">{statuses.find(s => s.value === book.status)?.label}</Badge>
+            <ScrollArea className="h-[calc(100vh-400px)] min-h-[300px]" type="always">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 pr-2">
+                {filteredBooks.map((book) => (
+                  <Card key={book.id} className="overflow-hidden">
+                    <CardContent className="p-3 sm:p-4">
+                      <div className="flex items-start gap-2 sm:gap-3">
+                        <div className={`w-1.5 sm:w-2 h-full min-h-[70px] sm:min-h-[80px] rounded-full flex-shrink-0 ${getStatusColor(book.status)}`} />
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-sm sm:text-lg truncate">{book.title}</h3>
+                          <p className="text-xs sm:text-sm text-muted-foreground truncate">{book.author}</p>
+                          <div className="flex flex-wrap gap-1 sm:gap-1.5 mt-1.5 sm:mt-2">
+                            <Badge variant="outline" className="text-[10px] sm:text-xs">{book.category}</Badge>
+                            <Badge variant="secondary" className="text-[10px] sm:text-xs">{book.format}</Badge>
+                            <Badge variant="secondary" className="text-[10px] sm:text-xs">{statuses.find(s => s.value === book.status)?.label}</Badge>
+                          </div>
+                          {book.rating > 0 && (
+                            <div className="mt-1.5 sm:mt-2">{renderStars(book.rating)}</div>
+                          )}
+                          {book.pages > 0 && book.status === 'reading' && (
+                            <p className="text-[10px] sm:text-xs text-muted-foreground mt-1.5 sm:mt-2">
+                              Page {book.currentPage} of {book.pages} ({Math.round((book.currentPage / book.pages) * 100)}%)
+                            </p>
+                          )}
                         </div>
-                        {book.rating > 0 && (
-                          <div className="mt-2">{renderStars(book.rating)}</div>
-                        )}
-                        {book.pages > 0 && book.status === 'reading' && (
-                          <p className="text-xs text-muted-foreground mt-2">
-                            Page {book.currentPage} of {book.pages} ({Math.round((book.currentPage / book.pages) * 100)}%)
-                          </p>
-                        )}
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        {book.status === 'to-read' && (
-                          <Button size="sm" variant="ghost" onClick={() => handleMarkReading(book.id)} title="Mark as Reading">
-                            <BookMarked className="w-4 h-4" />
+                        <div className="flex flex-col gap-0.5 sm:gap-1 flex-shrink-0">
+                          {book.status === 'to-read' && (
+                            <Button size="sm" variant="ghost" className="h-7 w-7 sm:h-8 sm:w-8 p-0" onClick={() => handleMarkReading(book.id)} title="Mark as Reading">
+                              <BookMarked className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                            </Button>
+                          )}
+                          {book.status === 'reading' && (
+                            <Button size="sm" variant="ghost" className="h-7 w-7 sm:h-8 sm:w-8 p-0" onClick={() => handleMarkComplete(book.id)} title="Mark as Complete">
+                              <BookCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                            </Button>
+                          )}
+                          <Button size="sm" variant="ghost" className="h-7 w-7 sm:h-8 sm:w-8 p-0" onClick={() => handleEdit(book)}>
+                            <Edit2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                           </Button>
-                        )}
-                        {book.status === 'reading' && (
-                          <Button size="sm" variant="ghost" onClick={() => handleMarkComplete(book.id)} title="Mark as Complete">
-                            <BookCheck className="w-4 h-4" />
+                          <Button size="sm" variant="ghost" className="h-7 w-7 sm:h-8 sm:w-8 p-0" onClick={() => handleDelete(book.id)}>
+                            <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                           </Button>
-                        )}
-                        <Button size="sm" variant="ghost" onClick={() => handleEdit(book)}>
-                          <Edit2 className="w-4 h-4" />
-                        </Button>
-                        <Button size="sm" variant="ghost" onClick={() => handleDelete(book.id)}>
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                        </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </ScrollArea>
           )}
         </div>
       </div>

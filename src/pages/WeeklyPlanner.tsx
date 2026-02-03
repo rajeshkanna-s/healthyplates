@@ -434,58 +434,60 @@ const WeeklyPlanner = () => {
           </Card>
 
           {/* Weekly Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
-            {days.map((day, index) => {
-              const dayDate = addDays(currentWeekStart, index);
-              const isToday = isSameDay(dayDate, new Date());
-              const dayItems = getItemsForDay(day);
+          <ScrollArea className="w-full">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3 min-w-[320px] pb-4">
+              {days.map((day, index) => {
+                const dayDate = addDays(currentWeekStart, index);
+                const isToday = isSameDay(dayDate, new Date());
+                const dayItems = getItemsForDay(day);
 
-              return (
-                <Card key={day} className={`${isToday ? 'ring-2 ring-primary' : ''}`}>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm flex items-center justify-between">
-                      <span className={isToday ? 'text-primary font-bold' : ''}>{day}</span>
-                      <span className="text-xs text-muted-foreground">{format(dayDate, 'MMM d')}</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <ScrollArea className="h-[300px]">
-                      {dayItems.length === 0 ? (
-                        <p className="text-xs text-muted-foreground text-center py-4">No plans</p>
-                      ) : (
-                        <div className="space-y-2">
-                          {dayItems.map(item => (
-                            <div
-                              key={item.id}
-                              className={`p-2 rounded-lg border text-xs ${getPriorityColor(item.priority)}`}
-                            >
-                              <div className="flex items-center gap-1 mb-1">
-                                <div className={`w-2 h-2 rounded-full ${getCategoryColor(item.category)}`} />
-                                <span className="font-medium truncate flex-1">{item.title}</span>
+                return (
+                  <Card key={day} className={`${isToday ? 'ring-2 ring-primary' : ''} min-w-[140px]`}>
+                    <CardHeader className="pb-2 px-3 pt-3">
+                      <CardTitle className="text-sm flex items-center justify-between">
+                        <span className={isToday ? 'text-primary font-bold' : ''}>{day.slice(0, 3)}</span>
+                        <span className="text-xs text-muted-foreground">{format(dayDate, 'MMM d')}</span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-0 px-2 pb-2">
+                      <ScrollArea className="h-[200px] sm:h-[250px] md:h-[300px]">
+                        {dayItems.length === 0 ? (
+                          <p className="text-xs text-muted-foreground text-center py-4">No plans</p>
+                        ) : (
+                          <div className="space-y-2 pr-2">
+                            {dayItems.map(item => (
+                              <div
+                                key={item.id}
+                                className={`p-2 rounded-lg border text-xs ${getPriorityColor(item.priority)}`}
+                              >
+                                <div className="flex items-center gap-1 mb-1">
+                                  <div className={`w-2 h-2 rounded-full flex-shrink-0 ${getCategoryColor(item.category)}`} />
+                                  <span className="font-medium truncate flex-1">{item.title}</span>
+                                </div>
+                                {item.startTime && (
+                                  <p className="text-[10px] opacity-70">
+                                    {item.startTime}{item.endTime && ` – ${item.endTime}`}
+                                  </p>
+                                )}
+                                <div className="flex gap-1 mt-1">
+                                  <Button size="sm" variant="ghost" className="h-5 w-5 p-0" onClick={() => handleEdit(item)}>
+                                    <Edit2 className="w-3 h-3" />
+                                  </Button>
+                                  <Button size="sm" variant="ghost" className="h-5 w-5 p-0" onClick={() => handleDelete(item.id)}>
+                                    <Trash2 className="w-3 h-3" />
+                                  </Button>
+                                </div>
                               </div>
-                              {item.startTime && (
-                                <p className="text-[10px] opacity-70">
-                                  {item.startTime}{item.endTime && ` – ${item.endTime}`}
-                                </p>
-                              )}
-                              <div className="flex gap-1 mt-1">
-                                <Button size="sm" variant="ghost" className="h-5 w-5 p-0" onClick={() => handleEdit(item)}>
-                                  <Edit2 className="w-3 h-3" />
-                                </Button>
-                                <Button size="sm" variant="ghost" className="h-5 w-5 p-0" onClick={() => handleDelete(item.id)}>
-                                  <Trash2 className="w-3 h-3" />
-                                </Button>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </ScrollArea>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
+                            ))}
+                          </div>
+                        )}
+                      </ScrollArea>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </ScrollArea>
         </div>
       </div>
 
