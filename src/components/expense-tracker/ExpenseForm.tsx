@@ -11,13 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, Plus, X, Receipt } from "lucide-react";
 import { ExpenseEntry, ExpenseSettings } from "./types";
@@ -34,8 +27,6 @@ interface ExpenseFormProps {
 const ExpenseForm = ({ settings, onAddExpense, onNavigate }: ExpenseFormProps) => {
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
-  const [customCategory, setCustomCategory] = useState("");
-  const [showCustomCategoryDialog, setShowCustomCategoryDialog] = useState(false);
   const [platform, setPlatform] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("UPI");
   const [date, setDate] = useState(getTodayString());
@@ -45,13 +36,13 @@ const ExpenseForm = ({ settings, onAddExpense, onNavigate }: ExpenseFormProps) =
   const [tagInput, setTagInput] = useState("");
   const [person, setPerson] = useState(settings.familyMembers[0]?.name || "Me");
   
+  // Build categories list from defaults + custom categories
   const allCategories = [
     ...DEFAULT_CATEGORIES,
     ...settings.customCategories.map(c => ({ name: c.name, icon: c.icon || "MoreHorizontal" })),
-    { name: "Other", icon: "MoreHorizontal" },
   ];
   
-  const availablePlatforms = category && category !== "Other" 
+  const availablePlatforms = category 
     ? (PLATFORMS_BY_CATEGORY[category] || ["Other"]) 
     : ["Other"];
   const allPaymentMethods = [...PAYMENT_METHODS, ...settings.customPaymentMethods];
@@ -60,24 +51,6 @@ const ExpenseForm = ({ settings, onAddExpense, onNavigate }: ExpenseFormProps) =
   useEffect(() => {
     setPlatform("");
   }, [category]);
-
-  const handleCategoryChange = (value: string) => {
-    if (value === "Other") {
-      setShowCustomCategoryDialog(true);
-    } else {
-      setCategory(value);
-    }
-  };
-
-  const handleCustomCategoryConfirm = () => {
-    if (customCategory.trim()) {
-      setCategory(customCategory.trim());
-      setShowCustomCategoryDialog(false);
-      setCustomCategory("");
-    } else {
-      toast.error("Please enter a category name");
-    }
-  };
   
   const handleAddTag = () => {
     if (tagInput.trim() && !tags.includes(tagInput.trim())) {
@@ -162,7 +135,7 @@ const ExpenseForm = ({ settings, onAddExpense, onNavigate }: ExpenseFormProps) =
             {/* Category */}
             <div className="space-y-2">
               <Label className="text-sm font-medium">Category</Label>
-              <Select value={category} onValueChange={handleCategoryChange}>
+              <Select value={category} onValueChange={setCategory}>
                 <SelectTrigger className="h-12">
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
@@ -307,32 +280,6 @@ const ExpenseForm = ({ settings, onAddExpense, onNavigate }: ExpenseFormProps) =
           </form>
         </CardContent>
       </Card>
-
-      {/* Custom Category Dialog */}
-      <Dialog open={showCustomCategoryDialog} onOpenChange={setShowCustomCategoryDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Enter Custom Category</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <Input
-              placeholder="Category name (e.g., Pet Care, Hobbies)"
-              value={customCategory}
-              onChange={(e) => setCustomCategory(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && handleCustomCategoryConfirm()}
-              autoFocus
-            />
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowCustomCategoryDialog(false)}>
-              Cancel
-            </Button>
-            <Button onClick={handleCustomCategoryConfirm}>
-              Confirm
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </>
   );
 };
