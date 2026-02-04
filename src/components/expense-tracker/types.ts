@@ -57,6 +57,11 @@ export interface ExpenseSettings {
   bigExpenseLimit: number;
   savingsGoals: SavingsGoal[];
   dayNotes: DayNote[];
+  // Track deleted defaults per user
+  deletedDefaultCategories: string[];
+  deletedDefaultPaymentMethods: string[];
+  deletedDefaultPlatforms: string[];
+  deletedDefaultFamilyMembers: string[];
 }
 
 export interface ExpenseFilters {

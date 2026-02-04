@@ -36,18 +36,30 @@ const ExpenseForm = ({ settings, onAddExpense, onNavigate }: ExpenseFormProps) =
   const [tagInput, setTagInput] = useState("");
   const [person, setPerson] = useState(settings.familyMembers[0]?.name || "Me");
   
-  // Build categories list from defaults + custom categories
+  // Build categories list from defaults (excluding deleted) + custom categories
+  const deletedCategories = settings.deletedDefaultCategories || [];
   const allCategories = [
-    ...DEFAULT_CATEGORIES,
+    ...DEFAULT_CATEGORIES.filter(c => !deletedCategories.includes(c.name)),
     ...settings.customCategories.map(c => ({ name: c.name, icon: c.icon || "MoreHorizontal" })),
   ];
   
-  // Build platforms list: category-specific + custom platforms + always include "Other"
-  const categoryPlatforms = category ? (PLATFORMS_BY_CATEGORY[category] || []) : [];
+  // Build platforms list: category-specific (excluding deleted) + custom platforms + always include "Other"
+  const deletedPlatforms = settings.deletedDefaultPlatforms || [];
+  const categoryPlatforms = category ? (PLATFORMS_BY_CATEGORY[category] || []).filter(p => !deletedPlatforms.includes(p)) : [];
   const availablePlatforms = [
-    ...new Set([...categoryPlatforms, ...settings.customPlatforms, "Other"])
+    ...new Set([...categoryPlatforms, ...(settings.customPlatforms || []), "Other"])
   ];
-  const allPaymentMethods = [...PAYMENT_METHODS, ...settings.customPaymentMethods];
+  
+  // Build payment methods (excluding deleted defaults)
+  const deletedPaymentMethods = settings.deletedDefaultPaymentMethods || [];
+  const allPaymentMethods = [
+    ...PAYMENT_METHODS.filter(m => !deletedPaymentMethods.includes(m)),
+    ...settings.customPaymentMethods
+  ];
+  
+  // Build family members (filter deleted default members from the familyMembers list)
+  const deletedFamilyMembers = settings.deletedDefaultFamilyMembers || [];
+  const allFamilyMembers = settings.familyMembers.filter(m => !deletedFamilyMembers.includes(m.name));
   
   // Reset platform when category changes
   useEffect(() => {
@@ -223,7 +235,7 @@ const ExpenseForm = ({ settings, onAddExpense, onNavigate }: ExpenseFormProps) =
                   <SelectValue placeholder="Who spent?" />
                 </SelectTrigger>
                 <SelectContent>
-                  {settings.familyMembers.map((member) => (
+                  {allFamilyMembers.map((member) => (
                     <SelectItem key={member.id} value={member.name}>
                       {member.name}
                     </SelectItem>

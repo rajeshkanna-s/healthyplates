@@ -38,6 +38,11 @@ export const getDefaultSettings = (): ExpenseSettings => ({
   bigExpenseLimit: 2000,
   savingsGoals: [],
   dayNotes: [],
+  // Track deleted defaults per user
+  deletedDefaultCategories: [],
+  deletedDefaultPaymentMethods: [],
+  deletedDefaultPlatforms: [],
+  deletedDefaultFamilyMembers: [],
 });
 
 export const saveSettings = (settings: ExpenseSettings) => {
