@@ -34,6 +34,7 @@ export const getDefaultSettings = (): ExpenseSettings => ({
   quickAddTemplates: DEFAULT_QUICK_ADD_TEMPLATES,
   customCategories: [],
   customPaymentMethods: [],
+  customPlatforms: [],
   bigExpenseLimit: 2000,
   savingsGoals: [],
   dayNotes: [],
