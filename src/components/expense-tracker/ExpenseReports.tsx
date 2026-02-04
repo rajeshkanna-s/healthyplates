@@ -33,7 +33,7 @@ import {
   BarChart3, Store
 } from "lucide-react";
 import { ExpenseEntry, ExpenseSettings, ExpenseFilters } from "./types";
-import { DEFAULT_CATEGORIES, ALL_PLATFORMS } from "./data";
+import { DEFAULT_CATEGORIES, ALL_PLATFORMS, PAYMENT_METHODS } from "./data";
 import {
   filterExpenses, getCategoryBreakdown, getPersonBreakdown,
   getMonthlyComparison, getDailySpending, getBigExpenses,
@@ -102,10 +102,23 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
     return Array.from(platforms).sort();
   }, [expenses]);
   
+  // Build categories list from defaults (excluding deleted) + custom categories
+  const deletedCategories = settings.deletedDefaultCategories || [];
   const allCategories = [
-    ...DEFAULT_CATEGORIES,
+    ...DEFAULT_CATEGORIES.filter(c => !deletedCategories.includes(c.name)),
     ...settings.customCategories.map(c => ({ name: c.name, icon: c.icon || "MoreHorizontal" }))
   ];
+  
+  // Build payment methods (excluding deleted defaults) + custom - same as Form page
+  const deletedPaymentMethods = settings.deletedDefaultPaymentMethods || [];
+  const allPaymentMethods = [
+    ...PAYMENT_METHODS.filter(m => !deletedPaymentMethods.includes(m)),
+    ...settings.customPaymentMethods
+  ];
+  
+  // Build family members (filter deleted default members)
+  const deletedFamilyMembers = settings.deletedDefaultFamilyMembers || [];
+  const allFamilyMembers = settings.familyMembers.filter(m => !deletedFamilyMembers.includes(m.name));
   
   const handleExportExcel = () => {
     exportToExcel(filteredExpenses, settings, "expense-report");
@@ -195,11 +208,9 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Methods</SelectItem>
-                  <SelectItem value="Cash">Cash</SelectItem>
-                  <SelectItem value="UPI">UPI</SelectItem>
-                  <SelectItem value="Debit Card">Debit Card</SelectItem>
-                  <SelectItem value="Credit Card">Credit Card</SelectItem>
-                  <SelectItem value="Net Banking">Net Banking</SelectItem>
+                  {allPaymentMethods.map((method) => (
+                    <SelectItem key={method} value={method}>{method}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -211,7 +222,7 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Members</SelectItem>
-                  {settings.familyMembers.map((m) => (
+                  {allFamilyMembers.map((m) => (
                     <SelectItem key={m.id} value={m.name}>{m.name}</SelectItem>
                   ))}
                 </SelectContent>
