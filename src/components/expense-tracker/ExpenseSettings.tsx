@@ -574,8 +574,30 @@ const ExpenseSettingsTab = ({
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                  {DEFAULT_CATEGORIES.map((cat) => (
+                  {[
+                    ...DEFAULT_CATEGORIES.filter(c => !(settings.deletedDefaultCategories || []).includes(c.name)),
+                    ...settings.customCategories.map(c => ({ name: c.name, icon: c.icon || "MoreHorizontal" }))
+                  ].map((cat) => (
                     <SelectItem key={cat.name} value={cat.name}>{cat.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select 
+                value={newQuickAdd.platform || ""} 
+                onValueChange={(v) => setNewQuickAdd({ ...newQuickAdd, platform: v })}
+              >
+                <SelectTrigger className="h-12">
+                  <SelectValue placeholder="Select platform/shop (optional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  {[
+                    ...new Set([
+                      ...ALL_PLATFORMS.filter(p => !(settings.deletedDefaultPlatforms || []).includes(p)),
+                      ...(settings.customPlatforms || []),
+                      "Other"
+                    ])
+                  ].map((p) => (
+                    <SelectItem key={p} value={p}>{p}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -586,7 +608,7 @@ const ExpenseSettingsTab = ({
                 <SelectTrigger className="h-12">
                   <SelectValue placeholder="Select icon" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="max-h-60">
                   {allIcons.map((icon) => {
                     const IconComponent = CATEGORY_ICONS[icon];
                     return (
@@ -608,7 +630,10 @@ const ExpenseSettingsTab = ({
                   <SelectValue placeholder="Select payment method" />
                 </SelectTrigger>
                 <SelectContent>
-                  {[...PAYMENT_METHODS, ...settings.customPaymentMethods].map((method) => (
+                  {[
+                    ...PAYMENT_METHODS.filter(m => !(settings.deletedDefaultPaymentMethods || []).includes(m)),
+                    ...settings.customPaymentMethods
+                  ].map((method) => (
                     <SelectItem key={method} value={method}>{method}</SelectItem>
                   ))}
                 </SelectContent>
