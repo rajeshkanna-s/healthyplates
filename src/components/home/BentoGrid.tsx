@@ -189,12 +189,14 @@ const BentoGrid = () => {
 
       <div className="relative">
         {/* Bento Grid - 5 items per slide */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 auto-rows-[200px] md:auto-rows-[220px]">
-          {/* Large Feature Card - First item (spans row-span-2) */}
+        {/* Mobile: Big card on top (full width), 4 small cards below (2x2) */}
+        {/* Desktop: Big card on left (row-span-2), 4 small cards on right (2x2) */}
+        <div className="flex flex-col md:grid md:grid-cols-3 gap-4">
+          {/* Large Feature Card - First item */}
           {currentItems[0] && (
             <Link
               to={currentItems[0].link}
-              className="row-span-2 group relative overflow-hidden rounded-2xl shadow-lg"
+              className="h-[280px] md:h-auto md:row-span-2 group relative overflow-hidden rounded-2xl shadow-lg"
             >
               <img
                 src={currentItems[0].image}
@@ -219,12 +221,15 @@ const BentoGrid = () => {
             </Link>
           )}
 
+          {/* Small Cards Container - 2x2 grid on mobile, flows naturally on desktop */}
+          <div className="grid grid-cols-2 gap-4 md:contents">
+
           {/* Cards 2-5 */}
           {currentItems.slice(1, 5).map((item, index) => (
             <Link
               key={`${item.id}-${index}`}
               to={item.link}
-              className="group relative overflow-hidden rounded-2xl shadow-lg"
+              className="h-[180px] md:h-[220px] group relative overflow-hidden rounded-2xl shadow-lg"
             >
               <img
                 src={item.image}
@@ -242,6 +247,7 @@ const BentoGrid = () => {
               </div>
             </Link>
           ))}
+          </div>
         </div>
 
         {/* Navigation Buttons */}
