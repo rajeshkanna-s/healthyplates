@@ -29,8 +29,8 @@ import {
 } from "@/components/ui/dialog";
 import { 
   Download, FileText, FileSpreadsheet, Trash2, Eye, 
-  Filter, TrendingUp, TrendingDown, Users, PieChart,
-  Calendar, BarChart3
+  Filter, TrendingUp, Users, PieChart,
+  BarChart3, Store
 } from "lucide-react";
 import { ExpenseEntry, ExpenseSettings, ExpenseFilters } from "./types";
 import { DEFAULT_CATEGORIES, ALL_PLATFORMS } from "./data";
@@ -51,7 +51,6 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  Legend,
   LineChart,
   Line,
   CartesianGrid,
@@ -77,7 +76,6 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
     paymentMethod: "all",
     person: "all",
   });
-  const [selectedExpense, setSelectedExpense] = useState<ExpenseEntry | null>(null);
   
   const filteredExpenses = useMemo(() => {
     return filterExpenses(expenses, filters).sort((a, b) => 
@@ -93,12 +91,14 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
   
   const totalAmount = filteredExpenses.reduce((sum, e) => sum + e.amount, 0);
   
-  // Get unique platforms from filtered expenses
-  const uniquePlatforms = useMemo(() => {
+  // Get ALL unique platforms from ALL expenses (combined Platform/Shop filter)
+  const allUniquePlatforms = useMemo(() => {
     const platforms = new Set<string>();
     expenses.forEach(e => {
       if (e.platform) platforms.add(e.platform);
     });
+    // Also include all default platforms
+    ALL_PLATFORMS.forEach(p => platforms.add(p));
     return Array.from(platforms).sort();
   }, [expenses]);
   
@@ -122,38 +122,42 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
   return (
     <div className="space-y-6">
       {/* Filters */}
-      <Card>
+      <Card className="border-2">
         <CardHeader className="pb-3">
           <CardTitle className="text-lg flex items-center gap-2">
-            <Filter className="h-5 w-5" />
+            <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+              <Filter className="h-4 w-4 text-primary" />
+            </div>
             Filters
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <Label className="text-xs">From Date</Label>
+              <Label className="text-xs font-medium">From Date</Label>
               <Input
                 type="date"
                 value={filters.fromDate}
                 onChange={(e) => setFilters({ ...filters, fromDate: e.target.value })}
+                className="h-10"
               />
             </div>
             <div className="space-y-1">
-              <Label className="text-xs">To Date</Label>
+              <Label className="text-xs font-medium">To Date</Label>
               <Input
                 type="date"
                 value={filters.toDate}
                 onChange={(e) => setFilters({ ...filters, toDate: e.target.value })}
+                className="h-10"
               />
             </div>
           </div>
           
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <Label className="text-xs">Category</Label>
+              <Label className="text-xs font-medium">Category</Label>
               <Select value={filters.category} onValueChange={(v) => setFilters({ ...filters, category: v })}>
-                <SelectTrigger>
+                <SelectTrigger className="h-10">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -165,14 +169,16 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
               </Select>
             </div>
             <div className="space-y-1">
-              <Label className="text-xs">Platform/Shop</Label>
+              <Label className="text-xs font-medium flex items-center gap-1">
+                <Store className="h-3 w-3" /> Platform/Shop
+              </Label>
               <Select value={filters.platform} onValueChange={(v) => setFilters({ ...filters, platform: v })}>
-                <SelectTrigger>
+                <SelectTrigger className="h-10">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Platforms</SelectItem>
-                  {uniquePlatforms.map((p) => (
+                  {allUniquePlatforms.map((p) => (
                     <SelectItem key={p} value={p}>{p}</SelectItem>
                   ))}
                 </SelectContent>
@@ -182,9 +188,9 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
           
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <Label className="text-xs">Payment Method</Label>
+              <Label className="text-xs font-medium">Payment Method</Label>
               <Select value={filters.paymentMethod} onValueChange={(v) => setFilters({ ...filters, paymentMethod: v })}>
-                <SelectTrigger>
+                <SelectTrigger className="h-10">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -198,9 +204,9 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
               </Select>
             </div>
             <div className="space-y-1">
-              <Label className="text-xs">Person</Label>
+              <Label className="text-xs font-medium">Person</Label>
               <Select value={filters.person} onValueChange={(v) => setFilters({ ...filters, person: v })}>
-                <SelectTrigger>
+                <SelectTrigger className="h-10">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -217,16 +223,16 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
       
       {/* Summary Cards */}
       <div className="grid grid-cols-2 gap-3">
-        <Card className="bg-primary/5">
+        <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
           <CardContent className="p-4">
-            <p className="text-xs text-muted-foreground">Total Expenses</p>
-            <p className="text-2xl font-bold">{filteredExpenses.length}</p>
+            <p className="text-xs text-muted-foreground font-medium">Total Expenses</p>
+            <p className="text-3xl font-bold mt-1">{filteredExpenses.length}</p>
           </CardContent>
         </Card>
-        <Card className="bg-primary/5">
+        <Card className="bg-gradient-to-br from-green-100 to-green-50 dark:from-green-900/20 dark:to-green-800/10 border-green-200/50 dark:border-green-800/50">
           <CardContent className="p-4">
-            <p className="text-xs text-muted-foreground">Total Amount</p>
-            <p className="text-2xl font-bold text-primary">
+            <p className="text-xs text-muted-foreground font-medium">Total Amount</p>
+            <p className="text-3xl font-bold text-green-600 dark:text-green-400 mt-1">
               {settings.currencySymbol}{totalAmount.toLocaleString()}
             </p>
           </CardContent>
@@ -235,10 +241,10 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
       
       {/* Category Breakdown Pie Chart */}
       {categoryBreakdown.length > 0 && (
-        <Card>
+        <Card className="border-2">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg flex items-center gap-2">
-              <PieChart className="h-5 w-5" />
+              <PieChart className="h-5 w-5 text-primary" />
               Spending by Category
             </CardTitle>
           </CardHeader>
@@ -287,10 +293,10 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
       
       {/* Person Breakdown */}
       {personBreakdown.length > 0 && (
-        <Card>
+        <Card className="border-2">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg flex items-center gap-2">
-              <Users className="h-5 w-5" />
+              <Users className="h-5 w-5 text-primary" />
               Spending by Person
             </CardTitle>
           </CardHeader>
@@ -299,12 +305,12 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
               {personBreakdown.map((item, index) => (
                 <div key={item.person} className="space-y-1">
                   <div className="flex justify-between text-sm">
-                    <span>{item.person}</span>
+                    <span className="font-medium">{item.person}</span>
                     <span className="font-medium">{settings.currencySymbol}{item.amount.toLocaleString()} ({item.percentage}%)</span>
                   </div>
                   <div className="h-2 bg-muted rounded-full overflow-hidden">
                     <div 
-                      className="h-full rounded-full"
+                      className="h-full rounded-full transition-all"
                       style={{ 
                         width: `${item.percentage}%`,
                         backgroundColor: CHART_COLORS[index % CHART_COLORS.length]
@@ -320,10 +326,10 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
       
       {/* Monthly Comparison */}
       {monthlyComparison.length > 1 && (
-        <Card>
+        <Card className="border-2">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg flex items-center gap-2">
-              <BarChart3 className="h-5 w-5" />
+              <BarChart3 className="h-5 w-5 text-primary" />
               Monthly Comparison
             </CardTitle>
           </CardHeader>
@@ -335,7 +341,7 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
                   <XAxis dataKey="month" tick={{ fontSize: 10 }} />
                   <YAxis tick={{ fontSize: 10 }} />
                   <Tooltip formatter={(value: number) => `${settings.currencySymbol}${value.toLocaleString()}`} />
-                  <Bar dataKey="amount" fill="#22c55e" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="amount" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -344,10 +350,10 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
       )}
       
       {/* Daily Spending Trend */}
-      <Card>
+      <Card className="border-2">
         <CardHeader className="pb-2">
           <CardTitle className="text-lg flex items-center gap-2">
-            <TrendingUp className="h-5 w-5" />
+            <TrendingUp className="h-5 w-5 text-primary" />
             Last 30 Days Trend
           </CardTitle>
         </CardHeader>
@@ -359,7 +365,7 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
                 <XAxis dataKey="date" tick={{ fontSize: 8 }} interval={4} />
                 <YAxis tick={{ fontSize: 10 }} />
                 <Tooltip formatter={(value: number) => `${settings.currencySymbol}${value.toLocaleString()}`} />
-                <Line type="monotone" dataKey="amount" stroke="#22c55e" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="amount" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -368,7 +374,7 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
       
       {/* Big Expenses */}
       {bigExpenses.length > 0 && (
-        <Card className="border-orange-200 dark:border-orange-800">
+        <Card className="border-2 border-orange-200 dark:border-orange-800">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg flex items-center gap-2 text-orange-600">
               <TrendingUp className="h-5 w-5" />
@@ -378,7 +384,7 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
           <CardContent>
             <div className="space-y-2">
               {bigExpenses.slice(0, 5).map((expense) => (
-                <div key={expense.id} className="flex justify-between items-center p-2 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                <div key={expense.id} className="flex justify-between items-center p-3 bg-orange-50 dark:bg-orange-900/20 rounded-xl">
                   <div>
                     <p className="font-medium text-sm">{expense.category}</p>
                     <p className="text-xs text-muted-foreground">{format(parseISO(expense.date), "dd MMM yyyy")}</p>
@@ -392,19 +398,19 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
       )}
       
       {/* Export Buttons */}
-      <div className="flex gap-2">
-        <Button onClick={handleExportExcel} variant="outline" className="flex-1">
-          <FileSpreadsheet className="h-4 w-4 mr-2" />
+      <div className="flex gap-3">
+        <Button onClick={handleExportExcel} variant="outline" className="flex-1 h-12">
+          <FileSpreadsheet className="h-5 w-5 mr-2" />
           Excel
         </Button>
-        <Button onClick={handleExportPDF} variant="outline" className="flex-1">
-          <FileText className="h-4 w-4 mr-2" />
+        <Button onClick={handleExportPDF} variant="outline" className="flex-1 h-12">
+          <FileText className="h-5 w-5 mr-2" />
           PDF Report
         </Button>
       </div>
       
       {/* Expense List */}
-      <Card>
+      <Card className="border-2">
         <CardHeader className="pb-2">
           <CardTitle className="text-lg">Expense History</CardTitle>
         </CardHeader>
@@ -427,19 +433,19 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
                       <TableCell className="text-xs">
                         {format(parseISO(expense.date), "dd/MM")}
                       </TableCell>
-                      <TableCell className="text-sm">{expense.category}</TableCell>
+                      <TableCell className="text-sm font-medium">{expense.category}</TableCell>
                       <TableCell className="text-xs text-muted-foreground">
                         {expense.platform || "-"}
                       </TableCell>
-                      <TableCell className="text-right font-medium">
+                      <TableCell className="text-right font-bold">
                         {settings.currencySymbol}{expense.amount.toLocaleString()}
                       </TableCell>
                       <TableCell>
                         <div className="flex gap-1">
                           <Dialog>
                             <DialogTrigger asChild>
-                              <Button size="icon" variant="ghost" className="h-7 w-7">
-                                <Eye className="h-3 w-3" />
+                              <Button size="icon" variant="ghost" className="h-8 w-8">
+                                <Eye className="h-4 w-4" />
                               </Button>
                             </DialogTrigger>
                             <DialogContent>
@@ -448,24 +454,24 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
                               </DialogHeader>
                               <div className="space-y-3 text-sm">
                                 <div className="flex justify-between">
-                                  <span className="text-muted-foreground">ID</span>
-                                  <span className="font-mono text-xs">{expense.id}</span>
-                                </div>
-                                <div className="flex justify-between">
                                   <span className="text-muted-foreground">Amount</span>
                                   <span className="font-bold text-lg">{settings.currencySymbol}{expense.amount.toLocaleString()}</span>
                                 </div>
                                 <div className="flex justify-between">
                                   <span className="text-muted-foreground">Category</span>
-                                  <span>{expense.category}</span>
+                                  <span className="font-medium">{expense.category}</span>
                                 </div>
                                 <div className="flex justify-between">
                                   <span className="text-muted-foreground">Platform</span>
                                   <span>{expense.platform || "-"}</span>
                                 </div>
                                 <div className="flex justify-between">
-                                  <span className="text-muted-foreground">Date & Time</span>
-                                  <span>{format(parseISO(expense.date), "dd MMM yyyy")} {expense.time}</span>
+                                  <span className="text-muted-foreground">Date</span>
+                                  <span>{format(parseISO(expense.date), "dd MMM yyyy")}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-muted-foreground">Time</span>
+                                  <span>{expense.time}</span>
                                 </div>
                                 <div className="flex justify-between">
                                   <span className="text-muted-foreground">Payment</span>
@@ -473,27 +479,30 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
                                 </div>
                                 <div className="flex justify-between">
                                   <span className="text-muted-foreground">Person</span>
-                                  <span>{expense.person || "-"}</span>
+                                  <span>{expense.person}</span>
                                 </div>
                                 {expense.description && (
-                                  <div>
-                                    <span className="text-muted-foreground">Description</span>
+                                  <div className="pt-2 border-t">
+                                    <span className="text-muted-foreground">Notes:</span>
                                     <p className="mt-1">{expense.description}</p>
                                   </div>
                                 )}
-                                {expense.tags && expense.tags.length > 0 && (
-                                  <div>
-                                    <span className="text-muted-foreground">Tags</span>
-                                    <div className="flex gap-1 mt-1">
-                                      {expense.tags.map((tag) => (
-                                        <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>
-                                      ))}
-                                    </div>
+                                {expense.tags.length > 0 && (
+                                  <div className="flex gap-1 flex-wrap pt-2">
+                                    {expense.tags.map(tag => (
+                                      <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>
+                                    ))}
                                   </div>
                                 )}
-                                <Button onClick={() => handleExportSinglePDF(expense)} className="w-full mt-4">
+                              </div>
+                              <div className="flex gap-2 mt-4">
+                                <Button 
+                                  variant="outline" 
+                                  className="flex-1"
+                                  onClick={() => handleExportSinglePDF(expense)}
+                                >
                                   <Download className="h-4 w-4 mr-2" />
-                                  Download Receipt PDF
+                                  Export PDF
                                 </Button>
                               </div>
                             </DialogContent>
@@ -501,10 +510,10 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
                           <Button 
                             size="icon" 
                             variant="ghost" 
-                            className="h-7 w-7 text-destructive"
+                            className="h-8 w-8 text-destructive hover:text-destructive"
                             onClick={() => onDeleteExpense(expense.id)}
                           >
-                            <Trash2 className="h-3 w-3" />
+                            <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
                       </TableCell>
@@ -515,12 +524,6 @@ const ExpenseReports = ({ expenses, settings, onDeleteExpense }: ExpenseReportsP
             </div>
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
-          
-          {filteredExpenses.length === 0 && (
-            <div className="text-center py-8 text-muted-foreground">
-              No expenses found for the selected filters
-            </div>
-          )}
         </CardContent>
       </Card>
     </div>

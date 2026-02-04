@@ -4,6 +4,23 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 
+// Helper function to get PDF-safe currency display
+const getPDFCurrencySymbol = (symbol: string): string => {
+  const symbolMap: Record<string, string> = {
+    "₹": "Rs.",
+    "€": "EUR",
+    "£": "GBP",
+    "¥": "JPY",
+  };
+  return symbolMap[symbol] || symbol;
+};
+
+// Helper function to format amount for PDF
+const formatAmountForPDF = (amount: number, currencySymbol: string): string => {
+  const safeCurrency = getPDFCurrencySymbol(currencySymbol);
+  return `${safeCurrency} ${amount.toLocaleString('en-IN')}`;
+};
+
 export const exportToExcel = (expenses: ExpenseEntry[], settings: ExpenseSettings, filename: string = "expense-report") => {
   const data = expenses.map((expense, index) => ({
     "S.No": index + 1,
@@ -61,6 +78,9 @@ export const exportToExcel = (expenses: ExpenseEntry[], settings: ExpenseSetting
 export const exportSingleExpenseToPDF = (expense: ExpenseEntry, settings: ExpenseSettings) => {
   const doc = new jsPDF();
   
+  // Get PDF-safe currency symbol
+  const safeCurrency = getPDFCurrencySymbol(settings.currencySymbol);
+  
   // Header
   doc.setFillColor(34, 197, 94);
   doc.rect(0, 0, 210, 40, "F");
@@ -94,7 +114,7 @@ export const exportSingleExpenseToPDF = (expense: ExpenseEntry, settings: Expens
   doc.setFont("helvetica", "bold");
   doc.text("Amount", 105, 93, { align: "center" });
   doc.setFontSize(28);
-  doc.text(`${settings.currencySymbol} ${expense.amount.toLocaleString()}`, 105, 108, { align: "center" });
+  doc.text(`${safeCurrency} ${expense.amount.toLocaleString('en-IN')}`, 105, 108, { align: "center" });
   
   // Reset colors
   doc.setTextColor(0, 0, 0);
@@ -144,6 +164,7 @@ export const exportReportToPDF = (
   dateRange: { from: string; to: string }
 ) => {
   const doc = new jsPDF();
+  const safeCurrency = getPDFCurrencySymbol(settings.currencySymbol);
   
   // Header
   doc.setFillColor(34, 197, 94);
@@ -182,7 +203,7 @@ export const exportReportToPDF = (
   doc.text("Total Amount", 115, 65);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(34, 197, 94);
-  doc.text(`${settings.currencySymbol} ${totalAmount.toLocaleString()}`, 115, 75);
+  doc.text(formatAmountForPDF(totalAmount, settings.currencySymbol), 115, 75);
   
   doc.setTextColor(0, 0, 0);
   
@@ -196,7 +217,7 @@ export const exportReportToPDF = (
     format(new Date(expense.date), "dd/MM/yy"),
     expense.category.substring(0, 12),
     expense.platform?.substring(0, 12) || "-",
-    `${settings.currencySymbol}${expense.amount.toLocaleString()}`,
+    `${safeCurrency} ${expense.amount.toLocaleString('en-IN')}`,
     expense.paymentMethod.substring(0, 10),
   ]);
   
