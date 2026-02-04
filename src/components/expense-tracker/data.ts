@@ -2,7 +2,19 @@ import {
   Utensils, Shirt, Car, Fuel, Smartphone, Wifi, Zap, 
   Apple, ShoppingCart, Film, Gamepad2, Heart, GraduationCap, 
   Home, CreditCard, PiggyBank, MoreHorizontal, Coffee, 
-  Building2, Baby, Gift, Wrench, Users, Plane
+  Building2, Baby, Gift, Wrench, Users, Plane,
+  // Additional icons for Quick Add Templates
+  Pizza, Beer, Wine, Sandwich, IceCream, Cake, Cookie,
+  Bus, Train, Bike, Ship, Truck,
+  Tv, Music, Headphones, Camera, Monitor, Laptop, Tablet,
+  Book, Newspaper, PenTool, Briefcase, Calculator,
+  Pill, Stethoscope, Thermometer, Syringe,
+  Scissors, Paintbrush, Hammer, Settings,
+  Umbrella, Sun, Cloud, Moon, Snowflake,
+  Dog, Cat, Flower, Leaf, TreeDeciduous,
+  Star, Bell, Clock, Calendar, MapPin,
+  Phone, Mail, Globe, Bookmark, Award,
+  ShieldCheck, Lock, Key, Eye, Lightbulb, Sparkles
 } from "lucide-react";
 
 export const DEFAULT_CATEGORIES = [
@@ -32,6 +44,7 @@ export const DEFAULT_CATEGORIES = [
 ];
 
 export const CATEGORY_ICONS: Record<string, any> = {
+  // Original icons
   "Utensils": Utensils,
   "Shirt": Shirt,
   "Car": Car,
@@ -56,6 +69,73 @@ export const CATEGORY_ICONS: Record<string, any> = {
   "Wrench": Wrench,
   "Users": Users,
   "Plane": Plane,
+  // Food & Drinks
+  "Pizza": Pizza,
+  "Beer": Beer,
+  "Wine": Wine,
+  "Sandwich": Sandwich,
+  "IceCream": IceCream,
+  "Cake": Cake,
+  "Cookie": Cookie,
+  // Transport
+  "Bus": Bus,
+  "Train": Train,
+  "Bike": Bike,
+  "Ship": Ship,
+  "Truck": Truck,
+  // Electronics & Media
+  "Tv": Tv,
+  "Music": Music,
+  "Headphones": Headphones,
+  "Camera": Camera,
+  "Monitor": Monitor,
+  "Laptop": Laptop,
+  "Tablet": Tablet,
+  // Education & Work
+  "Book": Book,
+  "Newspaper": Newspaper,
+  "PenTool": PenTool,
+  "Briefcase": Briefcase,
+  "Calculator": Calculator,
+  // Health
+  "Pill": Pill,
+  "Stethoscope": Stethoscope,
+  "Thermometer": Thermometer,
+  "Syringe": Syringe,
+  // Tools & DIY
+  "Scissors": Scissors,
+  "Paintbrush": Paintbrush,
+  "Hammer": Hammer,
+  "Settings": Settings,
+  // Weather & Nature
+  "Umbrella": Umbrella,
+  "Sun": Sun,
+  "Cloud": Cloud,
+  "Moon": Moon,
+  "Snowflake": Snowflake,
+  // Nature & Pets
+  "Dog": Dog,
+  "Cat": Cat,
+  "Flower": Flower,
+  "Leaf": Leaf,
+  "TreeDeciduous": TreeDeciduous,
+  // Misc & UI
+  "Star": Star,
+  "Bell": Bell,
+  "Clock": Clock,
+  "Calendar": Calendar,
+  "MapPin": MapPin,
+  "Phone": Phone,
+  "Mail": Mail,
+  "Globe": Globe,
+  "Bookmark": Bookmark,
+  "Award": Award,
+  "ShieldCheck": ShieldCheck,
+  "Lock": Lock,
+  "Key": Key,
+  "Eye": Eye,
+  "Lightbulb": Lightbulb,
+  "Sparkles": Sparkles,
 };
 
 export const PLATFORMS_BY_CATEGORY: Record<string, string[]> = {
@@ -143,18 +223,46 @@ export const PLATFORMS_BY_CATEGORY: Record<string, string[]> = {
 };
 
 export const ALL_PLATFORMS = [
-  "Swiggy", "Zomato", "Amazon", "Flipkart", "Meesho", "Ajio", "Myntra", "Tata Cliq",
-  "BigBasket", "Zepto", "Blinkit", "Swiggy Instamart", "JioMart",
-  "Ola", "Uber", "Rapido", "RedBus", "IRCTC", "MakeMyTrip", "Goibibo", "Yatra",
-  "BookMyShow", "Paytm Movies", "Paytm", "PhonePe", "Google Pay", "Amazon Pay",
-  "Netflix", "Amazon Prime", "Disney+ Hotstar", "SonyLIV", "Zee5", "JioCinema",
-  "Spotify", "YouTube Premium", "Gaana", "Apple Music",
-  "BYJU'S", "Unacademy", "Vedantu", "Udemy", "Coursera",
-  "1mg", "NetMeds", "Pharmeasy", "Practo",
-  "Urban Company", "Justdial", "Sulekha",
-  "DMart", "Reliance Fresh", "Kirana Shop", "Local Market", "Local Shop",
-  "Tea", "Office Lunch", "Birthday Share", "Cake Cutting", "Team Lunch", "Office Outing",
-  "Hospital", "Clinic", "Temple", "Bank Transfer", "Cash", "Other"
+  // Food
+  "Swiggy", "Zomato", "Local Restaurant", "Home Cooked", "Canteen", "Street Food",
+  // Clothing
+  "Amazon", "Flipkart", "Meesho", "Ajio", "Myntra", "Tata Cliq", "Local Shop", "Mall", "Showroom",
+  // Grocery
+  "BigBasket", "Zepto", "Blinkit", "Swiggy Instamart", "JioMart", "DMart", "Reliance Fresh", "Kirana Shop", "Local Market",
+  // Vegetables
+  "Vegetable Shop", "Mandi",
+  // Travel / Transport
+  "Ola", "Uber", "Rapido", "RedBus", "IRCTC", "MakeMyTrip", "Goibibo", "Yatra", "Bus", "Auto", "Metro", "Local Train", "Taxi", "Parking",
+  // Cinema
+  "BookMyShow", "Paytm Movies", "PVR", "INOX", "Local Theatre",
+  // Mobile Recharge & Bills
+  "Paytm", "PhonePe", "Google Pay", "Amazon Pay", "Jio App", "Airtel App", "VI App", "Provider Website",
+  // Entertainment
+  "Netflix", "Amazon Prime", "Disney+ Hotstar", "SonyLIV", "Zee5", "JioCinema", "Spotify", "YouTube Premium", "Gaana", "Apple Music", "Google One", "iCloud", "BGMI", "Free Fire", "Google Play Store", "Apple App Store",
+  // Education
+  "BYJU'S", "Unacademy", "Vedantu", "Udemy", "Coursera", "WhiteHat Jr", "School Fees", "Tuition", "Coaching", "Books", "Stationery",
+  // Health / Medical
+  "1mg", "NetMeds", "Pharmeasy", "Practo", "Hospital", "Clinic", "Medical Shop", "Lab",
+  // Petrol / Fuel
+  "HP", "Indian Oil", "Bharat Petroleum", "Shell", "Local Pump",
+  // Rent / Loans
+  "Bank Transfer", "UPI", "Cash", "Bank EMI", "Personal Loan", "Bike Loan", "Car Loan", "Chit Fund",
+  // Savings / Investments
+  "Bank Deposit", "RD", "FD", "SIP", "Mutual Funds", "Gold", "Chit", "Insurance",
+  // Office
+  "Tea", "Office Lunch", "Birthday Share", "Cake Cutting", "Gifts", "Team Lunch", "Office Outing", "Office Snack",
+  // Kids / Family
+  "Toys", "School Trip", "Family Outing", "Kids Items",
+  // Gifts / Donations
+  "Temple", "NGO", "Milaap", "Ketto", "Marriage", "Birthday",
+  // Home Maintenance
+  "Urban Company", "Justdial", "Sulekha", "Electrician", "Plumber", "Carpenter", "Service Center",
+  // Social / Events
+  "Saloon", "Beauty Parlour", "Spa", "Amusement Park", "Local Events",
+  // Travel / Vacation
+  "Hotel", "Airbnb",
+  // Generic
+  "Other"
 ];
 
 export const PAYMENT_METHODS = [
