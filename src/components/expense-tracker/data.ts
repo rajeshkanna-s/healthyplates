@@ -183,6 +183,9 @@ export const DEFAULT_FAMILY_MEMBERS = [
   { id: "2", name: "Spouse" },
   { id: "3", name: "Mom" },
   { id: "4", name: "Dad" },
+  { id: "5", name: "Son" },
+  { id: "6", name: "Daughter" },
+  { id: "7", name: "Others" },
 ];
 
 export const CURRENCIES = [

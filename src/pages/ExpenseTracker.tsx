@@ -99,18 +99,27 @@ const ExpenseTracker = () => {
     localStorage.setItem("healthyplates_expense_last_backup", new Date().toDateString());
     setShowBackupReminder(false);
   };
+
+  const tabs = [
+    { id: "home", label: "Home", icon: Home },
+    { id: "add", label: "Add", icon: Plus },
+    { id: "reports", label: "Reports", icon: BarChart3 },
+    { id: "settings", label: "Settings", icon: Settings },
+  ];
   
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 pb-24">
       {/* Header */}
-      <div className="sticky top-0 z-40 bg-primary text-primary-foreground p-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary-foreground/20 rounded-lg flex items-center justify-center">
-            <Receipt className="h-6 w-6" />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold">Expense Tracker</h1>
-            <p className="text-xs text-primary-foreground/80">Daily Spend Money</p>
+      <div className="sticky top-0 z-40 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground">
+        <div className="max-w-lg mx-auto p-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-primary-foreground/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+              <Receipt className="h-6 w-6" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold tracking-tight">Expense Tracker</h1>
+              <p className="text-xs text-primary-foreground/80">Track your daily spending</p>
+            </div>
           </div>
         </div>
       </div>
@@ -154,43 +163,31 @@ const ExpenseTracker = () => {
       </div>
       
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background border-t z-50">
-        <div className="max-w-lg mx-auto flex justify-around py-2">
-          <Button
-            variant={activeTab === "home" ? "default" : "ghost"}
-            className="flex-1 flex flex-col items-center gap-1 h-auto py-2"
-            onClick={() => setActiveTab("home")}
-          >
-            <Home className="h-5 w-5" />
-            <span className="text-xs">Home</span>
-          </Button>
-          
-          <Button
-            variant={activeTab === "add" ? "default" : "ghost"}
-            className="flex-1 flex flex-col items-center gap-1 h-auto py-2"
-            onClick={() => setActiveTab("add")}
-          >
-            <Plus className="h-5 w-5" />
-            <span className="text-xs">Add</span>
-          </Button>
-          
-          <Button
-            variant={activeTab === "reports" ? "default" : "ghost"}
-            className="flex-1 flex flex-col items-center gap-1 h-auto py-2"
-            onClick={() => setActiveTab("reports")}
-          >
-            <BarChart3 className="h-5 w-5" />
-            <span className="text-xs">Reports</span>
-          </Button>
-          
-          <Button
-            variant={activeTab === "settings" ? "default" : "ghost"}
-            className="flex-1 flex flex-col items-center gap-1 h-auto py-2"
-            onClick={() => setActiveTab("settings")}
-          >
-            <Settings className="h-5 w-5" />
-            <span className="text-xs">Settings</span>
-          </Button>
+      <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-lg border-t z-50">
+        <div className="max-w-lg mx-auto">
+          <div className="flex justify-around py-2 px-2">
+            {tabs.map((tab) => {
+              const isActive = activeTab === tab.id;
+              return (
+                <Button
+                  key={tab.id}
+                  variant="ghost"
+                  className={`flex-1 flex flex-col items-center gap-1 h-auto py-3 relative transition-all ${
+                    isActive 
+                      ? 'text-primary' 
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                  onClick={() => setActiveTab(tab.id as typeof activeTab)}
+                >
+                  {isActive && (
+                    <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-1 bg-primary rounded-full" />
+                  )}
+                  <tab.icon className={`h-5 w-5 ${isActive ? 'scale-110' : ''} transition-transform`} />
+                  <span className={`text-xs font-medium ${isActive ? 'font-semibold' : ''}`}>{tab.label}</span>
+                </Button>
+              );
+            })}
+          </div>
         </div>
       </div>
       
@@ -198,11 +195,13 @@ const ExpenseTracker = () => {
       <AlertDialog open={showBackupReminder} onOpenChange={setShowBackupReminder}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
-              <AlertCircle className="h-5 w-5 text-amber-500" />
+            <AlertDialogTitle className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-amber-100 dark:bg-amber-900/30 rounded-xl flex items-center justify-center">
+                <AlertCircle className="h-5 w-5 text-amber-500" />
+              </div>
               Backup Reminder
             </AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogDescription className="pt-2">
               Your expense data is stored locally on this device. Would you like to download a backup to keep your data safe?
             </AlertDialogDescription>
           </AlertDialogHeader>

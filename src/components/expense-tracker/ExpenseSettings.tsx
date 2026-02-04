@@ -28,15 +28,24 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { 
   Plus, Trash2, Upload, Download, Users, Wallet, 
-  Target, Zap, Settings2, Save
+  Target, Zap, Settings2, Edit2, CreditCard
 } from "lucide-react";
 import { ExpenseEntry, ExpenseSettings, QuickAddTemplate, FamilyMember, CategoryBudget, SavingsGoal } from "./types";
-import { CURRENCIES, DEFAULT_CATEGORIES, CATEGORY_ICONS } from "./data";
+import { CURRENCIES, DEFAULT_CATEGORIES, CATEGORY_ICONS, PAYMENT_METHODS } from "./data";
 import { exportBackup, importBackup } from "./exportUtils";
 import { saveSettings, generateId, getDefaultSettings } from "./utils";
 import { toast } from "sonner";
+import HowToUseGuide from "./HowToUseGuide";
+import ExpenseFAQ from "./ExpenseFAQ";
 
 interface ExpenseSettingsTabProps {
   settings: ExpenseSettings;
@@ -52,9 +61,12 @@ const ExpenseSettingsTab = ({
   onExpensesChange 
 }: ExpenseSettingsTabProps) => {
   const [newMemberName, setNewMemberName] = useState("");
-  const [newQuickAdd, setNewQuickAdd] = useState({ name: "", amount: "", category: "", icon: "Coffee" });
+  const [newQuickAdd, setNewQuickAdd] = useState({ name: "", amount: "", category: "", platform: "", icon: "Coffee", paymentMethod: "UPI" });
+  const [editingQuickAdd, setEditingQuickAdd] = useState<QuickAddTemplate | null>(null);
   const [newCategoryBudget, setNewCategoryBudget] = useState({ category: "", budget: "" });
   const [newSavingsGoal, setNewSavingsGoal] = useState({ name: "", target: "", date: "" });
+  const [newPaymentMethod, setNewPaymentMethod] = useState("");
+  const [editingPaymentMethod, setEditingPaymentMethod] = useState<{ old: string; new: string } | null>(null);
   
   const updateSettings = (updates: Partial<ExpenseSettings>) => {
     const newSettings = { ...settings, ...updates };
@@ -86,7 +98,7 @@ const ExpenseSettingsTab = ({
   // Quick Add Templates
   const handleAddQuickAdd = () => {
     if (!newQuickAdd.name || !newQuickAdd.amount || !newQuickAdd.category) {
-      toast.error("Please fill all fields");
+      toast.error("Please fill all required fields");
       return;
     }
     const template: QuickAddTemplate = {
@@ -94,14 +106,25 @@ const ExpenseSettingsTab = ({
       name: newQuickAdd.name,
       amount: parseFloat(newQuickAdd.amount),
       category: newQuickAdd.category,
-      platform: "",
+      platform: newQuickAdd.platform || "",
       icon: newQuickAdd.icon,
     };
     updateSettings({
       quickAddTemplates: [...settings.quickAddTemplates, template],
     });
-    setNewQuickAdd({ name: "", amount: "", category: "", icon: "Coffee" });
+    setNewQuickAdd({ name: "", amount: "", category: "", platform: "", icon: "Coffee", paymentMethod: "UPI" });
     toast.success("Quick Add template created");
+  };
+
+  const handleEditQuickAdd = () => {
+    if (!editingQuickAdd) return;
+    
+    const updated = settings.quickAddTemplates.map(t => 
+      t.id === editingQuickAdd.id ? editingQuickAdd : t
+    );
+    updateSettings({ quickAddTemplates: updated });
+    setEditingQuickAdd(null);
+    toast.success("Template updated");
   };
   
   const handleRemoveQuickAdd = (id: string) => {
@@ -109,6 +132,44 @@ const ExpenseSettingsTab = ({
       quickAddTemplates: settings.quickAddTemplates.filter(t => t.id !== id),
     });
     toast.success("Template removed");
+  };
+  
+  // Payment Methods
+  const handleAddPaymentMethod = () => {
+    if (!newPaymentMethod.trim()) {
+      toast.error("Please enter a payment method name");
+      return;
+    }
+    
+    const allMethods = [...PAYMENT_METHODS, ...settings.customPaymentMethods];
+    if (allMethods.includes(newPaymentMethod.trim())) {
+      toast.error("Payment method already exists");
+      return;
+    }
+    
+    updateSettings({
+      customPaymentMethods: [...settings.customPaymentMethods, newPaymentMethod.trim()],
+    });
+    setNewPaymentMethod("");
+    toast.success("Payment method added");
+  };
+
+  const handleEditPaymentMethod = () => {
+    if (!editingPaymentMethod || !editingPaymentMethod.new.trim()) return;
+    
+    const updated = settings.customPaymentMethods.map(m => 
+      m === editingPaymentMethod.old ? editingPaymentMethod.new.trim() : m
+    );
+    updateSettings({ customPaymentMethods: updated });
+    setEditingPaymentMethod(null);
+    toast.success("Payment method updated");
+  };
+
+  const handleRemovePaymentMethod = (method: string) => {
+    updateSettings({
+      customPaymentMethods: settings.customPaymentMethods.filter(m => m !== method),
+    });
+    toast.success("Payment method removed");
   };
   
   // Category Budgets
@@ -196,19 +257,23 @@ const ExpenseSettingsTab = ({
     localStorage.removeItem("healthyplates_expense_tracker");
     toast.success("All data cleared");
   };
+
+  const allIcons = Object.keys(CATEGORY_ICONS);
   
   return (
     <div className="space-y-4">
       <Accordion type="single" collapsible className="space-y-2">
         {/* Currency & Budget */}
-        <AccordionItem value="currency" className="border rounded-lg px-4">
+        <AccordionItem value="currency" className="border rounded-xl px-4">
           <AccordionTrigger className="hover:no-underline">
-            <div className="flex items-center gap-2">
-              <Wallet className="h-5 w-5 text-primary" />
-              <span>Currency & Monthly Budget</span>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                <Wallet className="h-4 w-4 text-primary" />
+              </div>
+              <span className="font-medium">Currency & Monthly Budget</span>
             </div>
           </AccordionTrigger>
-          <AccordionContent className="space-y-4 pt-2">
+          <AccordionContent className="space-y-4 pt-4">
             <div className="space-y-2">
               <Label>Currency</Label>
               <Select 
@@ -221,7 +286,7 @@ const ExpenseSettingsTab = ({
                   });
                 }}
               >
-                <SelectTrigger>
+                <SelectTrigger className="h-12">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -241,6 +306,7 @@ const ExpenseSettingsTab = ({
                 placeholder="0"
                 value={settings.monthlyBudget || ""}
                 onChange={(e) => updateSettings({ monthlyBudget: parseFloat(e.target.value) || 0 })}
+                className="h-12"
               />
               <p className="text-xs text-muted-foreground">
                 Set your monthly spending limit to get alerts
@@ -254,6 +320,7 @@ const ExpenseSettingsTab = ({
                 placeholder="2000"
                 value={settings.bigExpenseLimit || ""}
                 onChange={(e) => updateSettings({ bigExpenseLimit: parseFloat(e.target.value) || 2000 })}
+                className="h-12"
               />
               <p className="text-xs text-muted-foreground">
                 Expenses above this amount will be highlighted
@@ -263,30 +330,34 @@ const ExpenseSettingsTab = ({
         </AccordionItem>
         
         {/* Family Members */}
-        <AccordionItem value="members" className="border rounded-lg px-4">
+        <AccordionItem value="members" className="border rounded-xl px-4">
           <AccordionTrigger className="hover:no-underline">
-            <div className="flex items-center gap-2">
-              <Users className="h-5 w-5 text-primary" />
-              <span>Family Members</span>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                <Users className="h-4 w-4 text-primary" />
+              </div>
+              <span className="font-medium">Family Members</span>
               <Badge variant="secondary" className="ml-2">{settings.familyMembers.length}</Badge>
             </div>
           </AccordionTrigger>
-          <AccordionContent className="space-y-4 pt-2">
+          <AccordionContent className="space-y-4 pt-4">
             <div className="flex gap-2">
               <Input
-                placeholder="Member name (Mom, Dad, Child...)"
+                placeholder="Member name (Son, Daughter...)"
                 value={newMemberName}
                 onChange={(e) => setNewMemberName(e.target.value)}
+                onKeyPress={(e) => e.key === "Enter" && handleAddMember()}
+                className="h-12"
               />
-              <Button onClick={handleAddMember} size="icon">
-                <Plus className="h-4 w-4" />
+              <Button onClick={handleAddMember} size="icon" className="h-12 w-12">
+                <Plus className="h-5 w-5" />
               </Button>
             </div>
             
             <div className="space-y-2">
               {settings.familyMembers.map((member) => (
-                <div key={member.id} className="flex items-center justify-between p-2 bg-muted rounded-lg">
-                  <span>{member.name}</span>
+                <div key={member.id} className="flex items-center justify-between p-3 bg-muted rounded-xl">
+                  <span className="font-medium">{member.name}</span>
                   <Button 
                     size="icon" 
                     variant="ghost" 
@@ -302,32 +373,36 @@ const ExpenseSettingsTab = ({
         </AccordionItem>
         
         {/* Quick Add Templates */}
-        <AccordionItem value="quickadd" className="border rounded-lg px-4">
+        <AccordionItem value="quickadd" className="border rounded-xl px-4">
           <AccordionTrigger className="hover:no-underline">
-            <div className="flex items-center gap-2">
-              <Zap className="h-5 w-5 text-primary" />
-              <span>Quick Add Templates</span>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                <Zap className="h-4 w-4 text-primary" />
+              </div>
+              <span className="font-medium">Quick Add Templates</span>
               <Badge variant="secondary" className="ml-2">{settings.quickAddTemplates.length}</Badge>
             </div>
           </AccordionTrigger>
-          <AccordionContent className="space-y-4 pt-2">
-            <div className="space-y-3 p-3 bg-muted/50 rounded-lg">
+          <AccordionContent className="space-y-4 pt-4">
+            <div className="space-y-3 p-4 bg-muted/50 rounded-xl">
               <Input
                 placeholder="Template name (e.g., Tea)"
                 value={newQuickAdd.name}
                 onChange={(e) => setNewQuickAdd({ ...newQuickAdd, name: e.target.value })}
+                className="h-12"
               />
               <Input
                 type="number"
                 placeholder="Amount"
                 value={newQuickAdd.amount}
                 onChange={(e) => setNewQuickAdd({ ...newQuickAdd, amount: e.target.value })}
+                className="h-12"
               />
               <Select 
                 value={newQuickAdd.category} 
                 onValueChange={(v) => setNewQuickAdd({ ...newQuickAdd, category: v })}
               >
-                <SelectTrigger>
+                <SelectTrigger className="h-12">
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -340,60 +415,167 @@ const ExpenseSettingsTab = ({
                 value={newQuickAdd.icon} 
                 onValueChange={(v) => setNewQuickAdd({ ...newQuickAdd, icon: v })}
               >
-                <SelectTrigger>
+                <SelectTrigger className="h-12">
                   <SelectValue placeholder="Select icon" />
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.keys(CATEGORY_ICONS).map((icon) => (
-                    <SelectItem key={icon} value={icon}>{icon}</SelectItem>
+                  {allIcons.map((icon) => {
+                    const IconComponent = CATEGORY_ICONS[icon];
+                    return (
+                      <SelectItem key={icon} value={icon}>
+                        <div className="flex items-center gap-2">
+                          <IconComponent className="h-4 w-4" />
+                          {icon}
+                        </div>
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+              <Select 
+                value={newQuickAdd.paymentMethod} 
+                onValueChange={(v) => setNewQuickAdd({ ...newQuickAdd, paymentMethod: v })}
+              >
+                <SelectTrigger className="h-12">
+                  <SelectValue placeholder="Select payment method" />
+                </SelectTrigger>
+                <SelectContent>
+                  {[...PAYMENT_METHODS, ...settings.customPaymentMethods].map((method) => (
+                    <SelectItem key={method} value={method}>{method}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              <Button onClick={handleAddQuickAdd} className="w-full">
+              <Button onClick={handleAddQuickAdd} className="w-full h-12">
                 <Plus className="h-4 w-4 mr-2" />
                 Add Template
               </Button>
             </div>
             
             <div className="space-y-2">
-              {settings.quickAddTemplates.map((template) => (
-                <div key={template.id} className="flex items-center justify-between p-2 bg-muted rounded-lg">
-                  <div>
-                    <span className="font-medium">{template.name}</span>
-                    <span className="text-sm text-muted-foreground ml-2">
-                      {settings.currencySymbol}{template.amount}
-                    </span>
+              {settings.quickAddTemplates.map((template) => {
+                const IconComponent = CATEGORY_ICONS[template.icon] || Wallet;
+                return (
+                  <div key={template.id} className="flex items-center justify-between p-3 bg-muted rounded-xl">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                        <IconComponent className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <span className="font-medium">{template.name}</span>
+                        <span className="text-sm text-muted-foreground ml-2">
+                          {settings.currencySymbol}{template.amount}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex gap-1">
+                      <Button 
+                        size="icon" 
+                        variant="ghost" 
+                        className="h-8 w-8"
+                        onClick={() => setEditingQuickAdd(template)}
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                      <Button 
+                        size="icon" 
+                        variant="ghost" 
+                        className="h-8 w-8 text-destructive"
+                        onClick={() => handleRemoveQuickAdd(template.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
-                  <Button 
-                    size="icon" 
-                    variant="ghost" 
-                    className="h-8 w-8 text-destructive"
-                    onClick={() => handleRemoveQuickAdd(template.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                );
+              })}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Payment Methods */}
+        <AccordionItem value="payment" className="border rounded-xl px-4">
+          <AccordionTrigger className="hover:no-underline">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                <CreditCard className="h-4 w-4 text-primary" />
+              </div>
+              <span className="font-medium">Payment Methods</span>
+              <Badge variant="secondary" className="ml-2">{PAYMENT_METHODS.length + settings.customPaymentMethods.length}</Badge>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="space-y-4 pt-4">
+            <div className="flex gap-2">
+              <Input
+                placeholder="New payment method"
+                value={newPaymentMethod}
+                onChange={(e) => setNewPaymentMethod(e.target.value)}
+                onKeyPress={(e) => e.key === "Enter" && handleAddPaymentMethod()}
+                className="h-12"
+              />
+              <Button onClick={handleAddPaymentMethod} size="icon" className="h-12 w-12">
+                <Plus className="h-5 w-5" />
+              </Button>
+            </div>
+
+            <div className="space-y-2">
+              <p className="text-xs text-muted-foreground font-medium">Default Methods</p>
+              {PAYMENT_METHODS.map((method) => (
+                <div key={method} className="flex items-center justify-between p-3 bg-muted/50 rounded-xl">
+                  <span>{method}</span>
+                  <Badge variant="outline" className="text-xs">Default</Badge>
                 </div>
               ))}
             </div>
+
+            {settings.customPaymentMethods.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground font-medium">Custom Methods</p>
+                {settings.customPaymentMethods.map((method) => (
+                  <div key={method} className="flex items-center justify-between p-3 bg-muted rounded-xl">
+                    <span className="font-medium">{method}</span>
+                    <div className="flex gap-1">
+                      <Button 
+                        size="icon" 
+                        variant="ghost" 
+                        className="h-8 w-8"
+                        onClick={() => setEditingPaymentMethod({ old: method, new: method })}
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                      <Button 
+                        size="icon" 
+                        variant="ghost" 
+                        className="h-8 w-8 text-destructive"
+                        onClick={() => handleRemovePaymentMethod(method)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </AccordionContent>
         </AccordionItem>
         
         {/* Category Budgets */}
-        <AccordionItem value="categorybudgets" className="border rounded-lg px-4">
+        <AccordionItem value="categorybudgets" className="border rounded-xl px-4">
           <AccordionTrigger className="hover:no-underline">
-            <div className="flex items-center gap-2">
-              <Target className="h-5 w-5 text-primary" />
-              <span>Category Budgets</span>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                <Target className="h-4 w-4 text-primary" />
+              </div>
+              <span className="font-medium">Category Budgets</span>
               <Badge variant="secondary" className="ml-2">{settings.categoryBudgets?.length || 0}</Badge>
             </div>
           </AccordionTrigger>
-          <AccordionContent className="space-y-4 pt-2">
-            <div className="space-y-3 p-3 bg-muted/50 rounded-lg">
+          <AccordionContent className="space-y-4 pt-4">
+            <div className="space-y-3 p-4 bg-muted/50 rounded-xl">
               <Select 
                 value={newCategoryBudget.category} 
                 onValueChange={(v) => setNewCategoryBudget({ ...newCategoryBudget, category: v })}
               >
-                <SelectTrigger>
+                <SelectTrigger className="h-12">
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -407,8 +589,9 @@ const ExpenseSettingsTab = ({
                 placeholder={`Budget (${settings.currencySymbol})`}
                 value={newCategoryBudget.budget}
                 onChange={(e) => setNewCategoryBudget({ ...newCategoryBudget, budget: e.target.value })}
+                className="h-12"
               />
-              <Button onClick={handleAddCategoryBudget} className="w-full">
+              <Button onClick={handleAddCategoryBudget} className="w-full h-12">
                 <Plus className="h-4 w-4 mr-2" />
                 Set Budget
               </Button>
@@ -416,7 +599,7 @@ const ExpenseSettingsTab = ({
             
             <div className="space-y-2">
               {settings.categoryBudgets?.map((budget) => (
-                <div key={budget.category} className="flex items-center justify-between p-2 bg-muted rounded-lg">
+                <div key={budget.category} className="flex items-center justify-between p-3 bg-muted rounded-xl">
                   <div>
                     <span className="font-medium">{budget.category}</span>
                     <span className="text-sm text-muted-foreground ml-2">
@@ -438,33 +621,38 @@ const ExpenseSettingsTab = ({
         </AccordionItem>
         
         {/* Savings Goals */}
-        <AccordionItem value="savings" className="border rounded-lg px-4">
+        <AccordionItem value="savings" className="border rounded-xl px-4">
           <AccordionTrigger className="hover:no-underline">
-            <div className="flex items-center gap-2">
-              <Target className="h-5 w-5 text-primary" />
-              <span>Savings Goals</span>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                <Target className="h-4 w-4 text-primary" />
+              </div>
+              <span className="font-medium">Savings Goals</span>
               <Badge variant="secondary" className="ml-2">{settings.savingsGoals?.length || 0}</Badge>
             </div>
           </AccordionTrigger>
-          <AccordionContent className="space-y-4 pt-2">
-            <div className="space-y-3 p-3 bg-muted/50 rounded-lg">
+          <AccordionContent className="space-y-4 pt-4">
+            <div className="space-y-3 p-4 bg-muted/50 rounded-xl">
               <Input
                 placeholder="Goal name (e.g., Vacation Fund)"
                 value={newSavingsGoal.name}
                 onChange={(e) => setNewSavingsGoal({ ...newSavingsGoal, name: e.target.value })}
+                className="h-12"
               />
               <Input
                 type="number"
                 placeholder={`Target amount (${settings.currencySymbol})`}
                 value={newSavingsGoal.target}
                 onChange={(e) => setNewSavingsGoal({ ...newSavingsGoal, target: e.target.value })}
+                className="h-12"
               />
               <Input
                 type="date"
                 value={newSavingsGoal.date}
                 onChange={(e) => setNewSavingsGoal({ ...newSavingsGoal, date: e.target.value })}
+                className="h-12"
               />
-              <Button onClick={handleAddSavingsGoal} className="w-full">
+              <Button onClick={handleAddSavingsGoal} className="w-full h-12">
                 <Plus className="h-4 w-4 mr-2" />
                 Add Goal
               </Button>
@@ -472,7 +660,7 @@ const ExpenseSettingsTab = ({
             
             <div className="space-y-2">
               {settings.savingsGoals?.map((goal) => (
-                <div key={goal.id} className="flex items-center justify-between p-2 bg-muted rounded-lg">
+                <div key={goal.id} className="flex items-center justify-between p-3 bg-muted rounded-xl">
                   <div>
                     <span className="font-medium">{goal.name}</span>
                     <span className="text-sm text-muted-foreground ml-2">
@@ -494,25 +682,27 @@ const ExpenseSettingsTab = ({
         </AccordionItem>
         
         {/* Backup & Restore */}
-        <AccordionItem value="backup" className="border rounded-lg px-4">
+        <AccordionItem value="backup" className="border rounded-xl px-4">
           <AccordionTrigger className="hover:no-underline">
-            <div className="flex items-center gap-2">
-              <Settings2 className="h-5 w-5 text-primary" />
-              <span>Backup & Data</span>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                <Settings2 className="h-4 w-4 text-primary" />
+              </div>
+              <span className="font-medium">Backup & Data</span>
             </div>
           </AccordionTrigger>
-          <AccordionContent className="space-y-4 pt-2">
+          <AccordionContent className="space-y-4 pt-4">
             <div className="space-y-3">
-              <Button onClick={handleExportBackup} variant="outline" className="w-full">
-                <Download className="h-4 w-4 mr-2" />
+              <Button onClick={handleExportBackup} variant="outline" className="w-full h-12">
+                <Download className="h-5 w-5 mr-2" />
                 Download Backup
               </Button>
               
               <div>
                 <Label htmlFor="import-backup" className="cursor-pointer">
-                  <div className="flex items-center justify-center gap-2 p-3 border-2 border-dashed rounded-lg hover:bg-muted/50 transition-colors">
-                    <Upload className="h-4 w-4" />
-                    <span>Import Backup</span>
+                  <div className="flex items-center justify-center gap-2 p-4 border-2 border-dashed rounded-xl hover:bg-muted/50 transition-colors">
+                    <Upload className="h-5 w-5" />
+                    <span className="font-medium">Import Backup</span>
                   </div>
                 </Label>
                 <input
@@ -526,8 +716,8 @@ const ExpenseSettingsTab = ({
               
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="destructive" className="w-full">
-                    <Trash2 className="h-4 w-4 mr-2" />
+                  <Button variant="destructive" className="w-full h-12">
+                    <Trash2 className="h-5 w-5 mr-2" />
                     Clear All Data
                   </Button>
                 </AlertDialogTrigger>
@@ -548,7 +738,7 @@ const ExpenseSettingsTab = ({
               </AlertDialog>
             </div>
             
-            <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+            <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl">
               <p className="text-sm text-amber-700 dark:text-amber-400">
                 💡 Tip: Download a backup regularly to avoid losing your data!
               </p>
@@ -556,6 +746,96 @@ const ExpenseSettingsTab = ({
           </AccordionContent>
         </AccordionItem>
       </Accordion>
+
+      {/* How to Use Guide */}
+      <HowToUseGuide />
+
+      {/* FAQ */}
+      <ExpenseFAQ />
+
+      {/* Edit Quick Add Dialog */}
+      <Dialog open={!!editingQuickAdd} onOpenChange={() => setEditingQuickAdd(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Quick Add Template</DialogTitle>
+          </DialogHeader>
+          {editingQuickAdd && (
+            <div className="space-y-4 py-4">
+              <Input
+                placeholder="Template name"
+                value={editingQuickAdd.name}
+                onChange={(e) => setEditingQuickAdd({ ...editingQuickAdd, name: e.target.value })}
+              />
+              <Input
+                type="number"
+                placeholder="Amount"
+                value={editingQuickAdd.amount}
+                onChange={(e) => setEditingQuickAdd({ ...editingQuickAdd, amount: parseFloat(e.target.value) || 0 })}
+              />
+              <Select 
+                value={editingQuickAdd.category} 
+                onValueChange={(v) => setEditingQuickAdd({ ...editingQuickAdd, category: v })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {DEFAULT_CATEGORIES.map((cat) => (
+                    <SelectItem key={cat.name} value={cat.name}>{cat.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select 
+                value={editingQuickAdd.icon} 
+                onValueChange={(v) => setEditingQuickAdd({ ...editingQuickAdd, icon: v })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select icon" />
+                </SelectTrigger>
+                <SelectContent>
+                  {allIcons.map((icon) => {
+                    const IconComponent = CATEGORY_ICONS[icon];
+                    return (
+                      <SelectItem key={icon} value={icon}>
+                        <div className="flex items-center gap-2">
+                          <IconComponent className="h-4 w-4" />
+                          {icon}
+                        </div>
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditingQuickAdd(null)}>Cancel</Button>
+            <Button onClick={handleEditQuickAdd}>Save Changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Payment Method Dialog */}
+      <Dialog open={!!editingPaymentMethod} onOpenChange={() => setEditingPaymentMethod(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Payment Method</DialogTitle>
+          </DialogHeader>
+          {editingPaymentMethod && (
+            <div className="py-4">
+              <Input
+                placeholder="Payment method name"
+                value={editingPaymentMethod.new}
+                onChange={(e) => setEditingPaymentMethod({ ...editingPaymentMethod, new: e.target.value })}
+              />
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditingPaymentMethod(null)}>Cancel</Button>
+            <Button onClick={handleEditPaymentMethod}>Save Changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
