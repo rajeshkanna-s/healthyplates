@@ -37,7 +37,7 @@ import {
 } from "@/components/ui/dialog";
 import { 
   Plus, Trash2, Upload, Download, Users, Wallet, 
-  Target, Zap, Settings2, Edit2, CreditCard
+  Target, Zap, Settings2, Edit2, CreditCard, Tag
 } from "lucide-react";
 import { ExpenseEntry, ExpenseSettings, QuickAddTemplate, FamilyMember, CategoryBudget, SavingsGoal } from "./types";
 import { CURRENCIES, DEFAULT_CATEGORIES, CATEGORY_ICONS, PAYMENT_METHODS } from "./data";
@@ -67,6 +67,8 @@ const ExpenseSettingsTab = ({
   const [newSavingsGoal, setNewSavingsGoal] = useState({ name: "", target: "", date: "" });
   const [newPaymentMethod, setNewPaymentMethod] = useState("");
   const [editingPaymentMethod, setEditingPaymentMethod] = useState<{ old: string; new: string } | null>(null);
+  const [newCategory, setNewCategory] = useState("");
+  const [editingCategory, setEditingCategory] = useState<{ old: string; new: string } | null>(null);
   
   const updateSettings = (updates: Partial<ExpenseSettings>) => {
     const newSettings = { ...settings, ...updates };
@@ -170,6 +172,44 @@ const ExpenseSettingsTab = ({
       customPaymentMethods: settings.customPaymentMethods.filter(m => m !== method),
     });
     toast.success("Payment method removed");
+  };
+
+  // Custom Categories
+  const handleAddCategory = () => {
+    if (!newCategory.trim()) {
+      toast.error("Please enter a category name");
+      return;
+    }
+    
+    const allCategories = [...DEFAULT_CATEGORIES.map(c => c.name), ...settings.customCategories.map(c => c.name)];
+    if (allCategories.includes(newCategory.trim())) {
+      toast.error("Category already exists");
+      return;
+    }
+    
+    updateSettings({
+      customCategories: [...settings.customCategories, { name: newCategory.trim(), icon: "MoreHorizontal" }],
+    });
+    setNewCategory("");
+    toast.success("Category added");
+  };
+
+  const handleEditCategory = () => {
+    if (!editingCategory || !editingCategory.new.trim()) return;
+    
+    const updated = settings.customCategories.map(c => 
+      c.name === editingCategory.old ? { ...c, name: editingCategory.new.trim() } : c
+    );
+    updateSettings({ customCategories: updated });
+    setEditingCategory(null);
+    toast.success("Category updated");
+  };
+
+  const handleRemoveCategory = (categoryName: string) => {
+    updateSettings({
+      customCategories: settings.customCategories.filter(c => c.name !== categoryName),
+    });
+    toast.success("Category removed");
   };
   
   // Category Budgets
@@ -557,6 +597,74 @@ const ExpenseSettingsTab = ({
             )}
           </AccordionContent>
         </AccordionItem>
+
+        {/* Categories */}
+        <AccordionItem value="categories" className="border rounded-xl px-4">
+          <AccordionTrigger className="hover:no-underline">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                <Tag className="h-4 w-4 text-primary" />
+              </div>
+              <span className="font-medium">Categories</span>
+              <Badge variant="secondary" className="ml-2">
+                {DEFAULT_CATEGORIES.length + settings.customCategories.length}
+              </Badge>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="space-y-4 pt-4">
+            <div className="flex gap-2">
+              <Input
+                placeholder="New category name"
+                value={newCategory}
+                onChange={(e) => setNewCategory(e.target.value)}
+                onKeyPress={(e) => e.key === "Enter" && handleAddCategory()}
+                className="h-12"
+              />
+              <Button onClick={handleAddCategory} size="icon" className="h-12 w-12">
+                <Plus className="h-5 w-5" />
+              </Button>
+            </div>
+
+            <div className="space-y-2">
+              <p className="text-xs text-muted-foreground font-medium">Default Categories</p>
+              {DEFAULT_CATEGORIES.map((cat) => (
+                <div key={cat.name} className="flex items-center justify-between p-3 bg-muted/50 rounded-xl">
+                  <span>{cat.name}</span>
+                  <Badge variant="outline" className="text-xs">Default</Badge>
+                </div>
+              ))}
+            </div>
+
+            {settings.customCategories.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground font-medium">Custom Categories</p>
+                {settings.customCategories.map((cat) => (
+                  <div key={cat.name} className="flex items-center justify-between p-3 bg-muted rounded-xl">
+                    <span className="font-medium">{cat.name}</span>
+                    <div className="flex gap-1">
+                      <Button 
+                        size="icon" 
+                        variant="ghost" 
+                        className="h-8 w-8"
+                        onClick={() => setEditingCategory({ old: cat.name, new: cat.name })}
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                      <Button 
+                        size="icon" 
+                        variant="ghost" 
+                        className="h-8 w-8 text-destructive"
+                        onClick={() => handleRemoveCategory(cat.name)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </AccordionContent>
+        </AccordionItem>
         
         {/* Category Budgets */}
         <AccordionItem value="categorybudgets" className="border rounded-xl px-4">
@@ -833,6 +941,28 @@ const ExpenseSettingsTab = ({
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditingPaymentMethod(null)}>Cancel</Button>
             <Button onClick={handleEditPaymentMethod}>Save Changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Category Dialog */}
+      <Dialog open={!!editingCategory} onOpenChange={() => setEditingCategory(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Category</DialogTitle>
+          </DialogHeader>
+          {editingCategory && (
+            <div className="py-4">
+              <Input
+                placeholder="Category name"
+                value={editingCategory.new}
+                onChange={(e) => setEditingCategory({ ...editingCategory, new: e.target.value })}
+              />
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditingCategory(null)}>Cancel</Button>
+            <Button onClick={handleEditCategory}>Save Changes</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
