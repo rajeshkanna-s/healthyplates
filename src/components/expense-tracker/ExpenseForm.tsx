@@ -42,9 +42,11 @@ const ExpenseForm = ({ settings, onAddExpense, onNavigate }: ExpenseFormProps) =
     ...settings.customCategories.map(c => ({ name: c.name, icon: c.icon || "MoreHorizontal" })),
   ];
   
-  const availablePlatforms = category 
-    ? (PLATFORMS_BY_CATEGORY[category] || ["Other"]) 
-    : ["Other"];
+  // Build platforms list: category-specific + custom platforms + always include "Other"
+  const categoryPlatforms = category ? (PLATFORMS_BY_CATEGORY[category] || []) : [];
+  const availablePlatforms = [
+    ...new Set([...categoryPlatforms, ...settings.customPlatforms, "Other"])
+  ];
   const allPaymentMethods = [...PAYMENT_METHODS, ...settings.customPaymentMethods];
   
   // Reset platform when category changes
