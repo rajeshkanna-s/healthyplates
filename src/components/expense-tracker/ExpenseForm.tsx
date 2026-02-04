@@ -11,8 +11,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, Plus, X } from "lucide-react";
+import { Calendar, Clock, Plus, X, Receipt } from "lucide-react";
 import { ExpenseEntry, ExpenseSettings } from "./types";
 import { DEFAULT_CATEGORIES, PLATFORMS_BY_CATEGORY, PAYMENT_METHODS } from "./data";
 import { generateId, getTodayString, getCurrentTimeString } from "./utils";
@@ -27,6 +34,8 @@ interface ExpenseFormProps {
 const ExpenseForm = ({ settings, onAddExpense, onNavigate }: ExpenseFormProps) => {
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
+  const [customCategory, setCustomCategory] = useState("");
+  const [showCustomCategoryDialog, setShowCustomCategoryDialog] = useState(false);
   const [platform, setPlatform] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("UPI");
   const [date, setDate] = useState(getTodayString());
@@ -38,16 +47,37 @@ const ExpenseForm = ({ settings, onAddExpense, onNavigate }: ExpenseFormProps) =
   
   const allCategories = [
     ...DEFAULT_CATEGORIES,
-    ...settings.customCategories.map(c => ({ name: c.name, icon: c.icon || "MoreHorizontal" }))
+    ...settings.customCategories.map(c => ({ name: c.name, icon: c.icon || "MoreHorizontal" })),
+    { name: "Other", icon: "MoreHorizontal" },
   ];
   
-  const availablePlatforms = category ? (PLATFORMS_BY_CATEGORY[category] || ["Other"]) : [];
+  const availablePlatforms = category && category !== "Other" 
+    ? (PLATFORMS_BY_CATEGORY[category] || ["Other"]) 
+    : ["Other"];
   const allPaymentMethods = [...PAYMENT_METHODS, ...settings.customPaymentMethods];
   
   // Reset platform when category changes
   useEffect(() => {
     setPlatform("");
   }, [category]);
+
+  const handleCategoryChange = (value: string) => {
+    if (value === "Other") {
+      setShowCustomCategoryDialog(true);
+    } else {
+      setCategory(value);
+    }
+  };
+
+  const handleCustomCategoryConfirm = () => {
+    if (customCategory.trim()) {
+      setCategory(customCategory.trim());
+      setShowCustomCategoryDialog(false);
+      setCustomCategory("");
+    } else {
+      toast.error("Please enter a category name");
+    }
+  };
   
   const handleAddTag = () => {
     if (tagInput.trim() && !tags.includes(tagInput.trim())) {
@@ -101,170 +131,209 @@ const ExpenseForm = ({ settings, onAddExpense, onNavigate }: ExpenseFormProps) =
   };
   
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-lg">Add New Expense</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Amount */}
-          <div className="space-y-2">
-            <Label htmlFor="amount">Amount ({settings.currencySymbol})</Label>
-            <Input
-              id="amount"
-              type="number"
-              step="0.01"
-              placeholder="0.00"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="text-xl font-semibold"
-            />
-          </div>
-          
-          {/* Category */}
-          <div className="space-y-2">
-            <Label>Category</Label>
-            <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select category" />
-              </SelectTrigger>
-              <SelectContent>
-                {allCategories.map((cat) => (
-                  <SelectItem key={cat.name} value={cat.name}>
-                    {cat.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          
-          {/* Platform/Shop */}
-          {category && (
+    <>
+      <Card className="border-2">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-xl flex items-center gap-3">
+            <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+              <Receipt className="h-5 w-5 text-primary" />
+            </div>
+            Add New Expense
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Amount */}
             <div className="space-y-2">
-              <Label>Platform / Shop (Optional)</Label>
-              <Select value={platform} onValueChange={setPlatform}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select platform" />
+              <Label htmlFor="amount" className="text-sm font-medium">
+                Amount ({settings.currencySymbol})
+              </Label>
+              <Input
+                id="amount"
+                type="number"
+                step="0.01"
+                placeholder="0.00"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className="text-2xl font-bold h-14"
+              />
+            </div>
+            
+            {/* Category */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Category</Label>
+              <Select value={category} onValueChange={handleCategoryChange}>
+                <SelectTrigger className="h-12">
+                  <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                  {availablePlatforms.map((p) => (
-                    <SelectItem key={p} value={p}>
-                      {p}
+                  {allCategories.map((cat) => (
+                    <SelectItem key={cat.name} value={cat.name}>
+                      {cat.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
-          )}
-          
-          {/* Date and Time */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <Label htmlFor="date" className="flex items-center gap-1">
-                <Calendar className="h-3 w-3" /> Date
-              </Label>
-              <Input
-                id="date"
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="time" className="flex items-center gap-1">
-                <Clock className="h-3 w-3" /> Time
-              </Label>
-              <Input
-                id="time"
-                type="time"
-                value={time}
-                onChange={(e) => setTime(e.target.value)}
-              />
-            </div>
-          </div>
-          
-          {/* Payment Method */}
-          <div className="space-y-2">
-            <Label>Payment Method</Label>
-            <Select value={paymentMethod} onValueChange={setPaymentMethod}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select payment method" />
-              </SelectTrigger>
-              <SelectContent>
-                {allPaymentMethods.map((method) => (
-                  <SelectItem key={method} value={method}>
-                    {method}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          
-          {/* Person */}
-          <div className="space-y-2">
-            <Label>Person</Label>
-            <Select value={person} onValueChange={setPerson}>
-              <SelectTrigger>
-                <SelectValue placeholder="Who spent?" />
-              </SelectTrigger>
-              <SelectContent>
-                {settings.familyMembers.map((member) => (
-                  <SelectItem key={member.id} value={member.name}>
-                    {member.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          
-          {/* Description */}
-          <div className="space-y-2">
-            <Label htmlFor="description">Description (Optional)</Label>
-            <Textarea
-              id="description"
-              placeholder="e.g., Dinner at restaurant, Bus ticket..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={2}
-            />
-          </div>
-          
-          {/* Tags */}
-          <div className="space-y-2">
-            <Label>Tags (Optional)</Label>
-            <div className="flex gap-2">
-              <Input
-                placeholder="Add tag (e.g., office, personal)"
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), handleAddTag())}
-              />
-              <Button type="button" size="icon" variant="outline" onClick={handleAddTag}>
-                <Plus className="h-4 w-4" />
-              </Button>
-            </div>
-            {tags.length > 0 && (
-              <div className="flex flex-wrap gap-1 mt-2">
-                {tags.map((tag) => (
-                  <Badge key={tag} variant="secondary" className="gap-1">
-                    {tag}
-                    <button type="button" onClick={() => handleRemoveTag(tag)}>
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                ))}
+            
+            {/* Platform/Shop */}
+            {category && (
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Platform / Shop (Optional)</Label>
+                <Select value={platform} onValueChange={setPlatform}>
+                  <SelectTrigger className="h-12">
+                    <SelectValue placeholder="Select platform" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availablePlatforms.map((p) => (
+                      <SelectItem key={p} value={p}>
+                        {p}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             )}
+            
+            {/* Date and Time */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="date" className="flex items-center gap-2 text-sm font-medium">
+                  <Calendar className="h-4 w-4 text-muted-foreground" /> Date
+                </Label>
+                <Input
+                  id="date"
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  className="h-12"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="time" className="flex items-center gap-2 text-sm font-medium">
+                  <Clock className="h-4 w-4 text-muted-foreground" /> Time
+                </Label>
+                <Input
+                  id="time"
+                  type="time"
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
+                  className="h-12"
+                />
+              </div>
+            </div>
+            
+            {/* Payment Method */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Payment Method</Label>
+              <Select value={paymentMethod} onValueChange={setPaymentMethod}>
+                <SelectTrigger className="h-12">
+                  <SelectValue placeholder="Select payment method" />
+                </SelectTrigger>
+                <SelectContent>
+                  {allPaymentMethods.map((method) => (
+                    <SelectItem key={method} value={method}>
+                      {method}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            {/* Person */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Person</Label>
+              <Select value={person} onValueChange={setPerson}>
+                <SelectTrigger className="h-12">
+                  <SelectValue placeholder="Who spent?" />
+                </SelectTrigger>
+                <SelectContent>
+                  {settings.familyMembers.map((member) => (
+                    <SelectItem key={member.id} value={member.name}>
+                      {member.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            {/* Description */}
+            <div className="space-y-2">
+              <Label htmlFor="description" className="text-sm font-medium">Description (Optional)</Label>
+              <Textarea
+                id="description"
+                placeholder="e.g., Dinner at restaurant, Bus ticket..."
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={2}
+                className="resize-none"
+              />
+            </div>
+            
+            {/* Tags */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Tags (Optional)</Label>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Add tag (e.g., office, personal)"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), handleAddTag())}
+                  className="h-12"
+                />
+                <Button type="button" size="icon" variant="outline" onClick={handleAddTag} className="h-12 w-12">
+                  <Plus className="h-5 w-5" />
+                </Button>
+              </div>
+              {tags.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {tags.map((tag) => (
+                    <Badge key={tag} variant="secondary" className="gap-1 px-3 py-1">
+                      {tag}
+                      <button type="button" onClick={() => handleRemoveTag(tag)}>
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            {/* Submit Button */}
+            <Button type="submit" className="w-full h-14 text-lg font-semibold" size="lg">
+              <Plus className="h-5 w-5 mr-2" />
+              Add Expense
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+
+      {/* Custom Category Dialog */}
+      <Dialog open={showCustomCategoryDialog} onOpenChange={setShowCustomCategoryDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Enter Custom Category</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <Input
+              placeholder="Category name (e.g., Pet Care, Hobbies)"
+              value={customCategory}
+              onChange={(e) => setCustomCategory(e.target.value)}
+              onKeyPress={(e) => e.key === "Enter" && handleCustomCategoryConfirm()}
+              autoFocus
+            />
           </div>
-          
-          {/* Submit Button */}
-          <Button type="submit" className="w-full" size="lg">
-            <Plus className="h-5 w-5 mr-2" />
-            Add Expense
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowCustomCategoryDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleCustomCategoryConfirm}>
+              Confirm
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
