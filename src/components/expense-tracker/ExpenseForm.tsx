@@ -45,9 +45,21 @@ const ExpenseForm = ({ settings, onAddExpense, onNavigate }: ExpenseFormProps) =
   const [tagInput, setTagInput] = useState("");
   const [person, setPerson] = useState(settings.familyMembers[0]?.name || "Me");
   
-  const allCategories = [
+  // Build categories list, including any custom category that's currently selected
+  const baseCategories = [
     ...DEFAULT_CATEGORIES,
     ...settings.customCategories.map(c => ({ name: c.name, icon: c.icon || "MoreHorizontal" })),
+  ];
+  
+  // Check if current category is a custom one not in the list
+  const isCustomCategory = category && 
+    category !== "Other" && 
+    !baseCategories.some(c => c.name === category);
+  
+  const allCategories = [
+    ...baseCategories,
+    // Add current custom category if it exists and isn't in the list
+    ...(isCustomCategory ? [{ name: category, icon: "MoreHorizontal" }] : []),
     { name: "Other", icon: "MoreHorizontal" },
   ];
   
