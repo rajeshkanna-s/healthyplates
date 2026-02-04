@@ -53,6 +53,7 @@ export interface ExpenseSettings {
   quickAddTemplates: QuickAddTemplate[];
   customCategories: { name: string; icon: string }[];
   customPaymentMethods: string[];
+  customPlatforms: string[];
   bigExpenseLimit: number;
   savingsGoals: SavingsGoal[];
   dayNotes: DayNote[];
