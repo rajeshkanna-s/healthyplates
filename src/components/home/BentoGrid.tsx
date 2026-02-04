@@ -15,7 +15,7 @@ interface BentoItem {
   link: string;
 }
 
-const ITEMS_PER_SLIDE = 12;
+const ITEMS_PER_SLIDE = 5;
 
 const BentoGrid = () => {
   const [items, setItems] = useState<BentoItem[]>([]);
@@ -124,12 +124,12 @@ const BentoGrid = () => {
   if (loading) {
     return (
       <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 h-[600px]">
-          {[...Array(12)].map((_, i) => (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 h-[500px]">
+          {[...Array(5)].map((_, i) => (
             <div
               key={i}
               className={`bg-muted animate-pulse rounded-2xl ${
-                i === 0 ? "col-span-2 row-span-2" : ""
+                i === 0 ? "col-span-1 md:col-span-1 row-span-2" : ""
               }`}
             />
           ))}
@@ -146,7 +146,7 @@ const BentoGrid = () => {
   const startIdx = currentSlide * ITEMS_PER_SLIDE;
   const currentItems = items.slice(startIdx, startIdx + ITEMS_PER_SLIDE);
 
-  // Fill remaining slots if less than 12 items
+  // Fill remaining slots if less than 5 items
   while (currentItems.length < ITEMS_PER_SLIDE && items.length > 0) {
     currentItems.push(items[currentItems.length % items.length]);
   }
@@ -188,13 +188,13 @@ const BentoGrid = () => {
       </div>
 
       <div className="relative">
-        {/* Expanded Bento Grid - 12 items */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 auto-rows-[160px] md:auto-rows-[180px]">
-          {/* Large Feature Card - First item (spans 2x2) */}
+        {/* Bento Grid - 5 items per slide */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 auto-rows-[200px] md:auto-rows-[220px]">
+          {/* Large Feature Card - First item (spans row-span-2) */}
           {currentItems[0] && (
             <Link
               to={currentItems[0].link}
-              className="col-span-2 row-span-2 group relative overflow-hidden rounded-2xl shadow-health-lg"
+              className="row-span-2 group relative overflow-hidden rounded-2xl shadow-lg"
             >
               <img
                 src={currentItems[0].image}
@@ -211,7 +211,7 @@ const BentoGrid = () => {
                   {currentItems[0].title}
                 </h3>
                 {currentItems[0].excerpt && (
-                  <p className="text-white/80 text-xs mt-1 line-clamp-2 hidden md:block">
+                  <p className="text-white/80 text-sm mt-1 line-clamp-2 hidden md:block">
                     {currentItems[0].excerpt}
                   </p>
                 )}
@@ -219,35 +219,12 @@ const BentoGrid = () => {
             </Link>
           )}
 
-          {/* Medium Card - Second item (spans 2x1) */}
-          {currentItems[1] && (
-            <Link
-              to={currentItems[1].link}
-              className="col-span-2 group relative overflow-hidden rounded-2xl shadow-health"
-            >
-              <img
-                src={currentItems[1].image}
-                alt={currentItems[1].title}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-4">
-                <Badge variant="secondary" className={`text-xs ${getBadgeStyle(currentItems[1].type)}`}>
-                  {getTypeLabel(currentItems[1].type)}
-                </Badge>
-                <h4 className="text-sm font-semibold text-white mt-1 leading-tight line-clamp-2">
-                  {currentItems[1].title}
-                </h4>
-              </div>
-            </Link>
-          )}
-
-          {/* Regular Cards - Items 3-12 */}
-          {currentItems.slice(2, 12).map((item, index) => (
+          {/* Cards 2-5 */}
+          {currentItems.slice(1, 5).map((item, index) => (
             <Link
               key={`${item.id}-${index}`}
               to={item.link}
-              className="group relative overflow-hidden rounded-2xl shadow-health"
+              className="group relative overflow-hidden rounded-2xl shadow-lg"
             >
               <img
                 src={item.image}
@@ -255,14 +232,11 @@ const BentoGrid = () => {
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-3">
-                <Badge 
-                  variant="secondary" 
-                  className={`text-[10px] px-1.5 py-0.5 ${getBadgeStyle(item.type)}`}
-                >
+              <div className="absolute bottom-0 left-0 right-0 p-4">
+                <Badge className={`text-xs ${getBadgeStyle(item.type)}`}>
                   {getTypeLabel(item.type)}
                 </Badge>
-                <h4 className="text-xs md:text-sm font-semibold text-white mt-1 leading-tight line-clamp-2">
+                <h4 className="text-sm font-semibold text-white mt-1 leading-tight line-clamp-2">
                   {item.title}
                 </h4>
               </div>
