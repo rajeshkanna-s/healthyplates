@@ -37,10 +37,10 @@ import {
 } from "@/components/ui/dialog";
 import { 
   Plus, Trash2, Upload, Download, Users, Wallet, 
-  Target, Zap, Settings2, Edit2, CreditCard, Tag, Store
+  Target, Zap, Settings2, Edit2, CreditCard, Tag, Store, RotateCcw
 } from "lucide-react";
 import { ExpenseEntry, ExpenseSettings, QuickAddTemplate, FamilyMember, CategoryBudget, SavingsGoal } from "./types";
-import { CURRENCIES, DEFAULT_CATEGORIES, CATEGORY_ICONS, PAYMENT_METHODS, ALL_PLATFORMS } from "./data";
+import { CURRENCIES, DEFAULT_CATEGORIES, CATEGORY_ICONS, PAYMENT_METHODS, ALL_PLATFORMS, DEFAULT_FAMILY_MEMBERS } from "./data";
 import { exportBackup, importBackup } from "./exportUtils";
 import { saveSettings, generateId, getDefaultSettings } from "./utils";
 import { toast } from "sonner";
@@ -251,6 +251,63 @@ const ExpenseSettingsTab = ({
     });
     toast.success("Platform/Shop removed");
   };
+
+  // Delete/Restore Default Handlers
+  const handleDeleteDefaultCategory = (categoryName: string) => {
+    updateSettings({
+      deletedDefaultCategories: [...(settings.deletedDefaultCategories || []), categoryName],
+    });
+    toast.success("Category hidden");
+  };
+
+  const handleRestoreDefaultCategory = (categoryName: string) => {
+    updateSettings({
+      deletedDefaultCategories: (settings.deletedDefaultCategories || []).filter(c => c !== categoryName),
+    });
+    toast.success("Category restored");
+  };
+
+  const handleDeleteDefaultPaymentMethod = (method: string) => {
+    updateSettings({
+      deletedDefaultPaymentMethods: [...(settings.deletedDefaultPaymentMethods || []), method],
+    });
+    toast.success("Payment method hidden");
+  };
+
+  const handleRestoreDefaultPaymentMethod = (method: string) => {
+    updateSettings({
+      deletedDefaultPaymentMethods: (settings.deletedDefaultPaymentMethods || []).filter(m => m !== method),
+    });
+    toast.success("Payment method restored");
+  };
+
+  const handleDeleteDefaultPlatform = (platform: string) => {
+    updateSettings({
+      deletedDefaultPlatforms: [...(settings.deletedDefaultPlatforms || []), platform],
+    });
+    toast.success("Platform hidden");
+  };
+
+  const handleRestoreDefaultPlatform = (platform: string) => {
+    updateSettings({
+      deletedDefaultPlatforms: (settings.deletedDefaultPlatforms || []).filter(p => p !== platform),
+    });
+    toast.success("Platform restored");
+  };
+
+  const handleDeleteDefaultFamilyMember = (memberName: string) => {
+    updateSettings({
+      deletedDefaultFamilyMembers: [...(settings.deletedDefaultFamilyMembers || []), memberName],
+    });
+    toast.success("Member hidden");
+  };
+
+  const handleRestoreDefaultFamilyMember = (memberName: string) => {
+    updateSettings({
+      deletedDefaultFamilyMembers: (settings.deletedDefaultFamilyMembers || []).filter(m => m !== memberName),
+    });
+    toast.success("Member restored");
+  };
   
   // Category Budgets
   const handleAddCategoryBudget = () => {
@@ -417,7 +474,9 @@ const ExpenseSettingsTab = ({
                 <Users className="h-4 w-4 text-primary" />
               </div>
               <span className="font-medium">Family Members</span>
-              <Badge variant="secondary" className="ml-2">{settings.familyMembers.length}</Badge>
+              <Badge variant="secondary" className="ml-2">
+                {settings.familyMembers.filter(m => !(settings.deletedDefaultFamilyMembers || []).includes(m.name)).length}
+              </Badge>
             </div>
           </AccordionTrigger>
           <AccordionContent className="space-y-4 pt-4">
@@ -435,20 +494,49 @@ const ExpenseSettingsTab = ({
             </div>
             
             <div className="space-y-2">
-              {settings.familyMembers.map((member) => (
-                <div key={member.id} className="flex items-center justify-between p-3 bg-muted rounded-xl">
-                  <span className="font-medium">{member.name}</span>
-                  <Button 
-                    size="icon" 
-                    variant="ghost" 
-                    className="h-8 w-8 text-destructive"
-                    onClick={() => handleRemoveMember(member.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              ))}
+              <p className="text-xs text-muted-foreground font-medium">Active Members</p>
+              {settings.familyMembers
+                .filter(m => !(settings.deletedDefaultFamilyMembers || []).includes(m.name))
+                .map((member) => {
+                  const isDefault = DEFAULT_FAMILY_MEMBERS.some(d => d.name === member.name);
+                  return (
+                    <div key={member.id} className="flex items-center justify-between p-3 bg-muted rounded-xl">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{member.name}</span>
+                        {isDefault && <Badge variant="outline" className="text-xs">Default</Badge>}
+                      </div>
+                      <Button 
+                        size="icon" 
+                        variant="ghost" 
+                        className="h-8 w-8 text-destructive"
+                        onClick={() => isDefault ? handleDeleteDefaultFamilyMember(member.name) : handleRemoveMember(member.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  );
+                })}
             </div>
+
+            {(settings.deletedDefaultFamilyMembers || []).length > 0 && (
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground font-medium">Hidden Default Members (Click to restore)</p>
+                <div className="flex flex-wrap gap-2">
+                  {(settings.deletedDefaultFamilyMembers || []).map((name) => (
+                    <Button
+                      key={name}
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleRestoreDefaultFamilyMember(name)}
+                      className="gap-1"
+                    >
+                      <RotateCcw className="h-3 w-3" />
+                      {name}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
           </AccordionContent>
         </AccordionItem>
         
@@ -580,7 +668,9 @@ const ExpenseSettingsTab = ({
                 <CreditCard className="h-4 w-4 text-primary" />
               </div>
               <span className="font-medium">Payment Methods</span>
-              <Badge variant="secondary" className="ml-2">{PAYMENT_METHODS.length + settings.customPaymentMethods.length}</Badge>
+              <Badge variant="secondary" className="ml-2">
+                {PAYMENT_METHODS.filter(m => !(settings.deletedDefaultPaymentMethods || []).includes(m)).length + settings.customPaymentMethods.length}
+              </Badge>
             </div>
           </AccordionTrigger>
           <AccordionContent className="space-y-4 pt-4">
@@ -599,12 +689,24 @@ const ExpenseSettingsTab = ({
 
             <div className="space-y-2">
               <p className="text-xs text-muted-foreground font-medium">Default Methods</p>
-              {PAYMENT_METHODS.map((method) => (
-                <div key={method} className="flex items-center justify-between p-3 bg-muted/50 rounded-xl">
-                  <span>{method}</span>
-                  <Badge variant="outline" className="text-xs">Default</Badge>
-                </div>
-              ))}
+              {PAYMENT_METHODS
+                .filter(m => !(settings.deletedDefaultPaymentMethods || []).includes(m))
+                .map((method) => (
+                  <div key={method} className="flex items-center justify-between p-3 bg-muted/50 rounded-xl">
+                    <div className="flex items-center gap-2">
+                      <span>{method}</span>
+                      <Badge variant="outline" className="text-xs">Default</Badge>
+                    </div>
+                    <Button 
+                      size="icon" 
+                      variant="ghost" 
+                      className="h-8 w-8 text-destructive"
+                      onClick={() => handleDeleteDefaultPaymentMethod(method)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
             </div>
 
             {settings.customPaymentMethods.length > 0 && (
@@ -635,6 +737,26 @@ const ExpenseSettingsTab = ({
                 ))}
               </div>
             )}
+
+            {(settings.deletedDefaultPaymentMethods || []).length > 0 && (
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground font-medium">Hidden Default Methods (Click to restore)</p>
+                <div className="flex flex-wrap gap-2">
+                  {(settings.deletedDefaultPaymentMethods || []).map((method) => (
+                    <Button
+                      key={method}
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleRestoreDefaultPaymentMethod(method)}
+                      className="gap-1"
+                    >
+                      <RotateCcw className="h-3 w-3" />
+                      {method}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
           </AccordionContent>
         </AccordionItem>
 
@@ -647,7 +769,7 @@ const ExpenseSettingsTab = ({
               </div>
               <span className="font-medium">Categories</span>
               <Badge variant="secondary" className="ml-2">
-                {DEFAULT_CATEGORIES.length + settings.customCategories.length}
+                {DEFAULT_CATEGORIES.filter(c => !(settings.deletedDefaultCategories || []).includes(c.name)).length + settings.customCategories.length}
               </Badge>
             </div>
           </AccordionTrigger>
@@ -667,12 +789,26 @@ const ExpenseSettingsTab = ({
 
             <div className="space-y-2">
               <p className="text-xs text-muted-foreground font-medium">Default Categories</p>
-              {DEFAULT_CATEGORIES.map((cat) => (
-                <div key={cat.name} className="flex items-center justify-between p-3 bg-muted/50 rounded-xl">
-                  <span>{cat.name}</span>
-                  <Badge variant="outline" className="text-xs">Default</Badge>
-                </div>
-              ))}
+              <div className="max-h-64 overflow-y-auto space-y-1">
+                {DEFAULT_CATEGORIES
+                  .filter(c => !(settings.deletedDefaultCategories || []).includes(c.name))
+                  .map((cat) => (
+                    <div key={cat.name} className="flex items-center justify-between p-3 bg-muted/50 rounded-xl">
+                      <div className="flex items-center gap-2">
+                        <span>{cat.name}</span>
+                        <Badge variant="outline" className="text-xs">Default</Badge>
+                      </div>
+                      <Button 
+                        size="icon" 
+                        variant="ghost" 
+                        className="h-8 w-8 text-destructive"
+                        onClick={() => handleDeleteDefaultCategory(cat.name)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+              </div>
             </div>
 
             {settings.customCategories.length > 0 && (
@@ -703,6 +839,26 @@ const ExpenseSettingsTab = ({
                 ))}
               </div>
             )}
+
+            {(settings.deletedDefaultCategories || []).length > 0 && (
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground font-medium">Hidden Default Categories (Click to restore)</p>
+                <div className="flex flex-wrap gap-2">
+                  {(settings.deletedDefaultCategories || []).map((name) => (
+                    <Button
+                      key={name}
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleRestoreDefaultCategory(name)}
+                      className="gap-1"
+                    >
+                      <RotateCcw className="h-3 w-3" />
+                      {name}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
           </AccordionContent>
         </AccordionItem>
 
@@ -715,7 +871,7 @@ const ExpenseSettingsTab = ({
               </div>
               <span className="font-medium">Platforms / Shops</span>
               <Badge variant="secondary" className="ml-2">
-                {ALL_PLATFORMS.length + (settings.customPlatforms?.length || 0)}
+                {ALL_PLATFORMS.filter(p => !(settings.deletedDefaultPlatforms || []).includes(p)).length + (settings.customPlatforms?.length || 0)}
               </Badge>
             </div>
           </AccordionTrigger>
@@ -736,12 +892,24 @@ const ExpenseSettingsTab = ({
             <div className="space-y-2">
               <p className="text-xs text-muted-foreground font-medium">Default Platforms</p>
               <div className="max-h-48 overflow-y-auto space-y-1">
-                {ALL_PLATFORMS.map((platform) => (
-                  <div key={platform} className="flex items-center justify-between p-2 bg-muted/50 rounded-lg text-sm">
-                    <span>{platform}</span>
-                    <Badge variant="outline" className="text-xs">Default</Badge>
-                  </div>
-                ))}
+                {ALL_PLATFORMS
+                  .filter(p => !(settings.deletedDefaultPlatforms || []).includes(p))
+                  .map((platform) => (
+                    <div key={platform} className="flex items-center justify-between p-2 bg-muted/50 rounded-lg text-sm">
+                      <div className="flex items-center gap-2">
+                        <span>{platform}</span>
+                        <Badge variant="outline" className="text-xs">Default</Badge>
+                      </div>
+                      <Button 
+                        size="icon" 
+                        variant="ghost" 
+                        className="h-6 w-6 text-destructive"
+                        onClick={() => handleDeleteDefaultPlatform(platform)}
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
               </div>
             </div>
 
@@ -771,6 +939,26 @@ const ExpenseSettingsTab = ({
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+
+            {(settings.deletedDefaultPlatforms || []).length > 0 && (
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground font-medium">Hidden Default Platforms (Click to restore)</p>
+                <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
+                  {(settings.deletedDefaultPlatforms || []).map((platform) => (
+                    <Button
+                      key={platform}
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleRestoreDefaultPlatform(platform)}
+                      className="gap-1"
+                    >
+                      <RotateCcw className="h-3 w-3" />
+                      {platform}
+                    </Button>
+                  ))}
+                </div>
               </div>
             )}
           </AccordionContent>
