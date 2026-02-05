@@ -69,6 +69,7 @@ const Header = () => {
     { name: "Macro Calculator", href: "/macro-calculator" },
     { name: "Smart Food Swaps", href: "/smart-food-swaps" },
     { name: "HealthyPlate Builder", href: "/healthy-plate-builder" },
+    { name: "Mindfulness", href: "/mindfulness" },
     { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
   ];
@@ -108,6 +109,7 @@ const Header = () => {
     { name: "Macro Calculator", href: "/macro-calculator" },
     { name: "Smart Food Swaps", href: "/smart-food-swaps" },
     { name: "HealthyPlate Builder", href: "/healthy-plate-builder" },
+    { name: "Mindfulness", href: "/mindfulness" },
     { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
   ];
