@@ -3,8 +3,6 @@ export interface ValentineFormData {
   partnerName: string;
   relationshipType: string;
   loveStyle: string;
-  partnerPhoto: string | null;
-  yourPhoto: string | null;
 }
 
 export interface DaySelection {
