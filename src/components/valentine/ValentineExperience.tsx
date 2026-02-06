@@ -36,6 +36,11 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
     return dayContent.filter(d => selectedDayNumbers.has(d.day));
   }, [selections]);
 
+  // Get selected day names for QR code title
+  const selectedDayNames = useMemo(() => {
+    return visibleDays.map(d => d.name);
+  }, [visibleDays]);
+
   // Get selected messages for a specific day
   const getSelectedMessages = useCallback((dayNum: number): string[] => {
     if (!selections) return [];
