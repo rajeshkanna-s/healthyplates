@@ -70,7 +70,7 @@ const DeveloperBio = () => {
 
         {/* Connect text */}
         <p className="text-gray-400 text-xs mb-4 tracking-wider uppercase">
-          Connect with me below
+        Connect with me
         </p>
 
         {/* Social Links */}
