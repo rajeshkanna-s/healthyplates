@@ -1,12 +1,15 @@
-import { useState, useMemo } from "react";
-import { Heart, Lock, ArrowLeft, Share2, Copy, Check, MessageCircle } from "lucide-react";
+import { useState, useMemo, useCallback } from "react";
+import { Heart, ArrowLeft, Share2, Copy, Check, MessageCircle, Instagram, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ValentineFormData } from "./types";
-import { dayContent, dayMessages, getWhatsAppShareText, getShortShareText, hashtags } from "@/data/valentineData";
+import { dayContent, dayMessages, getWhatsAppShareText, hashtags } from "@/data/valentineData";
 import ValentineDayCard from "./ValentineDayCard";
 import ValentineFinale from "./ValentineFinale";
 import LoveScore from "./LoveScore";
-import { Link } from "react-router-dom";
+import FloatingHearts from "./FloatingHearts";
+import QRCodeModal from "./QRCodeModal";
+import StickyBottomBar from "./StickyBottomBar";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 
 interface ValentineExperienceProps {
@@ -14,21 +17,52 @@ interface ValentineExperienceProps {
   createdAt: string;
   isPartnerView: boolean;
   shareUrl: string;
+  customMessage?: string;
 }
 
-const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl }: ValentineExperienceProps) => {
+const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, customMessage }: ValentineExperienceProps) => {
   const [activeDay, setActiveDay] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
+  const navigate = useNavigate();
 
-  const unlockedDays = useMemo(() => {
-    const created = new Date(createdAt);
+  // Calculate which day we're on based on actual Valentine's week dates
+  const getCurrentDay = useMemo(() => {
     const now = new Date();
-    const diffMs = now.getTime() - created.getTime();
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    return Math.min(Math.max(diffDays + 1, 1), 8);
-  }, [createdAt]);
+    const valentinesDates = [
+      new Date(2026, 1, 7),  // Feb 7 - Rose Day
+      new Date(2026, 1, 8),  // Feb 8 - Propose Day
+      new Date(2026, 1, 9),  // Feb 9 - Chocolate Day
+      new Date(2026, 1, 10), // Feb 10 - Teddy Day
+      new Date(2026, 1, 11), // Feb 11 - Promise Day
+      new Date(2026, 1, 12), // Feb 12 - Hug Day
+      new Date(2026, 1, 13), // Feb 13 - Kiss Day
+      new Date(2026, 1, 14), // Feb 14 - Valentine's Day
+    ];
+    
+    for (let i = 0; i < valentinesDates.length; i++) {
+      if (now.toDateString() === valentinesDates[i].toDateString()) {
+        return i + 1;
+      }
+    }
+    // If before Feb 7, return 0 (not started yet)
+    if (now < valentinesDates[0]) return 0;
+    // If after Feb 14, return 8
+    if (now > valentinesDates[7]) return 8;
+    return 1;
+  }, []);
 
-  // Get a deterministic message index based on names
+  const getCountdownText = (dayNum: number): string => {
+    const targetDate = new Date(2026, 1, 6 + dayNum); // Feb 7 = day 1
+    const now = new Date();
+    const diffMs = targetDate.getTime() - now.getTime();
+    
+    if (diffMs <= 0) return "Today!";
+    
+    const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+    if (diffDays === 1) return "Tomorrow";
+    return `${diffDays} days`;
+  };
+
   const getMessageIndex = (day: number): number => {
     const seed = (formData.yourName + formData.partnerName).split("").reduce((a, c) => a + c.charCodeAt(0), 0);
     return (seed + day * 7) % 50;
@@ -46,6 +80,109 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl }: V
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
   };
 
+  const handleInstagramShare = () => {
+    navigator.clipboard.writeText(
+      `I created a 7-Day Love Surprise 💘\nOne reveal every day till Valentine's Day\n\n${shareUrl}\n\n${hashtags.join(" ")}`
+    );
+    toast({ 
+      title: "Caption copied! 📸", 
+      description: "Paste it on Instagram with your screenshot" 
+    });
+  };
+
+  const downloadInviteImage = useCallback(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 800;
+    canvas.height = 1000;
+    const ctx = canvas.getContext("2d")!;
+
+    // Background gradient
+    const gradient = ctx.createLinearGradient(0, 0, 800, 1000);
+    gradient.addColorStop(0, "#4a0020");
+    gradient.addColorStop(0.5, "#6b0030");
+    gradient.addColorStop(1, "#3d0025");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 800, 1000);
+
+    // Hearts decoration
+    ctx.font = "40px serif";
+    ctx.fillStyle = "rgba(255,100,150,0.15)";
+    for (let i = 0; i < 25; i++) {
+      ctx.fillText("❤", Math.random() * 760, Math.random() * 960);
+    }
+
+    // Title
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 42px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("7 Days Love Surprise", 400, 120);
+
+    // Subtitle
+    ctx.font = "24px sans-serif";
+    ctx.fillStyle = "#ffb3c6";
+    ctx.fillText("Open one card daily till Valentine's Day", 400, 160);
+
+    // Big heart
+    ctx.font = "100px serif";
+    ctx.fillText("💖", 400, 300);
+
+    // Names
+    ctx.font = "bold 36px sans-serif";
+    ctx.fillStyle = "#fff";
+    ctx.fillText(`From: ${formData.yourName}`, 400, 420);
+    ctx.font = "28px sans-serif";
+    ctx.fillStyle = "#ff6b8a";
+    ctx.fillText("❤️", 400, 470);
+    ctx.font = "bold 36px sans-serif";
+    ctx.fillStyle = "#fff";
+    ctx.fillText(`To: ${formData.partnerName}`, 400, 520);
+
+    // Custom message
+    if (customMessage) {
+      ctx.font = "italic 20px sans-serif";
+      ctx.fillStyle = "rgba(255,179,198,0.9)";
+      const words = customMessage.split(" ");
+      let line = "";
+      let y = 600;
+      for (const word of words) {
+        const testLine = line + word + " ";
+        if (ctx.measureText(testLine).width > 700) {
+          ctx.fillText(line, 400, y);
+          line = word + " ";
+          y += 28;
+        } else {
+          line = testLine;
+        }
+      }
+      ctx.fillText(line, 400, y);
+    }
+
+    // Link
+    ctx.font = "18px sans-serif";
+    ctx.fillStyle = "#ffb3c6";
+    ctx.fillText("Scan or visit:", 400, 780);
+    ctx.font = "bold 16px sans-serif";
+    ctx.fillText(shareUrl, 400, 810);
+
+    // Footer
+    ctx.font = "14px sans-serif";
+    ctx.fillStyle = "rgba(255,179,198,0.4)";
+    ctx.fillText("Made with ❤️ | 7 Days Love Surprise", 400, 920);
+    ctx.fillText("Developed by RAJESHKANNA S", 400, 945);
+
+    const link = document.createElement("a");
+    link.download = `love-invite-${formData.partnerName}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+    toast({ title: "Invite image downloaded! ❤️" });
+  }, [formData, shareUrl, customMessage]);
+
+  const handleCreateNew = () => {
+    localStorage.removeItem("valentine-surprise-data");
+    navigate("/ValentineDay", { replace: true });
+    window.location.reload();
+  };
+
   // If a day card is active
   if (activeDay !== null) {
     const dayIndex = activeDay - 1;
@@ -55,6 +192,7 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl }: V
           formData={formData}
           shareUrl={shareUrl}
           onBack={() => setActiveDay(null)}
+          customMessage={customMessage}
         />
       );
     }
@@ -69,12 +207,15 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl }: V
         partnerName={formData.partnerName}
         yourName={formData.yourName}
         onBack={() => setActiveDay(null)}
+        customMessage={customMessage}
       />
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-950 via-red-950 to-pink-950 relative overflow-auto">
+    <div className="min-h-screen bg-gradient-to-br from-rose-950 via-red-950 to-pink-950 relative overflow-auto pb-24">
+      <FloatingHearts />
+      
       {/* Top Navigation */}
       <div className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-4">
         <Link
@@ -86,7 +227,7 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl }: V
         </Link>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 pt-20 pb-24">
+      <div className="max-w-2xl mx-auto px-4 pt-20 pb-8 relative z-10">
         {/* Partner View Header */}
         {isPartnerView && (
           <div className="text-center mb-8 animate-fade-in">
@@ -100,6 +241,11 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl }: V
             <p className="text-rose-300/60 text-sm mt-1">
               Open One Card Daily Till Valentine's Day
             </p>
+            {customMessage && (
+              <div className="mt-4 bg-black/20 border border-rose-500/20 rounded-xl p-4 max-w-sm mx-auto">
+                <p className="text-rose-200/80 text-sm italic">"{customMessage}"</p>
+              </div>
+            )}
           </div>
         )}
 
@@ -129,7 +275,7 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl }: V
                   {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                 </Button>
               </div>
-              <div className="flex gap-2 justify-center">
+              <div className="flex gap-2 justify-center flex-wrap">
                 <Button
                   size="sm"
                   onClick={handleWhatsAppShare}
@@ -140,16 +286,13 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl }: V
                 </Button>
                 <Button
                   size="sm"
-                  onClick={() => {
-                    const text = getShortShareText(shareUrl);
-                    navigator.clipboard.writeText(text);
-                    toast({ title: "Share text copied!" });
-                  }}
-                  className="bg-rose-600 hover:bg-rose-500 text-white text-xs"
+                  onClick={handleInstagramShare}
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white text-xs"
                 >
-                  <Share2 className="w-4 h-4 mr-1" />
-                  Copy Share Text
+                  <Instagram className="w-4 h-4 mr-1" />
+                  Instagram
                 </Button>
+                <QRCodeModal url={shareUrl} partnerName={formData.partnerName} />
               </div>
               <p className="text-rose-400/50 text-xs">{hashtags.join(" ")}</p>
             </div>
@@ -175,32 +318,41 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl }: V
           </div>
         )}
 
-        {/* Day Cards Grid */}
+        {/* Day Cards Grid - All days visible */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
           {dayContent.map((day) => {
-            const isUnlocked = day.day <= unlockedDays;
-            const isCurrent = day.day === unlockedDays;
+            const isToday = getCurrentDay === day.day;
+            const isPast = getCurrentDay > day.day;
+            const isFuture = getCurrentDay < day.day;
+            
             return (
               <button
                 key={day.day}
-                onClick={() => isUnlocked && setActiveDay(day.day)}
-                disabled={!isUnlocked}
-                className={`relative p-4 rounded-2xl border transition-all duration-300 text-center ${
-                  isUnlocked
-                    ? isCurrent
-                      ? "bg-gradient-to-br from-rose-500/30 to-pink-500/30 border-rose-400 shadow-lg shadow-rose-500/20 hover:scale-105 cursor-pointer"
-                      : "bg-white/10 border-rose-500/20 hover:bg-white/15 hover:scale-105 cursor-pointer"
-                    : "bg-black/20 border-white/5 opacity-50 cursor-not-allowed"
+                onClick={() => setActiveDay(day.day)}
+                className={`relative p-3 sm:p-4 rounded-2xl border transition-all duration-300 text-center hover:scale-105 cursor-pointer ${
+                  isToday
+                    ? "bg-gradient-to-br from-rose-500/40 to-pink-500/40 border-rose-400 shadow-lg shadow-rose-500/30"
+                    : isPast
+                    ? "bg-white/15 border-rose-500/30"
+                    : "bg-white/5 border-rose-500/15 hover:bg-white/10"
                 }`}
               >
-                {isCurrent && (
+                {isToday && (
                   <span className="absolute -top-1.5 -right-1.5 w-3 h-3 bg-rose-500 rounded-full animate-pulse" />
                 )}
-                <span className="text-2xl sm:text-3xl block mb-1">
-                  {isUnlocked ? day.emoji : <Lock className="w-5 h-5 mx-auto text-rose-500/40" />}
-                </span>
+                <span className="text-2xl sm:text-3xl block mb-1">{day.emoji}</span>
                 <span className="text-xs text-rose-200 font-medium block">Day {day.day}</span>
-                <span className="text-[10px] text-rose-300/60 block mt-0.5">{day.name}</span>
+                <span className="text-[10px] text-rose-300 font-semibold block mt-0.5">{day.name}</span>
+                <span className="text-[9px] text-rose-300/60 block mt-0.5">{day.weekday}</span>
+                <span className="text-[9px] text-rose-400/50 block">{day.date}</span>
+                
+                {/* Countdown for future days */}
+                {isFuture && (
+                  <div className="flex items-center justify-center gap-1 mt-1 text-[9px] text-rose-300/50">
+                    <Clock className="w-3 h-3" />
+                    <span>{getCountdownText(day.day)}</span>
+                  </div>
+                )}
               </button>
             );
           })}
@@ -212,13 +364,13 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl }: V
         {/* Viral CTA */}
         <div className="text-center mt-8 mb-6">
           <p className="text-rose-300/60 text-sm mb-3">Want to make one too?</p>
-          <Link
-            to="/ValentineDay"
+          <button
+            onClick={handleCreateNew}
             className="inline-flex items-center gap-2 bg-gradient-to-r from-rose-600 to-pink-600 text-white font-semibold px-6 py-3 rounded-xl shadow-lg shadow-rose-500/25 hover:from-rose-500 hover:to-pink-500 transition-all"
           >
             <Heart className="w-4 h-4" fill="currentColor" />
             Make One For Your Partner
-          </Link>
+          </button>
         </div>
 
         {/* Footer */}
@@ -233,6 +385,13 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl }: V
           </Link>
         </div>
       </div>
+
+      {/* Sticky Bottom Bar */}
+      <StickyBottomBar 
+        shareUrl={shareUrl} 
+        onDownload={downloadInviteImage}
+        partnerName={formData.partnerName}
+      />
     </div>
   );
 };
