@@ -299,25 +299,6 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
           </div>
         )}
 
-        {/* Photos Banner */}
-        {(formData.partnerPhoto || formData.yourPhoto) && (
-          <div className="flex justify-center items-center gap-4 mb-8">
-            {formData.yourPhoto && (
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-rose-400 overflow-hidden shadow-lg shadow-rose-500/20">
-                <img src={formData.yourPhoto} alt="You" className="w-full h-full object-cover" />
-              </div>
-            )}
-            {formData.yourPhoto && formData.partnerPhoto && (
-              <Heart className="w-6 h-6 text-rose-400 animate-pulse" fill="currentColor" />
-            )}
-            {formData.partnerPhoto && (
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-pink-400 overflow-hidden shadow-lg shadow-pink-500/20">
-                <img src={formData.partnerPhoto} alt="Partner" className="w-full h-full object-cover" />
-              </div>
-            )}
-          </div>
-        )}
-
         {/* Day Cards Grid - Only selected days */}
         <div className={`grid gap-3 mb-8 ${
           visibleDays.length === 1

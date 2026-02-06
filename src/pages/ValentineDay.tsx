@@ -45,8 +45,6 @@ const decodeShareData = (decoded: Record<string, unknown>) => {
     partnerName: (decoded.p as string) || "You",
     relationshipType: (decoded.r as string) || "couple",
     loveStyle: (decoded.s as string) || "romantic",
-    partnerPhoto: null,
-    yourPhoto: null,
   };
   const selections: DaySelection[] = ((decoded.d as [number, number[]][]) || []).map((item) => ({
     dayNumber: item[0],
