@@ -281,7 +281,7 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
                   <Instagram className="w-4 h-4 mr-1" />
                   Instagram
                 </Button>
-                <QRCodeModal url={shareUrl} partnerName={formData.partnerName} />
+                <QRCodeModal url={shareUrl} partnerName={formData.partnerName} selectedDayNames={selectedDayNames} />
               </div>
               <p className="text-rose-400/50 text-xs">{hashtags.join(" ")}</p>
             </div>
