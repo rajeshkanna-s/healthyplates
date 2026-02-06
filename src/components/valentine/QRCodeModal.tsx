@@ -7,28 +7,11 @@ import { toast } from "@/hooks/use-toast";
 interface QRCodeModalProps {
   url: string;
   partnerName: string;
-  selectedDayNames?: string[];
 }
 
-const QRCodeModal = ({ url, partnerName, selectedDayNames }: QRCodeModalProps) => {
+const QRCodeModal = ({ url, partnerName }: QRCodeModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const qrRef = useRef<HTMLDivElement>(null);
-
-  // Build the title from selected day names
-  const getSurpriseTitle = (): string => {
-    if (!selectedDayNames || selectedDayNames.length === 0) {
-      return "Valentine's Day Surprise";
-    }
-    if (selectedDayNames.length === 1) {
-      return `${selectedDayNames[0]} Surprise`;
-    }
-    if (selectedDayNames.length <= 3) {
-      return `${selectedDayNames.join(" + ")} Surprise`;
-    }
-    return `${selectedDayNames.slice(0, 2).join(" + ")} +${selectedDayNames.length - 2} More Surprise`;
-  };
-
-  const surpriseTitle = getSurpriseTitle();
 
   const downloadQR = () => {
     const svg = qrRef.current?.querySelector("svg");
@@ -46,13 +29,11 @@ const QRCodeModal = ({ url, partnerName, selectedDayNames }: QRCodeModalProps) =
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 400, 480);
 
-    // Title — use selected day name(s)
+    // Title
     ctx.fillStyle = "#fff";
-    ctx.font = "bold 18px sans-serif";
+    ctx.font = "bold 20px sans-serif";
     ctx.textAlign = "center";
-    // Truncate if too long
-    const titleText = surpriseTitle.length > 30 ? surpriseTitle.substring(0, 28) + "…" : surpriseTitle;
-    ctx.fillText(titleText, 200, 40);
+    ctx.fillText("Valentine's Day Surprise", 200, 40);
     ctx.font = "16px sans-serif";
     ctx.fillStyle = "#ffb3c6";
     ctx.fillText(`For ${partnerName} ❤️`, 200, 65);
@@ -62,7 +43,7 @@ const QRCodeModal = ({ url, partnerName, selectedDayNames }: QRCodeModalProps) =
     const img = new Image();
     img.onload = () => {
       ctx.drawImage(img, 50, 90, 300, 300);
-
+      
       // Footer
       ctx.font = "14px sans-serif";
       ctx.fillStyle = "#ffb3c6";
@@ -84,7 +65,7 @@ const QRCodeModal = ({ url, partnerName, selectedDayNames }: QRCodeModalProps) =
     if (navigator.share) {
       try {
         await navigator.share({
-          title: surpriseTitle,
+          title: "Valentine's Day Surprise",
           text: `I made a special Valentine surprise for you! Scan the QR code ❤️`,
           url: url,
         });
@@ -96,6 +77,12 @@ const QRCodeModal = ({ url, partnerName, selectedDayNames }: QRCodeModalProps) =
       navigator.clipboard.writeText(url);
       toast({ title: "Link copied!" });
     }
+  };
+
+  const handleClose = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsOpen(false);
   };
 
   if (!isOpen) {
@@ -112,34 +99,24 @@ const QRCodeModal = ({ url, partnerName, selectedDayNames }: QRCodeModalProps) =
   }
 
   return (
-    <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
-      onClick={() => setIsOpen(false)}
+    <div 
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+      onClick={handleClose}
     >
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-
-      {/* Modal content */}
-      <div
-        className="bg-gradient-to-br from-rose-950 to-pink-950 border border-rose-500/30 rounded-2xl p-6 max-w-sm w-full relative z-[10000]"
+      <div 
+        className="bg-gradient-to-br from-rose-950 to-pink-950 border border-rose-500/30 rounded-2xl p-6 max-w-sm w-full relative"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Close button — large touch target */}
         <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setIsOpen(false);
-          }}
-          className="absolute -top-3 -right-3 w-10 h-10 flex items-center justify-center rounded-full bg-rose-600 hover:bg-rose-500 text-white shadow-lg shadow-black/40 transition-colors z-[10001] border-2 border-white/20"
+          onClick={handleClose}
+          className="absolute top-3 right-3 text-rose-300 hover:text-white z-[101] w-8 h-8 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 transition-colors"
           type="button"
-          aria-label="Close QR Code"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <h3 className="text-white font-semibold text-center mb-4 text-sm sm:text-base pr-6">
-          {surpriseTitle} for {partnerName} 💕
+        <h3 className="text-white font-semibold text-center mb-4">
+          Share QR Code with {partnerName} 💕
         </h3>
 
         <div ref={qrRef} className="bg-white p-4 rounded-xl mx-auto w-fit">

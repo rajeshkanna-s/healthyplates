@@ -3,7 +3,6 @@ import { Heart, ArrowLeft, Share2, Copy, Check, MessageCircle, Instagram, Clock 
 import { Button } from "@/components/ui/button";
 import { ValentineFormData, DaySelection } from "./types";
 import { dayContent, dayMessages, getWhatsAppShareText, hashtags } from "@/data/valentineData";
-
 import ValentineDayCard from "./ValentineDayCard";
 import ValentineFinale from "./ValentineFinale";
 import LoveScore from "./LoveScore";
@@ -35,11 +34,6 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
     const selectedDayNumbers = new Set(selections.map(s => s.dayNumber));
     return dayContent.filter(d => selectedDayNumbers.has(d.day));
   }, [selections]);
-
-  // Get selected day names for QR code title
-  const selectedDayNames = useMemo(() => {
-    return visibleDays.map(d => d.name);
-  }, [visibleDays]);
 
   // Get selected messages for a specific day
   const getSelectedMessages = useCallback((dayNum: number): string[] => {
@@ -281,7 +275,7 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
                   <Instagram className="w-4 h-4 mr-1" />
                   Instagram
                 </Button>
-                <QRCodeModal url={shareUrl} partnerName={formData.partnerName} selectedDayNames={selectedDayNames} />
+                <QRCodeModal url={shareUrl} partnerName={formData.partnerName} />
               </div>
               <p className="text-rose-400/50 text-xs">{hashtags.join(" ")}</p>
             </div>
