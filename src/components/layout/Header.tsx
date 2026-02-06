@@ -49,6 +49,7 @@ const Header = () => {
         { name: "HealthyPlates Challenges", href: "/challenges" },
         { name: "Calisthenics Challenge", href: "/calisthenics-challenge" },
         { name: "Personality Match", href: "/personality-match" },
+        { name: "Valentine's Day", href: "/ValentineDay" },
       ],
     },
     {
