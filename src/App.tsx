@@ -111,6 +111,7 @@ const App = () => (
           </Route>
           {/* Auth route outside of Layout */}
           <Route path="/auth" element={<Auth />} />
+          <Route path="/developer-bio" element={<DeveloperBio />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

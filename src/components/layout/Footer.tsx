@@ -267,6 +267,12 @@ const Footer = () => {
             <p className="text-xs text-muted-foreground">
               Developed by RAJESHKANNA S
             </p>
+            <Link
+              to="/developer-bio"
+              className="inline-block mt-2 px-4 py-2 text-xs font-medium rounded-lg border border-primary/30 bg-primary/5 text-primary hover:bg-primary/10 hover:border-primary/50 transition-all duration-300"
+            >
+              To Know RAJESHKANNA
+            </Link>
           </div>
         </div>
       </div>
