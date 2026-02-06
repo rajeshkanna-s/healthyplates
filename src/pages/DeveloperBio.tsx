@@ -1,4 +1,4 @@
-import { Globe, Link2, Linkedin, Coffee, LayoutGrid, Mail } from "lucide-react";
+import { Globe, Link2, Linkedin, Coffee, LayoutGrid, Mail, ArrowLeft } from "lucide-react";
 
 const socialLinks = [
   {
@@ -31,6 +31,14 @@ const socialLinks = [
 const DeveloperBio = () => {
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-[#0a1628] relative overflow-hidden">
+      {/* Back button */}
+      <a
+        href="/"
+        className="absolute top-5 right-5 z-20 flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[#1e3a5f]/50 bg-[#0f2035]/60 backdrop-blur-sm text-gray-300 hover:text-[#4dd9b4] hover:border-[#00e6a0]/40 transition-all duration-300 text-sm"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Back
+      </a>
       {/* Grid background */}
       <div
         className="absolute inset-0 opacity-[0.08]"
@@ -70,7 +78,7 @@ const DeveloperBio = () => {
 
         {/* Connect text */}
         <p className="text-gray-400 text-xs mb-4 tracking-wider uppercase">
-          Connect with me below
+        Connect with me
         </p>
 
         {/* Social Links */}
