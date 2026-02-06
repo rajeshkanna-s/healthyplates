@@ -37,8 +37,12 @@ const DayMessageSelector = ({ onComplete, onBack }: DayMessageSelectorProps) => 
           delete copy[dayNum];
           return copy;
         });
+        // Collapse if it was expanded
+        if (expandedDay === dayNum) setExpandedDay(null);
       } else {
         next.add(dayNum);
+        // Auto-expand the newly selected day
+        setExpandedDay(dayNum);
       }
       return next;
     });
