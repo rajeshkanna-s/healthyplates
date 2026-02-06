@@ -49,6 +49,7 @@ const Header = () => {
         { name: "HealthyPlates Challenges", href: "/challenges" },
         { name: "Calisthenics Challenge", href: "/calisthenics-challenge" },
         { name: "Personality Match", href: "/personality-match" },
+        { name: "Valentine's Day", href: "/ValentineDay" },
       ],
     },
     {
@@ -69,6 +70,7 @@ const Header = () => {
     { name: "Macro Calculator", href: "/macro-calculator" },
     { name: "Smart Food Swaps", href: "/smart-food-swaps" },
     { name: "HealthyPlate Builder", href: "/healthy-plate-builder" },
+    { name: "Mindfulness", href: "/mindfulness" },
     { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
   ];
@@ -88,6 +90,7 @@ const Header = () => {
         { name: "HealthyPlates Challenges", href: "/challenges" },
         { name: "Calisthenics Challenge", href: "/calisthenics-challenge" },
         { name: "Personality Match", href: "/personality-match" },
+        { name: "Valentine's Day", href: "/ValentineDay" },
       ],
     },
     {
@@ -108,6 +111,7 @@ const Header = () => {
     { name: "Macro Calculator", href: "/macro-calculator" },
     { name: "Smart Food Swaps", href: "/smart-food-swaps" },
     { name: "HealthyPlate Builder", href: "/healthy-plate-builder" },
+    { name: "Mindfulness", href: "/mindfulness" },
     { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
   ];
