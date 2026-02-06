@@ -4,14 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ValentineFormData, DaySelection } from "./types";
+import { ValentineFormData, DaySelection, MemoryQuizItem } from "./types";
 import { relationshipTypes, loveStyles } from "@/data/valentineData";
 import FloatingHearts from "./FloatingHearts";
 import DayMessageSelector from "./DayMessageSelector";
+import MemoryQuizInput from "./MemoryQuizInput";
 import { Link } from "react-router-dom";
 
 interface ValentineLandingProps {
-  onSubmit: (data: ValentineFormData, customMessage?: string, selections?: DaySelection[]) => void;
+  onSubmit: (data: ValentineFormData, customMessage?: string, selections?: DaySelection[], memoryQuiz?: MemoryQuizItem[]) => void;
 }
 
 const ValentineLanding = ({ onSubmit }: ValentineLandingProps) => {
@@ -23,6 +24,7 @@ const ValentineLanding = ({ onSubmit }: ValentineLandingProps) => {
   const [partnerPhoto, setPartnerPhoto] = useState<string | null>(null);
   const [yourPhoto, setYourPhoto] = useState<string | null>(null);
   const [customMessage, setCustomMessage] = useState("");
+  const [memoryQuiz, setMemoryQuiz] = useState<MemoryQuizItem[]>([]);
   const partnerPhotoRef = useRef<HTMLInputElement>(null);
   const yourPhotoRef = useRef<HTMLInputElement>(null);
 
@@ -44,10 +46,12 @@ const ValentineLanding = ({ onSubmit }: ValentineLandingProps) => {
   };
 
   const handleSelectionsComplete = (selections: DaySelection[]) => {
+    const validQuiz = memoryQuiz.filter(q => q.question.trim() && q.answer.trim());
     onSubmit(
       { yourName: yourName.trim(), partnerName: partnerName.trim(), relationshipType, loveStyle, partnerPhoto, yourPhoto },
       customMessage.trim() || undefined,
-      selections
+      selections,
+      validQuiz.length > 0 ? validQuiz : undefined
     );
   };
 
@@ -73,13 +77,13 @@ const ValentineLanding = ({ onSubmit }: ValentineLandingProps) => {
             <div className="text-center mb-6">
               <div className="inline-flex items-center gap-2 bg-rose-500/20 border border-rose-500/30 rounded-full px-4 py-1.5 mb-4">
                 <Heart className="w-4 h-4 text-rose-400" fill="currentColor" />
-                <span className="text-rose-300 text-sm font-medium">7 Days Love Surprise</span>
+                <span className="text-rose-300 text-sm font-medium">Love Surprise</span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-bold text-white mb-3 leading-tight">
-                Create a 7-Day Love Surprise for Your Partner
+                Create a Love Surprise for Your Partner
               </h1>
               <p className="text-rose-200/80 text-sm sm:text-base">
-                One Link, One Heart, Seven Smiles ❤️
+                One Link, One Heart, Endless Smiles ❤️
               </p>
               <p className="text-rose-300/60 text-xs mt-2">
                 Build a personalized Valentine experience your partner opens daily till Valentine's Day.
@@ -117,7 +121,7 @@ const ValentineLanding = ({ onSubmit }: ValentineLandingProps) => {
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-rose-200 text-xs">Relationship Type</Label>
+                <Label className="text-rose-200 text-xs">Relationship Mode</Label>
                 <div className="grid grid-cols-2 gap-2">
                   {relationshipTypes.map((type) => (
                     <button
@@ -210,6 +214,9 @@ const ValentineLanding = ({ onSubmit }: ValentineLandingProps) => {
                 />
                 <p className="text-rose-400/40 text-[10px] text-right">{customMessage.length}/200</p>
               </div>
+
+              {/* Memory Quiz */}
+              <MemoryQuizInput items={memoryQuiz} onChange={setMemoryQuiz} />
 
               <Button
                 type="submit"

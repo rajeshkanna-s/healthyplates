@@ -18,7 +18,7 @@ const StickyBottomBar = ({ shareUrl, onDownload, partnerName }: StickyBottomBarP
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "7 Days Love Surprise",
+          title: "Love Surprise",
           text: `I made a special Valentine surprise for ${partnerName}! ❤️`,
           url: shareUrl,
         });

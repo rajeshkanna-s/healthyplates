@@ -12,6 +12,11 @@ export interface DaySelection {
   messageIndices: number[]; // indices into dayMessages[dayNumber-1], max 3
 }
 
+export interface MemoryQuizItem {
+  question: string;
+  answer: string;
+}
+
 export interface DayContentData {
   day: number;
   name: string;
@@ -31,6 +36,7 @@ export interface ValentineSurprise {
   shareUrl: string;
   customMessage?: string;
   selections: DaySelection[];
+  memoryQuiz?: MemoryQuizItem[];
 }
 
 export interface ShareTextData {

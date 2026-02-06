@@ -8,7 +8,7 @@ export const dayContent: DayContentData[] = [
     title: "A Rose For You 🌹",
     text: "Like a rose spreads fragrance, you fill my life with warmth and beauty.\nToday I send you a rose made of words — and a heart full of love.",
     buttonText: "Accept My Rose",
-    miniLine: "This is Day 1 of your Love Surprise ❤️",
+    miniLine: "This is your Love Surprise ❤️",
     date: "February 7, 2026",
     weekday: "Saturday",
   },
@@ -19,7 +19,7 @@ export const dayContent: DayContentData[] = [
     title: "I Choose You — Every Day 💍",
     text: "If I had to choose again, I would still choose you — without pause, without doubt, without fear.\nNot just today. Every day.",
     buttonText: "Say Yes Again ❤️",
-    miniLine: "This is Day 2 of your Love Surprise ❤️",
+    miniLine: "This is your Love Surprise ❤️",
     date: "February 8, 2026",
     weekday: "Sunday",
   },
@@ -30,7 +30,7 @@ export const dayContent: DayContentData[] = [
     title: "Life Is Sweeter With You 🍫",
     text: "Chocolates melt — but my love for you only grows richer with time.\nYou are my favorite sweetness.",
     buttonText: "Send Sweetness",
-    miniLine: "This is Day 3 of your Love Surprise ❤️",
+    miniLine: "This is your Love Surprise ❤️",
     date: "February 9, 2026",
     weekday: "Monday",
   },
@@ -41,7 +41,7 @@ export const dayContent: DayContentData[] = [
     title: "My Safe Hug 🧸",
     text: "If comfort had a face, it would be yours.\nIf peace had a place, it would be your arms.",
     buttonText: "Receive Warm Hug",
-    miniLine: "This is Day 4 of your Love Surprise ❤️",
+    miniLine: "This is your Love Surprise ❤️",
     date: "February 10, 2026",
     weekday: "Tuesday",
   },
@@ -52,7 +52,7 @@ export const dayContent: DayContentData[] = [
     title: "My Promise To You 🤝",
     text: "I promise to stand with you in small moments and big storms.\nNot perfect — but always present.",
     buttonText: "Accept My Promise",
-    miniLine: "This is Day 5 of your Love Surprise ❤️",
+    miniLine: "This is your Love Surprise ❤️",
     date: "February 11, 2026",
     weekday: "Wednesday",
     promises: [
@@ -69,7 +69,7 @@ export const dayContent: DayContentData[] = [
     title: "A Hug Across Every Distance 🤗",
     text: "Close your eyes for a moment —\nimagine my arms around you right now.\nThat feeling — keep it.",
     buttonText: "Feel The Hug",
-    miniLine: "This is Day 6 of your Love Surprise ❤️",
+    miniLine: "This is your Love Surprise ❤️",
     date: "February 12, 2026",
     weekday: "Thursday",
   },
@@ -80,7 +80,7 @@ export const dayContent: DayContentData[] = [
     title: "Sealed With Love 😘",
     text: "Some words are spoken.\nSome are felt.\nThis one is felt.",
     buttonText: "Open Final Surprise Tomorrow",
-    miniLine: "This is Day 7 of your Love Surprise ❤️",
+    miniLine: "This is your Love Surprise ❤️",
     date: "February 13, 2026",
     weekday: "Friday",
   },
@@ -416,7 +416,60 @@ export const dayMessages: string[][] = [
     "Whenever your heart feels heavy, remember there's a hug with your name on it waiting in mine.",
     "My favorite future memory: a long hug with you where neither of us wants to let go.",
   ],
-  // Day 7 — Final Valentine / Love Declarations (50)
+  // Day 7 — Kiss Day Messages (50)
+  [
+    "If I could seal this message with a real kiss, I'd press my lips against every word.",
+    "A kiss for your forehead — for every worry you carry that I wish I could take away.",
+    "Close your eyes. Imagine my lips on yours. That's my kiss reaching you right now.",
+    "One kiss from you and the world goes silent — only you and me remain.",
+    "I want to kiss you like it's the first time, every time.",
+    "My lips have a favorite destination, and it's always you.",
+    "A kiss on your hand for respect, on your cheek for love, on your lips for forever.",
+    "If kisses were stars, the sky would be full of us.",
+    "I'm saving my best kiss for the moment I see you next. Be ready.",
+    "Your lips are my favorite hello and my hardest goodbye.",
+    "I want to kiss you until you forget what sadness feels like.",
+    "A stolen kiss, a shy smile, a racing heart — that's what you do to me.",
+    "I dream of the kind of kiss that makes time stop and hearts talk.",
+    "Every love story needs a perfect kiss scene — ours is still my favorite.",
+    "A kiss from you is worth more than a thousand words from anyone else.",
+    "I wish I could kiss your worries away and leave only love behind.",
+    "My favorite kind of magic? The kind that happens when our lips meet.",
+    "This message carries an invisible kiss — catch it and keep it close.",
+    "I want to be the last kiss you feel before you fall asleep.",
+    "A butterfly kiss on your eyelids to remind you: you are dreamed of and adored.",
+    "If our kisses had a soundtrack, it would be the most beautiful melody ever made.",
+    "I want to kiss you slowly, deeply, like we have all the time in the world.",
+    "Your kiss is my reset button — everything feels right after it.",
+    "I'm sending you a thousand kisses in this message. Count them if you can.",
+    "A kiss for every day I've loved you — you'll be kissed for eternity.",
+    "The memory of our first kiss still gives me butterflies.",
+    "I want to kiss the smile on your face and the warmth in your heart.",
+    "If I could bottle our kisses, I'd have the most precious collection in the world.",
+    "A kiss doesn't need words. It speaks the language of two hearts in love.",
+    "I want to kiss your scars, your fears, and your doubts until they disappear.",
+    "Every time I think of kissing you, my heart does a little happy dance.",
+    "My lips miss yours. Can we fix that soon?",
+    "A soft kiss on your nose — because you're adorable and I can't help it.",
+    "Our kisses are proof that the best conversations don't always need words.",
+    "I want to be the one you pull closer for one more kiss before saying goodbye.",
+    "If love is a language, then our kiss is the most beautiful sentence.",
+    "I'm counting down to the next time I get to kiss you for real.",
+    "A goodnight kiss through this screen — sleep well, my love.",
+    "Your kiss is the only addiction I never want to recover from.",
+    "I want to kiss every moment of doubt away and replace it with certainty: I love you.",
+    "If I could paint our perfect moment, it would be us, sharing a quiet, perfect kiss.",
+    "My favorite dream? The one where I get to kiss you without waking up.",
+    "A kiss on your shoulder for every time you've carried the weight alone.",
+    "Our lips fit together like two pieces of a love puzzle.",
+    "I want to kiss you under the stars and tell you: you're my universe.",
+    "This isn't just a kiss — it's a promise that my heart belongs to you.",
+    "I'd walk a thousand miles just for one kiss from you.",
+    "A morning kiss to start your day, an evening kiss to end it — that's my dream routine.",
+    "My heart sends a kiss to yours. Did you feel it?",
+    "Sealed with love, signed with a kiss — this message is all yours.",
+  ],
+  // Day 8 — Valentine's Day Messages (50)
   [
     "Today, I just want you to know: loving you is my favorite decision, every single day.",
     "You're not just my Valentine—you're my person, my peace, and my home.",
@@ -472,7 +525,7 @@ export const dayMessages: string[][] = [
 ];
 
 export const hashtags = [
-  "#7DaysLoveSurprise",
+  "#LoveSurprise",
   "#LoveRevealWeek",
   "#CoupleSurpriseLink",
   "#ValentineCountdown",
@@ -480,22 +533,22 @@ export const hashtags = [
 ];
 
 export const getWhatsAppShareText = (link: string) =>
-  `I made a 7-Day Love Surprise for you ❤️\nOpen one each day till Valentine's Day 😍\nThis is specially made only for you 💌\n\nOpen here 👉 ${link}`;
+  `I made a Love Surprise for you ❤️\nOpen it and see what I've prepared for you 😍\nThis is specially made only for you 💌\n\nOpen here 👉 ${link}`;
 
 export const getInstagramShareText = () =>
-  `I created a 7-Day Love Surprise 💘\nOne reveal every day till Valentine's Day\nTag your partner & send ❤️`;
+  `I created a Love Surprise 💘\nOne reveal every day till Valentine's Day\nTag your partner & send ❤️`;
 
 export const getShortShareText = (link: string) =>
-  `7 Days. 7 Surprises. 1 Heart ❤️\nI made yours — open it daily 💌\n${link}`;
+  `Love Surprise for you ❤️\nI made yours — open it 💌\n${link}`;
 
 export const getChallengeShareText = (link: string) =>
-  `Couples Challenge 💞\nCreate your 7-Day Love Surprise\nSend it today — thank me later 😉\n${link}`;
+  `Couples Challenge 💞\nCreate your Love Surprise\nSend it today — thank me later 😉\n${link}`;
 
 export const relationshipTypes = [
-  { value: "couple", label: "💑 Couple" },
-  { value: "husband-wife", label: "💍 Husband-Wife" },
+  { value: "couple", label: "💑 Dating" },
+  { value: "married", label: "💍 Married" },
   { value: "long-distance", label: "🌍 Long Distance" },
-  { value: "crush", label: "💘 Crush" },
+  { value: "crush", label: "😳 Secret Crush" },
 ];
 
 export const loveStyles = [
