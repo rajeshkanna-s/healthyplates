@@ -113,6 +113,7 @@ const App = () => (
           {/* Auth route outside of Layout */}
           <Route path="/auth" element={<Auth />} />
           <Route path="/developer-bio" element={<DeveloperBio />} />
+          <Route path="/ValentineDay" element={<ValentineDay />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
