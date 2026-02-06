@@ -1,4 +1,4 @@
-import { Globe, Link2, Linkedin, Coffee, LayoutGrid, Mail } from "lucide-react";
+import { Globe, Link2, Linkedin, Coffee, LayoutGrid, Mail, ArrowLeft } from "lucide-react";
 
 const socialLinks = [
   {
