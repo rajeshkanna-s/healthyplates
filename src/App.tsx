@@ -47,6 +47,9 @@ import HabitTrackerPage from "./pages/HabitTrackerPage";
 import SmartFoodSwaps from "./pages/SmartFoodSwaps";
 import HealthyPlateBuilder from "./pages/HealthyPlateBuilder";
 import ExpenseTracker from "./pages/ExpenseTracker";
+import Mindfulness from "./pages/Mindfulness";
+import DeveloperBio from "./pages/DeveloperBio";
+import ValentineDay from "./pages/ValentineDay";
 
 const queryClient = new QueryClient();
 
@@ -68,6 +71,7 @@ const App = () => (
             <Route path="diseases/:id" element={<DiseaseDetail />} />
             <Route path="self-care" element={<SelfCare />} />
             <Route path="self-care/:id" element={<SelfCareDetail />} />
+            <Route path="mindfulness" element={<Mindfulness />} />
             <Route path="blog" element={<Blog />} />
             <Route path="blog/:id" element={<BlogDetail />} />
             <Route path="body-explorer" element={<BodyExplorer />} />
@@ -108,6 +112,8 @@ const App = () => (
           </Route>
           {/* Auth route outside of Layout */}
           <Route path="/auth" element={<Auth />} />
+          <Route path="/developer-bio" element={<DeveloperBio />} />
+          <Route path="/ValentineDay" element={<ValentineDay />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
