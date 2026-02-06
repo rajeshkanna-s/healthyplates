@@ -165,21 +165,6 @@ const ValentineFinale = ({ formData, shareUrl, onBack, customMessage, selections
           </div>
         )}
 
-        {(formData.partnerPhoto || formData.yourPhoto) && (
-          <div className="flex justify-center items-center gap-4 mb-8">
-            {formData.yourPhoto && (
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-3 border-rose-400 overflow-hidden shadow-xl shadow-rose-500/30">
-                <img src={formData.yourPhoto} alt="You" className="w-full h-full object-cover" />
-              </div>
-            )}
-            <div className="text-4xl animate-pulse">❤️</div>
-            {formData.partnerPhoto && (
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-3 border-pink-400 overflow-hidden shadow-xl shadow-pink-500/30">
-                <img src={formData.partnerPhoto} alt="Partner" className="w-full h-full object-cover" />
-              </div>
-            )}
-          </div>
-        )}
 
         <div className={`transition-all duration-1000 ${showNames ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
           <p className="text-3xl sm:text-4xl font-bold text-rose-300 mb-2" style={{ animation: "valentineNameGlow 2s ease-in-out infinite" }}>
