@@ -7,11 +7,14 @@ import { toast } from "@/hooks/use-toast";
 interface QRCodeModalProps {
   url: string;
   partnerName: string;
+  dayName?: string; // e.g. "Propose Day", "Valentine's Day"
 }
 
-const QRCodeModal = ({ url, partnerName }: QRCodeModalProps) => {
+const QRCodeModal = ({ url, partnerName, dayName }: QRCodeModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const qrRef = useRef<HTMLDivElement>(null);
+
+  const title = dayName ? `${dayName} Surprise` : "Valentine's Day Surprise";
 
   const downloadQR = () => {
     const svg = qrRef.current?.querySelector("svg");
@@ -22,29 +25,25 @@ const QRCodeModal = ({ url, partnerName }: QRCodeModalProps) => {
     canvas.width = 400;
     canvas.height = 480;
 
-    // Background
     const gradient = ctx.createLinearGradient(0, 0, 400, 480);
     gradient.addColorStop(0, "#4a0020");
     gradient.addColorStop(1, "#6b0030");
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 400, 480);
 
-    // Title
     ctx.fillStyle = "#fff";
     ctx.font = "bold 20px sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText("Valentine's Day Surprise", 200, 40);
+    ctx.fillText(title, 200, 40);
     ctx.font = "16px sans-serif";
     ctx.fillStyle = "#ffb3c6";
     ctx.fillText(`For ${partnerName} ❤️`, 200, 65);
 
-    // QR Code
     const svgData = new XMLSerializer().serializeToString(svg);
     const img = new Image();
     img.onload = () => {
       ctx.drawImage(img, 50, 90, 300, 300);
-      
-      // Footer
+
       ctx.font = "14px sans-serif";
       ctx.fillStyle = "#ffb3c6";
       ctx.fillText("Scan to open your surprise!", 200, 420);
@@ -65,7 +64,7 @@ const QRCodeModal = ({ url, partnerName }: QRCodeModalProps) => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "Valentine's Day Surprise",
+          title,
           text: `I made a special Valentine surprise for you! Scan the QR code ❤️`,
           url: url,
         });
@@ -77,12 +76,6 @@ const QRCodeModal = ({ url, partnerName }: QRCodeModalProps) => {
       navigator.clipboard.writeText(url);
       toast({ title: "Link copied!" });
     }
-  };
-
-  const handleClose = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsOpen(false);
   };
 
   if (!isOpen) {
@@ -99,16 +92,16 @@ const QRCodeModal = ({ url, partnerName }: QRCodeModalProps) => {
   }
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
-      onClick={handleClose}
+      onClick={() => setIsOpen(false)}
     >
-      <div 
+      <div
         className="bg-gradient-to-br from-rose-950 to-pink-950 border border-rose-500/30 rounded-2xl p-6 max-w-sm w-full relative"
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          onClick={handleClose}
+          onClick={() => setIsOpen(false)}
           className="absolute top-3 right-3 text-rose-300 hover:text-white z-[101] w-8 h-8 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 transition-colors"
           type="button"
         >

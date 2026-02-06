@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import ValentineLanding from "@/components/valentine/ValentineLanding";
 import ValentineExperience from "@/components/valentine/ValentineExperience";
-import { ValentineFormData, ValentineSurprise, DaySelection } from "@/components/valentine/types";
+import { ValentineFormData, ValentineSurprise, DaySelection, MemoryQuizItem } from "@/components/valentine/types";
 
 const STORAGE_KEY = "valentine-surprise-data";
 
@@ -13,9 +13,7 @@ const generateShortCode = (data: string): string => {
     const char = data.charCodeAt(i);
     hash = ((hash << 5) - hash + char) | 0;
   }
-  // Use absolute value and convert to base36 for compact representation
   const code = Math.abs(hash).toString(36);
-  // Add a second hash for uniqueness
   let hash2 = 5381;
   for (let i = 0; i < data.length; i++) {
     hash2 = (hash2 * 33) ^ data.charCodeAt(i);
@@ -41,6 +39,25 @@ const getShareData = (code: string): object | null => {
   } catch { return null; }
 };
 
+const decodeShareData = (decoded: Record<string, unknown>) => {
+  const formData: ValentineFormData = {
+    yourName: (decoded.n as string) || "Someone",
+    partnerName: (decoded.p as string) || "You",
+    relationshipType: (decoded.r as string) || "couple",
+    loveStyle: (decoded.s as string) || "romantic",
+    partnerPhoto: null,
+    yourPhoto: null,
+  };
+  const selections: DaySelection[] = ((decoded.d as [number, number[]][]) || []).map((item) => ({
+    dayNumber: item[0],
+    messageIndices: item[1] || [],
+  }));
+  const memoryQuiz: MemoryQuizItem[] | undefined = decoded.q
+    ? (decoded.q as [string, string][]).map(([question, answer]) => ({ question, answer }))
+    : undefined;
+  return { formData, selections, memoryQuiz, customMessage: decoded.m as string | undefined, createdAt: (decoded.c as string) || new Date().toISOString() };
+};
+
 const ValentineDay = () => {
   const [searchParams] = useSearchParams();
   const shareCode = searchParams.get("c");
@@ -63,61 +80,40 @@ const ValentineDay = () => {
     }
   }, [shareCode]);
 
-  // Handle shared link (partner view) — try short code first, then base64 fallback
+  // Handle shared link (partner view)
   if (shareCode) {
     // Try short code lookup
     const stored = getShareData(shareCode);
     if (stored) {
-      const decoded = stored as Record<string, unknown>;
-      const formData: ValentineFormData = {
-        yourName: (decoded.n as string) || "Someone",
-        partnerName: (decoded.p as string) || "You",
-        relationshipType: (decoded.r as string) || "couple",
-        loveStyle: (decoded.s as string) || "romantic",
-        partnerPhoto: null,
-        yourPhoto: null,
-      };
-      const selections: DaySelection[] = ((decoded.d as [number, number[]][]) || []).map((item) => ({
-        dayNumber: item[0],
-        messageIndices: item[1] || [],
-      }));
+      const { formData, selections, memoryQuiz, customMessage, createdAt } = decodeShareData(stored as Record<string, unknown>);
       const shareUrl = `${window.location.origin}/ValentineDay?c=${shareCode}`;
       return (
         <ValentineExperience
           formData={formData}
-          createdAt={(decoded.c as string) || new Date().toISOString()}
+          createdAt={createdAt}
           isPartnerView={true}
           shareUrl={shareUrl}
-          customMessage={decoded.m as string | undefined}
+          customMessage={customMessage}
           selections={selections.length > 0 ? selections : undefined}
+          memoryQuiz={memoryQuiz}
         />
       );
     }
 
-    // Fallback: try base64 decode for backward compatibility
+    // Fallback: try base64 decode
     try {
       const decoded = JSON.parse(atob(shareCode));
-      const formData: ValentineFormData = {
-        yourName: decoded.n || "Someone",
-        partnerName: decoded.p || "You",
-        relationshipType: decoded.r || "couple",
-        loveStyle: decoded.s || "romantic",
-        partnerPhoto: null,
-        yourPhoto: null,
-      };
-      const selections: DaySelection[] = (decoded.d || []).map((item: [number, number[]]) => ({
-        dayNumber: item[0],
-        messageIndices: item[1] || [],
-      }));
+      const { formData, selections, memoryQuiz, customMessage, createdAt } = decodeShareData(decoded);
       const shareUrl = `${window.location.origin}/ValentineDay?c=${shareCode}`;
       return (
         <ValentineExperience
           formData={formData}
-          createdAt={decoded.c || new Date().toISOString()}
+          createdAt={createdAt}
           isPartnerView={true}
           shareUrl={shareUrl}
-          customMessage={decoded.m}
+          customMessage={customMessage}
           selections={selections.length > 0 ? selections : undefined}
+          memoryQuiz={memoryQuiz}
         />
       );
     } catch {
@@ -125,40 +121,45 @@ const ValentineDay = () => {
     }
   }
 
-  const handleFormSubmit = (formData: ValentineFormData, customMessage?: string, selections?: DaySelection[]) => {
+  const handleFormSubmit = (formData: ValentineFormData, customMessage?: string, selections?: DaySelection[], memoryQuiz?: MemoryQuizItem[]) => {
     const createdAt = new Date().toISOString();
     
-    // Encode selections as compact array: [[dayNum, [msgIdx1, msgIdx2]], ...]
+    // Encode selections as compact array
     const selectionsCompact = selections?.map(s => [s.dayNumber, s.messageIndices]) || [];
     
-    const shareData = {
+    // Encode memory quiz as compact array
+    const quizCompact = memoryQuiz?.map(q => [q.question, q.answer]) || [];
+
+    const shareData: Record<string, unknown> = {
       n: formData.yourName,
       p: formData.partnerName,
       r: formData.relationshipType,
       s: formData.loveStyle,
       c: createdAt,
-      m: customMessage,
       d: selectionsCompact,
     };
+
+    // Only include optional fields if they have content
+    if (customMessage) shareData.m = customMessage;
+    if (quizCompact.length > 0) shareData.q = quizCompact;
 
     // Generate short code and store data
     const shortCode = generateShortCode(JSON.stringify(shareData));
     storeShareData(shortCode, shareData);
 
-    // Also encode as base64 for cross-device sharing (fallback)
+    // Also encode as base64 for cross-device sharing
     const encoded = btoa(JSON.stringify(shareData));
     
-    // Use short code for the display URL
-    const shareUrl = `${window.location.origin}/ValentineDay?c=${shortCode}`;
-    // Store the full base64 URL as backup
-    const fullShareUrl = `${window.location.origin}/ValentineDay?c=${encoded}`;
+    // Use base64 URL for sharing (works cross-device)
+    const shareUrl = `${window.location.origin}/ValentineDay?c=${encoded}`;
     
     const newSurprise: ValentineSurprise = {
       formData,
       createdAt,
-      shareUrl: fullShareUrl, // Use base64 URL for actual sharing (works cross-device)
+      shareUrl,
       customMessage,
       selections: selections || [],
+      memoryQuiz,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(newSurprise));
     setSurprise(newSurprise);
@@ -177,6 +178,7 @@ const ValentineDay = () => {
       shareUrl={surprise.shareUrl}
       customMessage={surprise.customMessage}
       selections={surprise.selections}
+      memoryQuiz={surprise.memoryQuiz}
     />
   );
 };

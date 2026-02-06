@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { Heart, ArrowLeft, Share2, Copy, Check, MessageCircle, Instagram, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ValentineFormData, DaySelection } from "./types";
+import { ValentineFormData, DaySelection, MemoryQuizItem } from "./types";
 import { dayContent, dayMessages, getWhatsAppShareText, hashtags } from "@/data/valentineData";
 import ValentineDayCard from "./ValentineDayCard";
 import ValentineFinale from "./ValentineFinale";
@@ -9,6 +9,7 @@ import LoveScore from "./LoveScore";
 import FloatingHearts from "./FloatingHearts";
 import QRCodeModal from "./QRCodeModal";
 import StickyBottomBar from "./StickyBottomBar";
+import MemoryQuizDisplay from "./MemoryQuizDisplay";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 
@@ -19,9 +20,10 @@ interface ValentineExperienceProps {
   shareUrl: string;
   customMessage?: string;
   selections?: DaySelection[];
+  memoryQuiz?: MemoryQuizItem[];
 }
 
-const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, customMessage, selections }: ValentineExperienceProps) => {
+const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, customMessage, selections, memoryQuiz }: ValentineExperienceProps) => {
   const [activeDay, setActiveDay] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
   const navigate = useNavigate();
@@ -29,7 +31,7 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
   // Filter days based on selections
   const visibleDays = useMemo(() => {
     if (!selections || selections.length === 0) {
-      return dayContent; // Show all if no selections (backward compat)
+      return dayContent;
     }
     const selectedDayNumbers = new Set(selections.map(s => s.dayNumber));
     return dayContent.filter(d => selectedDayNumbers.has(d.day));
@@ -43,6 +45,12 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
     const messages = dayMessages[dayNum - 1] || [];
     return sel.messageIndices.map(i => messages[i]).filter(Boolean);
   }, [selections]);
+
+  // Get day name for the first/primary selected day
+  const primaryDayName = useMemo(() => {
+    if (visibleDays.length === 1) return visibleDays[0].name;
+    return undefined;
+  }, [visibleDays]);
 
   const getCountdownText = (dayNum: number): string => {
     const targetDate = new Date(2026, 1, 6 + dayNum);
@@ -107,14 +115,19 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
       ctx.fillText("❤", Math.random() * 760, Math.random() * 960);
     }
 
+    // Day-specific title
+    const posterTitle = primaryDayName
+      ? `${primaryDayName} Surprise`
+      : "Valentine's Day Surprise";
+
     ctx.fillStyle = "#fff";
     ctx.font = "bold 42px sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText("Valentine's Day Surprise", 400, 120);
+    ctx.fillText(posterTitle, 400, 120);
 
     ctx.font = "24px sans-serif";
     ctx.fillStyle = "#ffb3c6";
-    ctx.fillText("Open one card daily till Valentine's Day", 400, 160);
+    ctx.fillText("A special surprise just for you ❤️", 400, 160);
 
     ctx.font = "100px serif";
     ctx.fillText("💖", 400, 300);
@@ -165,7 +178,7 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
     link.href = canvas.toDataURL("image/png");
     link.click();
     toast({ title: "Invite image downloaded! ❤️" });
-  }, [formData, shareUrl, customMessage]);
+  }, [formData, shareUrl, customMessage, primaryDayName]);
 
   const handleCreateNew = () => {
     localStorage.removeItem("valentine-surprise-data");
@@ -182,6 +195,9 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
           shareUrl={shareUrl}
           onBack={() => setActiveDay(null)}
           customMessage={customMessage}
+          selections={selections}
+          memoryQuiz={memoryQuiz}
+          isPartnerView={isPartnerView}
         />
       );
     }
@@ -196,6 +212,7 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
         onBack={() => setActiveDay(null)}
         customMessage={customMessage}
         isPartnerView={isPartnerView}
+        memoryQuiz={memoryQuiz}
       />
     );
   }
@@ -227,7 +244,7 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
               by <span className="font-bold text-rose-300">{formData.yourName}</span> ❤️
             </p>
             <p className="text-rose-300/60 text-sm mt-2">
-              Open One Card Daily Till Valentine's Day
+              Open your cards to see the surprise!
             </p>
             {customMessage && (
               <div className="mt-4 bg-black/20 border border-rose-500/20 rounded-xl p-4 max-w-sm mx-auto">
@@ -275,7 +292,7 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
                   <Instagram className="w-4 h-4 mr-1" />
                   Instagram
                 </Button>
-                <QRCodeModal url={shareUrl} partnerName={formData.partnerName} />
+                <QRCodeModal url={shareUrl} partnerName={formData.partnerName} dayName={primaryDayName} />
               </div>
               <p className="text-rose-400/50 text-xs">{hashtags.join(" ")}</p>
             </div>
@@ -324,8 +341,7 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
                   <span className="absolute -top-1.5 -right-1.5 w-3 h-3 bg-rose-500 rounded-full animate-pulse" />
                 )}
                 <span className="text-2xl sm:text-3xl block mb-1">{day.emoji}</span>
-                <span className="text-xs text-rose-200 font-medium block">Day {day.day}</span>
-                <span className="text-[10px] text-rose-300 font-semibold block mt-0.5">{day.name}</span>
+                <span className="text-[10px] text-rose-300 font-semibold block">{day.name}</span>
                 <span className="text-[9px] text-rose-300/60 block mt-0.5">{day.weekday}</span>
                 <span className="text-[9px] text-rose-400/50 block">{day.date}</span>
 
@@ -339,6 +355,13 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
             );
           })}
         </div>
+
+        {/* Memory Quiz for Partner */}
+        {isPartnerView && memoryQuiz && memoryQuiz.length > 0 && (
+          <div className="mb-8">
+            <MemoryQuizDisplay items={memoryQuiz} creatorName={formData.yourName} />
+          </div>
+        )}
 
         {/* Love Score Section */}
         <LoveScore name1={formData.yourName} name2={formData.partnerName} />

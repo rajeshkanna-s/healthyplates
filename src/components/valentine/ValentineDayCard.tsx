@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { ArrowLeft, Heart, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DayContentData } from "./types";
+import { DayContentData, MemoryQuizItem } from "./types";
 import FloatingHearts from "./FloatingHearts";
+import MemoryQuizDisplay from "./MemoryQuizDisplay";
 
 interface ValentineDayCardProps {
   dayContent: DayContentData;
@@ -12,9 +13,10 @@ interface ValentineDayCardProps {
   onBack: () => void;
   customMessage?: string;
   isPartnerView: boolean;
+  memoryQuiz?: MemoryQuizItem[];
 }
 
-const ValentineDayCard = ({ dayContent: day, selectedMessages, partnerName, yourName, onBack, customMessage, isPartnerView }: ValentineDayCardProps) => {
+const ValentineDayCard = ({ dayContent: day, selectedMessages, partnerName, yourName, onBack, customMessage, isPartnerView, memoryQuiz }: ValentineDayCardProps) => {
   const [accepted, setAccepted] = useState(false);
   const [revealedPromises, setRevealedPromises] = useState<Set<number>>(new Set());
 
@@ -45,7 +47,7 @@ const ValentineDayCard = ({ dayContent: day, selectedMessages, partnerName, your
       <div className="flex-1 flex flex-col items-center justify-center px-4 pt-20 pb-12 max-w-lg mx-auto w-full relative z-10">
         {/* Day Badge */}
         <div className="inline-flex flex-col items-center gap-1 bg-rose-500/20 border border-rose-500/30 rounded-2xl px-5 py-2 mb-6">
-          <span className="text-sm text-rose-300 font-medium">Day {day.day} — {day.name}</span>
+          <span className="text-sm text-rose-300 font-medium">{day.emoji} {day.name}</span>
           <span className="text-[10px] text-rose-400/60">{day.weekday}, {day.date}</span>
         </div>
 
@@ -64,6 +66,13 @@ const ValentineDayCard = ({ dayContent: day, selectedMessages, partnerName, your
           <p className="text-rose-100/90 text-center leading-relaxed whitespace-pre-line">
             {day.text}
           </p>
+        </div>
+
+        {/* Names */}
+        <div className="text-center mb-6">
+          <p className="text-2xl font-bold text-rose-200">{yourName}</p>
+          <p className="text-rose-400 text-lg my-1">♥</p>
+          <p className="text-2xl font-bold text-pink-200">{partnerName}</p>
         </div>
 
         {/* Promises (Day 5) */}
@@ -147,6 +156,11 @@ const ValentineDayCard = ({ dayContent: day, selectedMessages, partnerName, your
               </div>
             ))}
           </div>
+        )}
+
+        {/* Memory Quiz */}
+        {isPartnerView && memoryQuiz && memoryQuiz.length > 0 && (
+          <MemoryQuizDisplay items={memoryQuiz} creatorName={yourName} />
         )}
       </div>
     </div>

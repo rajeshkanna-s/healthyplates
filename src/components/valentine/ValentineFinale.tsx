@@ -1,26 +1,48 @@
 import { useState, useEffect, useCallback } from "react";
 import { ArrowLeft, Heart, Download, MessageCircle, Sparkles, Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ValentineFormData } from "./types";
-import { getWhatsAppShareText, hashtags, dayMessages } from "@/data/valentineData";
+import { ValentineFormData, DaySelection, MemoryQuizItem } from "./types";
+import { getWhatsAppShareText, hashtags, dayMessages, dayContent } from "@/data/valentineData";
 import { Link } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import FloatingHearts from "./FloatingHearts";
 import StickyBottomBar from "./StickyBottomBar";
+import MemoryQuizDisplay from "./MemoryQuizDisplay";
 
 interface ValentineFinaleProps {
   formData: ValentineFormData;
   shareUrl: string;
   onBack: () => void;
   customMessage?: string;
+  selections?: DaySelection[];
+  memoryQuiz?: MemoryQuizItem[];
+  isPartnerView?: boolean;
 }
 
-const ValentineFinale = ({ formData, shareUrl, onBack, customMessage }: ValentineFinaleProps) => {
+const ValentineFinale = ({ formData, shareUrl, onBack, customMessage, selections, memoryQuiz, isPartnerView }: ValentineFinaleProps) => {
   const [showNames, setShowNames] = useState(false);
 
   useEffect(() => {
     setTimeout(() => setShowNames(true), 800);
   }, []);
+
+  // Get the selected messages for Valentine's Day (Day 8) if any
+  const selectedDay8Messages = (() => {
+    if (!selections) return [];
+    const sel = selections.find(s => s.dayNumber === 8);
+    if (!sel || sel.messageIndices.length === 0) return [];
+    const messages = dayMessages[7] || [];
+    return sel.messageIndices.map(i => messages[i]).filter(Boolean);
+  })();
+
+  // Fallback to random messages if none selected
+  const finalMessages = selectedDay8Messages.length > 0
+    ? selectedDay8Messages
+    : (() => {
+        const msgs = dayMessages[7] || [];
+        const seed = (formData.yourName + formData.partnerName).split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+        return [msgs[seed % 50], msgs[(seed + 13) % 50], msgs[(seed + 27) % 50]].filter(Boolean);
+      })();
 
   const downloadPoster = useCallback(() => {
     const canvas = document.createElement("canvas");
@@ -44,7 +66,7 @@ const ValentineFinale = ({ formData, shareUrl, onBack, customMessage }: Valentin
     ctx.fillStyle = "#fff";
     ctx.font = "bold 48px sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText("Happy Valentine's Day", 400, 200);
+    ctx.fillText("Valentine's Day Surprise", 400, 200);
 
     ctx.font = "80px serif";
     ctx.fillText("💖", 400, 320);
@@ -89,10 +111,6 @@ const ValentineFinale = ({ formData, shareUrl, onBack, customMessage }: Valentin
     toast({ title: "Caption copied for Instagram! 📸" });
   };
 
-  const finalMessages = dayMessages[6] || [];
-  const seed = (formData.yourName + formData.partnerName).split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-  const selectedMessages = [finalMessages[seed % 50], finalMessages[(seed + 13) % 50], finalMessages[(seed + 27) % 50]].filter(Boolean);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-950 via-red-950 to-pink-950 relative overflow-auto pb-24">
       <FloatingHearts />
@@ -120,7 +138,7 @@ const ValentineFinale = ({ formData, shareUrl, onBack, customMessage }: Valentin
         <div className="inline-flex flex-col items-center gap-1 bg-rose-500/20 border border-rose-500/30 rounded-2xl px-5 py-3 mb-6">
           <div className="flex items-center gap-2">
             <Heart className="w-4 h-4 text-rose-400" fill="currentColor" />
-            <span className="text-sm text-rose-300 font-medium">Day 8 — Valentine's Day 💖</span>
+            <span className="text-sm text-rose-300 font-medium">💖 Valentine's Day</span>
           </div>
           <span className="text-xs text-rose-400/70">Saturday, February 14, 2026</span>
         </div>
@@ -174,12 +192,17 @@ const ValentineFinale = ({ formData, shareUrl, onBack, customMessage }: Valentin
         </div>
 
         <div className="mt-8 space-y-3">
-          {selectedMessages.map((msg, i) => (
+          {finalMessages.map((msg, i) => (
             <div key={i} className="bg-white/5 border border-rose-500/10 rounded-xl p-4">
               <p className="text-rose-200/70 text-sm italic">"{msg}"</p>
             </div>
           ))}
         </div>
+
+        {/* Memory Quiz for Partner */}
+        {isPartnerView && memoryQuiz && memoryQuiz.length > 0 && (
+          <MemoryQuizDisplay items={memoryQuiz} creatorName={formData.yourName} />
+        )}
 
         <div className="mt-8 space-y-3">
           <Button onClick={downloadPoster} className="w-full bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-semibold py-6 rounded-xl shadow-lg shadow-rose-500/25">
