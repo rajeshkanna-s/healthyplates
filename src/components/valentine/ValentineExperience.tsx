@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { Heart, ArrowLeft, Share2, Copy, Check, MessageCircle, Instagram, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ValentineFormData } from "./types";
+import { ValentineFormData, DaySelection } from "./types";
 import { dayContent, dayMessages, getWhatsAppShareText, hashtags } from "@/data/valentineData";
 import ValentineDayCard from "./ValentineDayCard";
 import ValentineFinale from "./ValentineFinale";
@@ -18,55 +18,56 @@ interface ValentineExperienceProps {
   isPartnerView: boolean;
   shareUrl: string;
   customMessage?: string;
+  selections?: DaySelection[];
 }
 
-const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, customMessage }: ValentineExperienceProps) => {
+const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, customMessage, selections }: ValentineExperienceProps) => {
   const [activeDay, setActiveDay] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
   const navigate = useNavigate();
 
-  // Calculate which day we're on based on actual Valentine's week dates
-  const getCurrentDay = useMemo(() => {
-    const now = new Date();
-    const valentinesDates = [
-      new Date(2026, 1, 7),  // Feb 7 - Rose Day
-      new Date(2026, 1, 8),  // Feb 8 - Propose Day
-      new Date(2026, 1, 9),  // Feb 9 - Chocolate Day
-      new Date(2026, 1, 10), // Feb 10 - Teddy Day
-      new Date(2026, 1, 11), // Feb 11 - Promise Day
-      new Date(2026, 1, 12), // Feb 12 - Hug Day
-      new Date(2026, 1, 13), // Feb 13 - Kiss Day
-      new Date(2026, 1, 14), // Feb 14 - Valentine's Day
-    ];
-    
-    for (let i = 0; i < valentinesDates.length; i++) {
-      if (now.toDateString() === valentinesDates[i].toDateString()) {
-        return i + 1;
-      }
+  // Filter days based on selections
+  const visibleDays = useMemo(() => {
+    if (!selections || selections.length === 0) {
+      return dayContent; // Show all if no selections (backward compat)
     }
-    // If before Feb 7, return 0 (not started yet)
-    if (now < valentinesDates[0]) return 0;
-    // If after Feb 14, return 8
-    if (now > valentinesDates[7]) return 8;
-    return 1;
-  }, []);
+    const selectedDayNumbers = new Set(selections.map(s => s.dayNumber));
+    return dayContent.filter(d => selectedDayNumbers.has(d.day));
+  }, [selections]);
+
+  // Get selected messages for a specific day
+  const getSelectedMessages = useCallback((dayNum: number): string[] => {
+    if (!selections) return [];
+    const sel = selections.find(s => s.dayNumber === dayNum);
+    if (!sel || sel.messageIndices.length === 0) return [];
+    const messages = dayMessages[dayNum - 1] || [];
+    return sel.messageIndices.map(i => messages[i]).filter(Boolean);
+  }, [selections]);
 
   const getCountdownText = (dayNum: number): string => {
-    const targetDate = new Date(2026, 1, 6 + dayNum); // Feb 7 = day 1
+    const targetDate = new Date(2026, 1, 6 + dayNum);
     const now = new Date();
     const diffMs = targetDate.getTime() - now.getTime();
-    
     if (diffMs <= 0) return "Today!";
-    
     const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
     if (diffDays === 1) return "Tomorrow";
     return `${diffDays} days`;
   };
 
-  const getMessageIndex = (day: number): number => {
-    const seed = (formData.yourName + formData.partnerName).split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-    return (seed + day * 7) % 50;
-  };
+  const getCurrentDay = useMemo(() => {
+    const now = new Date();
+    const valentinesDates = [
+      new Date(2026, 1, 7), new Date(2026, 1, 8), new Date(2026, 1, 9),
+      new Date(2026, 1, 10), new Date(2026, 1, 11), new Date(2026, 1, 12),
+      new Date(2026, 1, 13), new Date(2026, 1, 14),
+    ];
+    for (let i = 0; i < valentinesDates.length; i++) {
+      if (now.toDateString() === valentinesDates[i].toDateString()) return i + 1;
+    }
+    if (now < valentinesDates[0]) return 0;
+    if (now > valentinesDates[7]) return 8;
+    return 1;
+  }, []);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(shareUrl);
@@ -82,12 +83,9 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
 
   const handleInstagramShare = () => {
     navigator.clipboard.writeText(
-      `I created a 7-Day Love Surprise 💘\nOne reveal every day till Valentine's Day\n\n${shareUrl}\n\n${hashtags.join(" ")}`
+      `I created a Valentine's Day Surprise 💘\nOne reveal every day till Valentine's Day\n\n${shareUrl}\n\n${hashtags.join(" ")}`
     );
-    toast({ 
-      title: "Caption copied! 📸", 
-      description: "Paste it on Instagram with your screenshot" 
-    });
+    toast({ title: "Caption copied! 📸", description: "Paste it on Instagram with your screenshot" });
   };
 
   const downloadInviteImage = useCallback(() => {
@@ -96,7 +94,6 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
     canvas.height = 1000;
     const ctx = canvas.getContext("2d")!;
 
-    // Background gradient
     const gradient = ctx.createLinearGradient(0, 0, 800, 1000);
     gradient.addColorStop(0, "#4a0020");
     gradient.addColorStop(0.5, "#6b0030");
@@ -104,29 +101,24 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 800, 1000);
 
-    // Hearts decoration
     ctx.font = "40px serif";
     ctx.fillStyle = "rgba(255,100,150,0.15)";
     for (let i = 0; i < 25; i++) {
       ctx.fillText("❤", Math.random() * 760, Math.random() * 960);
     }
 
-    // Title
     ctx.fillStyle = "#fff";
     ctx.font = "bold 42px sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText("7 Days Love Surprise", 400, 120);
+    ctx.fillText("Valentine's Day Surprise", 400, 120);
 
-    // Subtitle
     ctx.font = "24px sans-serif";
     ctx.fillStyle = "#ffb3c6";
     ctx.fillText("Open one card daily till Valentine's Day", 400, 160);
 
-    // Big heart
     ctx.font = "100px serif";
     ctx.fillText("💖", 400, 300);
 
-    // Names
     ctx.font = "bold 36px sans-serif";
     ctx.fillStyle = "#fff";
     ctx.fillText(`From: ${formData.yourName}`, 400, 420);
@@ -137,7 +129,6 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
     ctx.fillStyle = "#fff";
     ctx.fillText(`To: ${formData.partnerName}`, 400, 520);
 
-    // Custom message
     if (customMessage) {
       ctx.font = "italic 20px sans-serif";
       ctx.fillStyle = "rgba(255,179,198,0.9)";
@@ -157,17 +148,16 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
       ctx.fillText(line, 400, y);
     }
 
-    // Link
     ctx.font = "18px sans-serif";
     ctx.fillStyle = "#ffb3c6";
     ctx.fillText("Scan or visit:", 400, 780);
-    ctx.font = "bold 16px sans-serif";
-    ctx.fillText(shareUrl, 400, 810);
+    ctx.font = "bold 14px sans-serif";
+    const displayUrl = shareUrl.length > 80 ? shareUrl.substring(0, 77) + "..." : shareUrl;
+    ctx.fillText(displayUrl, 400, 810);
 
-    // Footer
     ctx.font = "14px sans-serif";
     ctx.fillStyle = "rgba(255,179,198,0.4)";
-    ctx.fillText("Made with ❤️ | 7 Days Love Surprise", 400, 920);
+    ctx.fillText("Made with ❤️ | Valentine's Day Surprise", 400, 920);
     ctx.fillText("Developed by RAJESHKANNA S", 400, 945);
 
     const link = document.createElement("a");
@@ -183,9 +173,8 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
     window.location.reload();
   };
 
-  // If a day card is active
+  // Active day view
   if (activeDay !== null) {
-    const dayIndex = activeDay - 1;
     if (activeDay === 8) {
       return (
         <ValentineFinale
@@ -196,18 +185,17 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
         />
       );
     }
-    const content = dayContent[dayIndex];
-    const messages = dayMessages[dayIndex] || [];
-    const messageIndex = getMessageIndex(activeDay);
+    const content = dayContent[activeDay - 1];
+    const selectedMsgs = getSelectedMessages(activeDay);
     return (
       <ValentineDayCard
         dayContent={content}
-        bonusMessage={messages[messageIndex]}
-        allMessages={messages}
+        selectedMessages={selectedMsgs}
         partnerName={formData.partnerName}
         yourName={formData.yourName}
         onBack={() => setActiveDay(null)}
         customMessage={customMessage}
+        isPartnerView={isPartnerView}
       />
     );
   }
@@ -215,7 +203,7 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-950 via-red-950 to-pink-950 relative overflow-auto pb-24">
       <FloatingHearts />
-      
+
       {/* Top Navigation */}
       <div className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-4">
         <Link
@@ -235,14 +223,17 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
             <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
               A Love Surprise Was Created For You
             </h1>
-            <p className="text-rose-200/80">
-              From: <span className="font-semibold text-rose-300">{formData.yourName}</span>
+            <p className="text-xl text-rose-200 mt-1">
+              by <span className="font-bold text-rose-300">{formData.yourName}</span> ❤️
             </p>
-            <p className="text-rose-300/60 text-sm mt-1">
+            <p className="text-rose-300/60 text-sm mt-2">
               Open One Card Daily Till Valentine's Day
             </p>
             {customMessage && (
               <div className="mt-4 bg-black/20 border border-rose-500/20 rounded-xl p-4 max-w-sm mx-auto">
+                <p className="text-rose-300 text-xs font-medium mb-1">
+                  {formData.yourName} wrote for you:
+                </p>
                 <p className="text-rose-200/80 text-sm italic">"{customMessage}"</p>
               </div>
             )}
@@ -256,7 +247,7 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
               Love Surprise for {formData.partnerName} ❤️
             </h1>
             <p className="text-rose-200/80 text-sm mb-4">
-              Share this link with your partner — they'll unlock one card each day!
+              Share this link with your partner — they'll see your selected days & messages!
             </p>
 
             {/* Share Section */}
@@ -276,19 +267,11 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
                 </Button>
               </div>
               <div className="flex gap-2 justify-center flex-wrap">
-                <Button
-                  size="sm"
-                  onClick={handleWhatsAppShare}
-                  className="bg-green-600 hover:bg-green-500 text-white text-xs"
-                >
+                <Button size="sm" onClick={handleWhatsAppShare} className="bg-green-600 hover:bg-green-500 text-white text-xs">
                   <MessageCircle className="w-4 h-4 mr-1" />
                   WhatsApp
                 </Button>
-                <Button
-                  size="sm"
-                  onClick={handleInstagramShare}
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white text-xs"
-                >
+                <Button size="sm" onClick={handleInstagramShare} className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white text-xs">
                   <Instagram className="w-4 h-4 mr-1" />
                   Instagram
                 </Button>
@@ -318,13 +301,13 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
           </div>
         )}
 
-        {/* Day Cards Grid - All days visible */}
+        {/* Day Cards Grid - Only selected days */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
-          {dayContent.map((day) => {
+          {visibleDays.map((day) => {
             const isToday = getCurrentDay === day.day;
             const isPast = getCurrentDay > day.day;
             const isFuture = getCurrentDay < day.day;
-            
+
             return (
               <button
                 key={day.day}
@@ -345,8 +328,7 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
                 <span className="text-[10px] text-rose-300 font-semibold block mt-0.5">{day.name}</span>
                 <span className="text-[9px] text-rose-300/60 block mt-0.5">{day.weekday}</span>
                 <span className="text-[9px] text-rose-400/50 block">{day.date}</span>
-                
-                {/* Countdown for future days */}
+
                 {isFuture && (
                   <div className="flex items-center justify-center gap-1 mt-1 text-[9px] text-rose-300/50">
                     <Clock className="w-3 h-3" />
@@ -387,8 +369,8 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
       </div>
 
       {/* Sticky Bottom Bar */}
-      <StickyBottomBar 
-        shareUrl={shareUrl} 
+      <StickyBottomBar
+        shareUrl={shareUrl}
         onDownload={downloadInviteImage}
         partnerName={formData.partnerName}
       />

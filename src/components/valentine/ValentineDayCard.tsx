@@ -1,22 +1,22 @@
 import { useState } from "react";
-import { ArrowLeft, Heart, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
+import { ArrowLeft, Heart, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DayContentData } from "./types";
+import FloatingHearts from "./FloatingHearts";
 
 interface ValentineDayCardProps {
   dayContent: DayContentData;
-  bonusMessage: string;
-  allMessages: string[];
+  selectedMessages: string[];
   partnerName: string;
   yourName: string;
   onBack: () => void;
+  customMessage?: string;
+  isPartnerView: boolean;
 }
 
-const ValentineDayCard = ({ dayContent: day, bonusMessage, allMessages, partnerName, yourName, onBack }: ValentineDayCardProps) => {
+const ValentineDayCard = ({ dayContent: day, selectedMessages, partnerName, yourName, onBack, customMessage, isPartnerView }: ValentineDayCardProps) => {
   const [accepted, setAccepted] = useState(false);
-  const [showMoreMessages, setShowMoreMessages] = useState(false);
   const [revealedPromises, setRevealedPromises] = useState<Set<number>>(new Set());
-  const [visibleMessages, setVisibleMessages] = useState(5);
 
   const togglePromise = (index: number) => {
     setRevealedPromises((prev) => {
@@ -29,6 +29,8 @@ const ValentineDayCard = ({ dayContent: day, bonusMessage, allMessages, partnerN
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-950 via-red-950 to-pink-950 flex flex-col relative overflow-auto">
+      <FloatingHearts />
+
       {/* Back Button */}
       <div className="fixed top-0 left-0 right-0 z-50 p-4">
         <button
@@ -40,10 +42,11 @@ const ValentineDayCard = ({ dayContent: day, bonusMessage, allMessages, partnerN
         </button>
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center px-4 pt-20 pb-12 max-w-lg mx-auto w-full">
+      <div className="flex-1 flex flex-col items-center justify-center px-4 pt-20 pb-12 max-w-lg mx-auto w-full relative z-10">
         {/* Day Badge */}
-        <div className="inline-flex items-center gap-2 bg-rose-500/20 border border-rose-500/30 rounded-full px-4 py-1.5 mb-6">
+        <div className="inline-flex flex-col items-center gap-1 bg-rose-500/20 border border-rose-500/30 rounded-2xl px-5 py-2 mb-6">
           <span className="text-sm text-rose-300 font-medium">Day {day.day} — {day.name}</span>
+          <span className="text-[10px] text-rose-400/60">{day.weekday}, {day.date}</span>
         </div>
 
         {/* Emoji */}
@@ -112,49 +115,39 @@ const ValentineDayCard = ({ dayContent: day, bonusMessage, allMessages, partnerN
         {/* Mini Line */}
         <p className="text-rose-400/50 text-xs mt-4">{day.miniLine}</p>
 
-        {/* Bonus Message */}
-        {bonusMessage && (
-          <div className="mt-8 w-full">
+        {/* Custom Message */}
+        {customMessage && isPartnerView && (
+          <div className="mt-6 w-full">
             <div className="bg-gradient-to-r from-rose-500/10 to-pink-500/10 border border-rose-500/15 rounded-2xl p-5">
-              <div className="flex items-center gap-2 mb-3">
-                <Sparkles className="w-4 h-4 text-rose-400" />
-                <span className="text-rose-300 text-xs font-medium">Special message for {partnerName}</span>
-              </div>
-              <p className="text-rose-100/80 text-sm italic leading-relaxed text-center">
-                "{bonusMessage}"
+              <p className="text-rose-300 text-xs font-medium mb-2">
+                {yourName} wrote for you:
               </p>
-              <p className="text-rose-400/40 text-xs text-right mt-2">— {yourName}</p>
+              <p className="text-rose-100/80 text-sm italic leading-relaxed text-center">
+                "{customMessage}"
+              </p>
             </div>
           </div>
         )}
 
-        {/* More Messages */}
-        <div className="mt-6 w-full">
-          <button
-            onClick={() => setShowMoreMessages(!showMoreMessages)}
-            className="flex items-center gap-2 text-rose-300/60 text-xs hover:text-rose-300 transition-colors mx-auto"
-          >
-            {showMoreMessages ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-            {showMoreMessages ? "Hide" : "More"} love messages ({allMessages.length})
-          </button>
-          {showMoreMessages && (
-            <div className="mt-4 space-y-3">
-              {allMessages.slice(0, visibleMessages).map((msg, i) => (
-                <div key={i} className="bg-white/5 border border-rose-500/10 rounded-xl p-3">
-                  <p className="text-rose-200/70 text-xs italic">"{msg}"</p>
-                </div>
-              ))}
-              {visibleMessages < allMessages.length && (
-                <button
-                  onClick={() => setVisibleMessages((v) => Math.min(v + 10, allMessages.length))}
-                  className="text-rose-400 text-xs hover:text-rose-300 mx-auto block"
-                >
-                  Load more...
-                </button>
-              )}
+        {/* Selected Messages */}
+        {selectedMessages.length > 0 && (
+          <div className="mt-6 w-full space-y-3">
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="w-4 h-4 text-rose-400" />
+              <span className="text-rose-300 text-xs font-medium">
+                {isPartnerView ? `Special messages from ${yourName}` : "Messages you selected"}
+              </span>
             </div>
-          )}
-        </div>
+            {selectedMessages.map((msg, i) => (
+              <div key={i} className="bg-gradient-to-r from-rose-500/10 to-pink-500/10 border border-rose-500/15 rounded-xl p-4">
+                <p className="text-rose-100/80 text-sm italic leading-relaxed text-center">
+                  "{msg}"
+                </p>
+                <p className="text-rose-400/40 text-xs text-right mt-2">— {yourName}</p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -33,7 +33,7 @@ const QRCodeModal = ({ url, partnerName }: QRCodeModalProps) => {
     ctx.fillStyle = "#fff";
     ctx.font = "bold 20px sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText("7 Days Love Surprise", 200, 40);
+    ctx.fillText("Valentine's Day Surprise", 200, 40);
     ctx.font = "16px sans-serif";
     ctx.fillStyle = "#ffb3c6";
     ctx.fillText(`For ${partnerName} ❤️`, 200, 65);
@@ -65,7 +65,7 @@ const QRCodeModal = ({ url, partnerName }: QRCodeModalProps) => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "7 Days Love Surprise",
+          title: "Valentine's Day Surprise",
           text: `I made a special Valentine surprise for you! Scan the QR code ❤️`,
           url: url,
         });
@@ -77,6 +77,12 @@ const QRCodeModal = ({ url, partnerName }: QRCodeModalProps) => {
       navigator.clipboard.writeText(url);
       toast({ title: "Link copied!" });
     }
+  };
+
+  const handleClose = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsOpen(false);
   };
 
   if (!isOpen) {
@@ -93,11 +99,18 @@ const QRCodeModal = ({ url, partnerName }: QRCodeModalProps) => {
   }
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-      <div className="bg-gradient-to-br from-rose-950 to-pink-950 border border-rose-500/30 rounded-2xl p-6 max-w-sm w-full relative">
+    <div 
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+      onClick={handleClose}
+    >
+      <div 
+        className="bg-gradient-to-br from-rose-950 to-pink-950 border border-rose-500/30 rounded-2xl p-6 max-w-sm w-full relative"
+        onClick={(e) => e.stopPropagation()}
+      >
         <button
-          onClick={() => setIsOpen(false)}
-          className="absolute top-3 right-3 text-rose-300 hover:text-white"
+          onClick={handleClose}
+          className="absolute top-3 right-3 text-rose-300 hover:text-white z-[101] w-8 h-8 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 transition-colors"
+          type="button"
         >
           <X className="w-5 h-5" />
         </button>
