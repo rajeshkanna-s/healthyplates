@@ -49,6 +49,7 @@ import HealthyPlateBuilder from "./pages/HealthyPlateBuilder";
 import ExpenseTracker from "./pages/ExpenseTracker";
 import Mindfulness from "./pages/Mindfulness";
 import DeveloperBio from "./pages/DeveloperBio";
+import ValentineDay from "./pages/ValentineDay";
 
 const queryClient = new QueryClient();
 
@@ -112,6 +113,7 @@ const App = () => (
           {/* Auth route outside of Layout */}
           <Route path="/auth" element={<Auth />} />
           <Route path="/developer-bio" element={<DeveloperBio />} />
+          <Route path="/ValentineDay" element={<ValentineDay />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
