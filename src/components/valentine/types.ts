@@ -7,6 +7,11 @@ export interface ValentineFormData {
   yourPhoto: string | null;
 }
 
+export interface DaySelection {
+  dayNumber: number;
+  messageIndices: number[]; // indices into dayMessages[dayNumber-1], max 3
+}
+
 export interface DayContentData {
   day: number;
   name: string;
@@ -25,6 +30,7 @@ export interface ValentineSurprise {
   createdAt: string;
   shareUrl: string;
   customMessage?: string;
+  selections: DaySelection[];
 }
 
 export interface ShareTextData {

@@ -28,7 +28,6 @@ const ValentineFinale = ({ formData, shareUrl, onBack, customMessage }: Valentin
     canvas.height = 1000;
     const ctx = canvas.getContext("2d")!;
 
-    // Background gradient
     const gradient = ctx.createLinearGradient(0, 0, 800, 1000);
     gradient.addColorStop(0, "#4a0020");
     gradient.addColorStop(0.5, "#6b0030");
@@ -36,24 +35,20 @@ const ValentineFinale = ({ formData, shareUrl, onBack, customMessage }: Valentin
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 800, 1000);
 
-    // Hearts decoration
     ctx.font = "40px serif";
     ctx.fillStyle = "rgba(255,100,150,0.15)";
     for (let i = 0; i < 20; i++) {
       ctx.fillText("❤", Math.random() * 760, Math.random() * 960);
     }
 
-    // Title
     ctx.fillStyle = "#fff";
     ctx.font = "bold 48px sans-serif";
     ctx.textAlign = "center";
     ctx.fillText("Happy Valentine's Day", 400, 200);
 
-    // Heart emoji
     ctx.font = "80px serif";
     ctx.fillText("💖", 400, 320);
 
-    // Names
     ctx.font = "bold 36px sans-serif";
     ctx.fillStyle = "#ffb3c6";
     ctx.fillText(formData.yourName, 400, 450);
@@ -64,23 +59,20 @@ const ValentineFinale = ({ formData, shareUrl, onBack, customMessage }: Valentin
     ctx.fillStyle = "#ffb3c6";
     ctx.fillText(formData.partnerName, 400, 555);
 
-    // Message
     ctx.font = "italic 20px sans-serif";
     ctx.fillStyle = "rgba(255,179,198,0.7)";
     ctx.fillText("Out of all the people in all the moments —", 400, 650);
     ctx.fillText("my heart chose you. And it still does.", 400, 680);
 
-    // Custom message
     if (customMessage) {
       ctx.font = "italic 18px sans-serif";
       ctx.fillStyle = "rgba(255,179,198,0.9)";
       ctx.fillText(`"${customMessage}"`, 400, 750);
     }
 
-    // Footer
     ctx.font = "14px sans-serif";
     ctx.fillStyle = "rgba(255,179,198,0.4)";
-    ctx.fillText("Made with ❤️ | 7 Days Love Surprise", 400, 900);
+    ctx.fillText("Made with ❤️ | Valentine's Day Surprise", 400, 900);
     ctx.fillText("Developed by RAJESHKANNA S", 400, 930);
 
     const link = document.createElement("a");
@@ -138,27 +130,23 @@ const ValentineFinale = ({ formData, shareUrl, onBack, customMessage }: Valentin
           💖
         </div>
 
-        {/* Title */}
         <h1 className="text-3xl sm:text-4xl font-bold text-white mb-6">
           You Are My Forever ❤️
         </h1>
 
-        {/* Main Text */}
         <div className="bg-black/20 backdrop-blur-sm border border-rose-500/15 rounded-2xl p-6 mb-8">
           <p className="text-rose-100/90 leading-relaxed whitespace-pre-line text-lg">
             Out of all the people in all the moments —{"\n"}my heart chose you.{"\n"}And it still does.
           </p>
         </div>
 
-        {/* Custom Message */}
         {customMessage && (
           <div className="mb-8 bg-gradient-to-r from-rose-500/10 to-pink-500/10 border border-rose-500/20 rounded-xl p-4">
+            <p className="text-rose-300 text-xs font-medium mb-1">{formData.yourName} wrote for you:</p>
             <p className="text-rose-200/80 text-sm italic">"{customMessage}"</p>
-            <p className="text-rose-400/40 text-xs text-right mt-2">— {formData.yourName}</p>
           </div>
         )}
 
-        {/* Photo Frame */}
         {(formData.partnerPhoto || formData.yourPhoto) && (
           <div className="flex justify-center items-center gap-4 mb-8">
             {formData.yourPhoto && (
@@ -175,24 +163,16 @@ const ValentineFinale = ({ formData, shareUrl, onBack, customMessage }: Valentin
           </div>
         )}
 
-        {/* Names Animation */}
         <div className={`transition-all duration-1000 ${showNames ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-          <p
-            className="text-3xl sm:text-4xl font-bold text-rose-300 mb-2"
-            style={{ animation: "valentineNameGlow 2s ease-in-out infinite" }}
-          >
+          <p className="text-3xl sm:text-4xl font-bold text-rose-300 mb-2" style={{ animation: "valentineNameGlow 2s ease-in-out infinite" }}>
             {formData.yourName}
           </p>
           <p className="text-2xl text-rose-400 mb-2">♥</p>
-          <p
-            className="text-3xl sm:text-4xl font-bold text-pink-300"
-            style={{ animation: "valentineNameGlow 2s ease-in-out infinite 0.5s" }}
-          >
+          <p className="text-3xl sm:text-4xl font-bold text-pink-300" style={{ animation: "valentineNameGlow 2s ease-in-out infinite 0.5s" }}>
             {formData.partnerName}
           </p>
         </div>
 
-        {/* Selected Messages */}
         <div className="mt-8 space-y-3">
           {selectedMessages.map((msg, i) => (
             <div key={i} className="bg-white/5 border border-rose-500/10 rounded-xl p-4">
@@ -201,69 +181,44 @@ const ValentineFinale = ({ formData, shareUrl, onBack, customMessage }: Valentin
           ))}
         </div>
 
-        {/* Action Buttons */}
         <div className="mt-8 space-y-3">
-          <Button
-            onClick={downloadPoster}
-            className="w-full bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-semibold py-6 rounded-xl shadow-lg shadow-rose-500/25"
-          >
+          <Button onClick={downloadPoster} className="w-full bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-semibold py-6 rounded-xl shadow-lg shadow-rose-500/25">
             <Download className="w-5 h-5 mr-2" />
             Download Love Poster
           </Button>
-
           <div className="grid grid-cols-2 gap-3">
-            <Button
-              onClick={() => {
-                const text = getWhatsAppShareText(shareUrl);
-                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
-              }}
-              className="bg-green-600 hover:bg-green-500 text-white font-semibold py-4 rounded-xl"
-            >
+            <Button onClick={() => { const text = getWhatsAppShareText(shareUrl); window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank"); }} className="bg-green-600 hover:bg-green-500 text-white font-semibold py-4 rounded-xl">
               <MessageCircle className="w-5 h-5 mr-2" />
               WhatsApp
             </Button>
-            <Button
-              onClick={handleInstagramShare}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold py-4 rounded-xl"
-            >
+            <Button onClick={handleInstagramShare} className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold py-4 rounded-xl">
               <Instagram className="w-5 h-5 mr-2" />
               Instagram
             </Button>
           </div>
-
-          <Link
-            to="/ValentineDay"
-            onClick={() => localStorage.removeItem("valentine-surprise-data")}
+          <button
+            onClick={() => { localStorage.removeItem("valentine-surprise-data"); window.location.href = "/ValentineDay"; }}
             className="block w-full bg-white/10 border border-rose-500/20 text-rose-200 font-semibold py-4 rounded-xl hover:bg-white/15 transition-colors text-center"
           >
             <span className="flex items-center justify-center gap-2">
               <Sparkles className="w-5 h-5" />
               Make One For Someone You Love
             </span>
-          </Link>
+          </button>
         </div>
 
         <p className="text-rose-400/30 text-xs mt-4">{hashtags.join(" ")}</p>
 
-        {/* Footer */}
         <div className="mt-10 pt-6 border-t border-rose-500/10">
           <p className="text-rose-300/40 text-xs">Made with ❤️ for you</p>
           <p className="text-rose-300/40 text-xs mt-1">Developed by RAJESHKANNA S</p>
-          <Link
-            to="/developer-bio"
-            className="inline-block mt-2 px-4 py-1.5 text-xs font-medium rounded-lg border border-rose-500/20 bg-rose-500/5 text-rose-300 hover:bg-rose-500/10 hover:border-rose-500/40 transition-all"
-          >
+          <Link to="/developer-bio" className="inline-block mt-2 px-4 py-1.5 text-xs font-medium rounded-lg border border-rose-500/20 bg-rose-500/5 text-rose-300 hover:bg-rose-500/10 hover:border-rose-500/40 transition-all">
             To Know RAJESHKANNA
           </Link>
         </div>
       </div>
 
-      {/* Sticky Bottom Bar */}
-      <StickyBottomBar 
-        shareUrl={shareUrl} 
-        onDownload={downloadPoster}
-        partnerName={formData.partnerName}
-      />
+      <StickyBottomBar shareUrl={shareUrl} onDownload={downloadPoster} partnerName={formData.partnerName} />
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-interface Heart {
+interface HeartItem {
   id: number;
   left: number;
   size: number;
@@ -10,15 +10,15 @@ interface Heart {
 }
 
 const FloatingHearts = () => {
-  const [hearts, setHearts] = useState<Heart[]>([]);
+  const [hearts, setHearts] = useState<HeartItem[]>([]);
 
   useEffect(() => {
-    const newHearts: Heart[] = Array.from({ length: 35 }, (_, i) => ({
+    const newHearts: HeartItem[] = Array.from({ length: 40 }, (_, i) => ({
       id: i,
       left: Math.random() * 100,
-      size: 10 + Math.random() * 18,
-      delay: Math.random() * 8,
-      duration: 6 + Math.random() * 8,
+      size: 12 + Math.random() * 20,
+      delay: Math.random() * 10,
+      duration: 6 + Math.random() * 10,
       type: i % 3 === 0 ? "pink" : i % 5 === 0 ? "sparkle" : "heart",
     }));
     setHearts(newHearts);
