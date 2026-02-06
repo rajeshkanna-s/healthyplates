@@ -49,6 +49,7 @@ import HealthyPlateBuilder from "./pages/HealthyPlateBuilder";
 import ExpenseTracker from "./pages/ExpenseTracker";
 import Mindfulness from "./pages/Mindfulness";
 import DeveloperBio from "./pages/DeveloperBio";
+import ValentineDay from "./pages/ValentineDay";
 
 const queryClient = new QueryClient();
 
