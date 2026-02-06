@@ -10,8 +10,20 @@ interface DayMessageSelectorProps {
 }
 
 const DayMessageSelector = ({ onComplete, onBack }: DayMessageSelectorProps) => {
-  const [selectedDays, setSelectedDays] = useState<Set<number>>(new Set([1, 2, 3, 4, 5, 6, 7, 8]));
-  const [expandedDay, setExpandedDay] = useState<number | null>(null);
+  // Calculate which day of Valentine's week it is (Feb 7-14, 2026)
+  const getCurrentValentineDay = (): number => {
+    const now = new Date();
+    const feb7 = new Date(2026, 1, 7); // Feb 7, 2026
+    const feb14 = new Date(2026, 1, 14); // Feb 14, 2026
+    if (now < feb7) return 1;
+    if (now > feb14) return 8;
+    const diff = Math.floor((now.getTime() - feb7.getTime()) / (1000 * 60 * 60 * 24));
+    return Math.min(diff + 1, 8);
+  };
+
+  const currentDay = getCurrentValentineDay();
+  const [selectedDays, setSelectedDays] = useState<Set<number>>(new Set([currentDay]));
+  const [expandedDay, setExpandedDay] = useState<number | null>(currentDay);
   const [selectedMessages, setSelectedMessages] = useState<Record<number, Set<number>>>({});
 
   const toggleDay = (dayNum: number) => {
