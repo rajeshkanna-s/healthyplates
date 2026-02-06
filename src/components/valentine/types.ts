@@ -16,12 +16,15 @@ export interface DayContentData {
   buttonText: string;
   miniLine: string;
   promises?: string[];
+  date: string;
+  weekday: string;
 }
 
 export interface ValentineSurprise {
   formData: ValentineFormData;
   createdAt: string;
   shareUrl: string;
+  customMessage?: string;
 }
 
 export interface ShareTextData {

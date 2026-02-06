@@ -9,6 +9,8 @@ export const dayContent: DayContentData[] = [
     text: "Like a rose spreads fragrance, you fill my life with warmth and beauty.\nToday I send you a rose made of words — and a heart full of love.",
     buttonText: "Accept My Rose",
     miniLine: "This is Day 1 of your Love Surprise ❤️",
+    date: "February 7, 2026",
+    weekday: "Saturday",
   },
   {
     day: 2,
@@ -18,6 +20,8 @@ export const dayContent: DayContentData[] = [
     text: "If I had to choose again, I would still choose you — without pause, without doubt, without fear.\nNot just today. Every day.",
     buttonText: "Say Yes Again ❤️",
     miniLine: "This is Day 2 of your Love Surprise ❤️",
+    date: "February 8, 2026",
+    weekday: "Sunday",
   },
   {
     day: 3,
@@ -27,6 +31,8 @@ export const dayContent: DayContentData[] = [
     text: "Chocolates melt — but my love for you only grows richer with time.\nYou are my favorite sweetness.",
     buttonText: "Send Sweetness",
     miniLine: "This is Day 3 of your Love Surprise ❤️",
+    date: "February 9, 2026",
+    weekday: "Monday",
   },
   {
     day: 4,
@@ -36,6 +42,8 @@ export const dayContent: DayContentData[] = [
     text: "If comfort had a face, it would be yours.\nIf peace had a place, it would be your arms.",
     buttonText: "Receive Warm Hug",
     miniLine: "This is Day 4 of your Love Surprise ❤️",
+    date: "February 10, 2026",
+    weekday: "Tuesday",
   },
   {
     day: 5,
@@ -45,6 +53,8 @@ export const dayContent: DayContentData[] = [
     text: "I promise to stand with you in small moments and big storms.\nNot perfect — but always present.",
     buttonText: "Accept My Promise",
     miniLine: "This is Day 5 of your Love Surprise ❤️",
+    date: "February 11, 2026",
+    weekday: "Wednesday",
     promises: [
       "I will listen",
       "I will respect",
@@ -60,6 +70,8 @@ export const dayContent: DayContentData[] = [
     text: "Close your eyes for a moment —\nimagine my arms around you right now.\nThat feeling — keep it.",
     buttonText: "Feel The Hug",
     miniLine: "This is Day 6 of your Love Surprise ❤️",
+    date: "February 12, 2026",
+    weekday: "Thursday",
   },
   {
     day: 7,
@@ -69,6 +81,8 @@ export const dayContent: DayContentData[] = [
     text: "Some words are spoken.\nSome are felt.\nThis one is felt.",
     buttonText: "Open Final Surprise Tomorrow",
     miniLine: "This is Day 7 of your Love Surprise ❤️",
+    date: "February 13, 2026",
+    weekday: "Friday",
   },
   {
     day: 8,
@@ -78,6 +92,8 @@ export const dayContent: DayContentData[] = [
     text: "Out of all the people in all the moments —\nmy heart chose you.\nAnd it still does.",
     buttonText: "Download Love Poster",
     miniLine: "Happy Valentine's Day ❤️",
+    date: "February 14, 2026",
+    weekday: "Saturday",
   },
 ];
 

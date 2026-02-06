@@ -1,30 +1,24 @@
 import { useState, useEffect, useCallback } from "react";
-import { ArrowLeft, Heart, Download, Share2, MessageCircle, Sparkles } from "lucide-react";
+import { ArrowLeft, Heart, Download, MessageCircle, Sparkles, Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ValentineFormData } from "./types";
-import { getWhatsAppShareText, getShortShareText, hashtags, dayMessages } from "@/data/valentineData";
+import { getWhatsAppShareText, hashtags, dayMessages } from "@/data/valentineData";
 import { Link } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
+import FloatingHearts from "./FloatingHearts";
+import StickyBottomBar from "./StickyBottomBar";
 
 interface ValentineFinaleProps {
   formData: ValentineFormData;
   shareUrl: string;
   onBack: () => void;
+  customMessage?: string;
 }
 
-const ValentineFinale = ({ formData, shareUrl, onBack }: ValentineFinaleProps) => {
-  const [hearts, setHearts] = useState<{ id: number; left: number; delay: number; size: number; duration: number }[]>([]);
+const ValentineFinale = ({ formData, shareUrl, onBack, customMessage }: ValentineFinaleProps) => {
   const [showNames, setShowNames] = useState(false);
 
   useEffect(() => {
-    const newHearts = Array.from({ length: 30 }, (_, i) => ({
-      id: i,
-      left: Math.random() * 100,
-      delay: Math.random() * 5,
-      size: 12 + Math.random() * 20,
-      duration: 4 + Math.random() * 6,
-    }));
-    setHearts(newHearts);
     setTimeout(() => setShowNames(true), 800);
   }, []);
 
@@ -76,6 +70,13 @@ const ValentineFinale = ({ formData, shareUrl, onBack }: ValentineFinaleProps) =
     ctx.fillText("Out of all the people in all the moments —", 400, 650);
     ctx.fillText("my heart chose you. And it still does.", 400, 680);
 
+    // Custom message
+    if (customMessage) {
+      ctx.font = "italic 18px sans-serif";
+      ctx.fillStyle = "rgba(255,179,198,0.9)";
+      ctx.fillText(`"${customMessage}"`, 400, 750);
+    }
+
     // Footer
     ctx.font = "14px sans-serif";
     ctx.fillStyle = "rgba(255,179,198,0.4)";
@@ -87,40 +88,24 @@ const ValentineFinale = ({ formData, shareUrl, onBack }: ValentineFinaleProps) =
     link.href = canvas.toDataURL("image/png");
     link.click();
     toast({ title: "Poster downloaded! ❤️" });
-  }, [formData]);
+  }, [formData, customMessage]);
+
+  const handleInstagramShare = () => {
+    navigator.clipboard.writeText(
+      `Happy Valentine's Day! 💖\nFrom ${formData.yourName} to ${formData.partnerName}\n\n${hashtags.join(" ")}`
+    );
+    toast({ title: "Caption copied for Instagram! 📸" });
+  };
 
   const finalMessages = dayMessages[6] || [];
   const seed = (formData.yourName + formData.partnerName).split("").reduce((a, c) => a + c.charCodeAt(0), 0);
   const selectedMessages = [finalMessages[seed % 50], finalMessages[(seed + 13) % 50], finalMessages[(seed + 27) % 50]].filter(Boolean);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-950 via-red-950 to-pink-950 relative overflow-auto">
-      {/* Falling Hearts */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        {hearts.map((h) => (
-          <span
-            key={h.id}
-            className="absolute"
-            style={{
-              left: `${h.left}%`,
-              top: "-10%",
-              fontSize: `${h.size}px`,
-              animation: `valentineHeartFall ${h.duration}s linear ${h.delay}s infinite`,
-              opacity: 0.6,
-            }}
-          >
-            ❤️
-          </span>
-        ))}
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-rose-950 via-red-950 to-pink-950 relative overflow-auto pb-24">
+      <FloatingHearts />
 
       <style>{`
-        @keyframes valentineHeartFall {
-          0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
-          10% { opacity: 0.6; }
-          90% { opacity: 0.6; }
-          100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
-        }
         @keyframes valentineNameGlow {
           0%, 100% { text-shadow: 0 0 20px rgba(244,63,94,0.5), 0 0 40px rgba(244,63,94,0.3); }
           50% { text-shadow: 0 0 30px rgba(244,63,94,0.8), 0 0 60px rgba(244,63,94,0.5); }
@@ -140,9 +125,12 @@ const ValentineFinale = ({ formData, shareUrl, onBack }: ValentineFinaleProps) =
 
       <div className="relative z-10 max-w-lg mx-auto px-4 pt-20 pb-16 text-center">
         {/* Day Badge */}
-        <div className="inline-flex items-center gap-2 bg-rose-500/20 border border-rose-500/30 rounded-full px-4 py-1.5 mb-6">
-          <Heart className="w-4 h-4 text-rose-400" fill="currentColor" />
-          <span className="text-sm text-rose-300 font-medium">Day 8 — Valentine's Day 💖</span>
+        <div className="inline-flex flex-col items-center gap-1 bg-rose-500/20 border border-rose-500/30 rounded-2xl px-5 py-3 mb-6">
+          <div className="flex items-center gap-2">
+            <Heart className="w-4 h-4 text-rose-400" fill="currentColor" />
+            <span className="text-sm text-rose-300 font-medium">Day 8 — Valentine's Day 💖</span>
+          </div>
+          <span className="text-xs text-rose-400/70">Saturday, February 14, 2026</span>
         </div>
 
         {/* Big Heart */}
@@ -161,6 +149,14 @@ const ValentineFinale = ({ formData, shareUrl, onBack }: ValentineFinaleProps) =
             Out of all the people in all the moments —{"\n"}my heart chose you.{"\n"}And it still does.
           </p>
         </div>
+
+        {/* Custom Message */}
+        {customMessage && (
+          <div className="mb-8 bg-gradient-to-r from-rose-500/10 to-pink-500/10 border border-rose-500/20 rounded-xl p-4">
+            <p className="text-rose-200/80 text-sm italic">"{customMessage}"</p>
+            <p className="text-rose-400/40 text-xs text-right mt-2">— {formData.yourName}</p>
+          </div>
+        )}
 
         {/* Photo Frame */}
         {(formData.partnerPhoto || formData.yourPhoto) && (
@@ -215,19 +211,29 @@ const ValentineFinale = ({ formData, shareUrl, onBack }: ValentineFinaleProps) =
             Download Love Poster
           </Button>
 
-          <Button
-            onClick={() => {
-              const text = getWhatsAppShareText(shareUrl);
-              window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
-            }}
-            className="w-full bg-green-600 hover:bg-green-500 text-white font-semibold py-6 rounded-xl"
-          >
-            <MessageCircle className="w-5 h-5 mr-2" />
-            Share With Partner
-          </Button>
+          <div className="grid grid-cols-2 gap-3">
+            <Button
+              onClick={() => {
+                const text = getWhatsAppShareText(shareUrl);
+                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+              }}
+              className="bg-green-600 hover:bg-green-500 text-white font-semibold py-4 rounded-xl"
+            >
+              <MessageCircle className="w-5 h-5 mr-2" />
+              WhatsApp
+            </Button>
+            <Button
+              onClick={handleInstagramShare}
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold py-4 rounded-xl"
+            >
+              <Instagram className="w-5 h-5 mr-2" />
+              Instagram
+            </Button>
+          </div>
 
           <Link
             to="/ValentineDay"
+            onClick={() => localStorage.removeItem("valentine-surprise-data")}
             className="block w-full bg-white/10 border border-rose-500/20 text-rose-200 font-semibold py-4 rounded-xl hover:bg-white/15 transition-colors text-center"
           >
             <span className="flex items-center justify-center gap-2">
@@ -251,6 +257,13 @@ const ValentineFinale = ({ formData, shareUrl, onBack }: ValentineFinaleProps) =
           </Link>
         </div>
       </div>
+
+      {/* Sticky Bottom Bar */}
+      <StickyBottomBar 
+        shareUrl={shareUrl} 
+        onDownload={downloadPoster}
+        partnerName={formData.partnerName}
+      />
     </div>
   );
 };
