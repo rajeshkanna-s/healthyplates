@@ -319,7 +319,15 @@ const ValentineExperience = ({ formData, createdAt, isPartnerView, shareUrl, cus
         )}
 
         {/* Day Cards Grid - Only selected days */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+        <div className={`grid gap-3 mb-8 ${
+          visibleDays.length === 1
+            ? "grid-cols-1 max-w-[200px] mx-auto"
+            : visibleDays.length === 2
+            ? "grid-cols-2 max-w-sm mx-auto"
+            : visibleDays.length === 3
+            ? "grid-cols-3 max-w-md mx-auto"
+            : "grid-cols-2 sm:grid-cols-4"
+        }`}>
           {visibleDays.map((day) => {
             const isToday = getCurrentDay === day.day;
             const isPast = getCurrentDay > day.day;
