@@ -1,5 +1,5 @@
-import { useState, useRef } from "react";
-import { Heart, Upload, Camera, Sparkles, ArrowRight, ArrowLeft } from "lucide-react";
+import { useState } from "react";
+import { Heart, Sparkles, ArrowRight, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,23 +21,8 @@ const ValentineLanding = ({ onSubmit }: ValentineLandingProps) => {
   const [partnerName, setPartnerName] = useState("");
   const [relationshipType, setRelationshipType] = useState("couple");
   const [loveStyle, setLoveStyle] = useState("romantic");
-  const [partnerPhoto, setPartnerPhoto] = useState<string | null>(null);
-  const [yourPhoto, setYourPhoto] = useState<string | null>(null);
   const [customMessage, setCustomMessage] = useState("");
   const [memoryQuiz, setMemoryQuiz] = useState<MemoryQuizItem[]>([]);
-  const partnerPhotoRef = useRef<HTMLInputElement>(null);
-  const yourPhotoRef = useRef<HTMLInputElement>(null);
-
-  const handlePhotoUpload = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    setter: (val: string | null) => void
-  ) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => setter(reader.result as string);
-    reader.readAsDataURL(file);
-  };
 
   const handleFormContinue = (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +33,7 @@ const ValentineLanding = ({ onSubmit }: ValentineLandingProps) => {
   const handleSelectionsComplete = (selections: DaySelection[]) => {
     const validQuiz = memoryQuiz.filter(q => q.question.trim() && q.answer.trim());
     onSubmit(
-      { yourName: yourName.trim(), partnerName: partnerName.trim(), relationshipType, loveStyle, partnerPhoto, yourPhoto },
+      { yourName: yourName.trim(), partnerName: partnerName.trim(), relationshipType, loveStyle },
       customMessage.trim() || undefined,
       selections,
       validQuiz.length > 0 ? validQuiz : undefined
@@ -157,46 +142,6 @@ const ValentineLanding = ({ onSubmit }: ValentineLandingProps) => {
                       {style.label}
                     </button>
                   ))}
-                </div>
-              </div>
-
-              {/* Photo Uploads */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <Label className="text-rose-200 text-xs">Partner Photo</Label>
-                  <input type="file" ref={partnerPhotoRef} accept="image/*" className="hidden" onChange={(e) => handlePhotoUpload(e, setPartnerPhoto)} />
-                  <button
-                    type="button"
-                    onClick={() => partnerPhotoRef.current?.click()}
-                    className="w-full aspect-[4/3] rounded-xl border-2 border-dashed border-rose-500/30 flex flex-col items-center justify-center gap-1 hover:border-rose-400/50 transition-colors overflow-hidden"
-                  >
-                    {partnerPhoto ? (
-                      <img src={partnerPhoto} alt="Partner" className="w-full h-full object-cover rounded-xl" />
-                    ) : (
-                      <>
-                        <Upload className="w-5 h-5 text-rose-400" />
-                        <span className="text-rose-300/60 text-xs">Upload</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-rose-200 text-xs">Your Photo (Optional)</Label>
-                  <input type="file" ref={yourPhotoRef} accept="image/*" className="hidden" onChange={(e) => handlePhotoUpload(e, setYourPhoto)} />
-                  <button
-                    type="button"
-                    onClick={() => yourPhotoRef.current?.click()}
-                    className="w-full aspect-[4/3] rounded-xl border-2 border-dashed border-rose-500/30 flex flex-col items-center justify-center gap-1 hover:border-rose-400/50 transition-colors overflow-hidden"
-                  >
-                    {yourPhoto ? (
-                      <img src={yourPhoto} alt="You" className="w-full h-full object-cover rounded-xl" />
-                    ) : (
-                      <>
-                        <Camera className="w-5 h-5 text-rose-400" />
-                        <span className="text-rose-300/60 text-xs">Optional</span>
-                      </>
-                    )}
-                  </button>
                 </div>
               </div>
 
