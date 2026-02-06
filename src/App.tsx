@@ -48,6 +48,7 @@ import SmartFoodSwaps from "./pages/SmartFoodSwaps";
 import HealthyPlateBuilder from "./pages/HealthyPlateBuilder";
 import ExpenseTracker from "./pages/ExpenseTracker";
 import Mindfulness from "./pages/Mindfulness";
+import DeveloperBio from "./pages/DeveloperBio";
 
 const queryClient = new QueryClient();
 
