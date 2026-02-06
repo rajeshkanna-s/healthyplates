@@ -549,7 +549,7 @@ export const relationshipTypes = [
   { value: "married", label: "💍 Married" },
   { value: "long-distance", label: "🌍 Long Distance" },
   { value: "crush", label: "😳 Secret Crush" },
-  { value: "bestie", label: "👫 Best Friends" },
+  { value: "couples", label: "💞 Couples" },
   { value: "situationship", label: "🫠 Situationship" },
   { value: "newlywed", label: "💒 Newlywed" },
   { value: "soulmate", label: "🔥 Soulmate" },
