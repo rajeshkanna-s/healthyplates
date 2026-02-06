@@ -16,8 +16,8 @@ const LoveScore = ({ name1, name2 }: LoveScoreProps) => {
     for (let i = 0; i < combined.length; i++) {
       sum += combined.charCodeAt(i);
     }
-    // Generate a score between 70-99 to keep it fun and positive
-    return 70 + (sum % 30);
+    // Generate a score between 85-99 to keep it fun and positive
+    return 85 + (sum % 15);
   };
 
   const score = calculateScore(name1, name2);
