@@ -47,9 +47,6 @@ const QRCodeModal = ({ url, partnerName, dayName }: QRCodeModalProps) => {
       ctx.font = "14px sans-serif";
       ctx.fillStyle = "#ffb3c6";
       ctx.fillText("Scan to open your surprise!", 200, 420);
-      ctx.font = "12px sans-serif";
-      ctx.fillStyle = "rgba(255,179,198,0.5)";
-      ctx.fillText("Made with ❤️ by RAJESHKANNA S", 200, 460);
 
       const link = document.createElement("a");
       link.download = `love-qr-${partnerName}.png`;
