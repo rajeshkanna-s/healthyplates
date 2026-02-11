@@ -51,7 +51,7 @@ const VisionBoardCanvas = React.forwardRef<HTMLDivElement, Props>(({ data, class
   };
 
   const getCardClass = (index: number): string => {
-    const base = `${cardBase} overflow-hidden transition-transform`;
+    const base = `${cardBase} transition-transform`;
 
     switch (layout) {
       case 'collage': {
@@ -100,31 +100,31 @@ const VisionBoardCanvas = React.forwardRef<HTMLDivElement, Props>(({ data, class
             />
           </div>
         )}
-        <div className={`${layout === 'minimal' ? 'p-4' : layout === 'polaroid' ? 'p-2' : 'p-3'} overflow-hidden`}>
+        <div className={`${layout === 'minimal' ? 'p-4' : layout === 'polaroid' ? 'p-2' : 'p-3'}`}>
           <div className={`flex flex-col items-center text-center gap-1 ${layout === 'stacked' ? 'flex-row text-left gap-3' : ''} mb-1.5`}>
             <span className={`leading-none ${isFirstMagazine ? 'text-5xl' : 'text-3xl'}`}>
               {getCatIcon(detail.categoryId)}
             </span>
-            <h3 className={`font-bold ${textMain} ${isFirstMagazine ? 'text-base' : 'text-xs md:text-sm'} leading-tight break-words w-full overflow-hidden`}>
+            <h3 className={`font-bold ${textMain} ${isFirstMagazine ? 'text-base' : 'text-xs md:text-sm'} leading-tight break-words w-full`}>
               {getCatName(detail.categoryId)}
             </h3>
           </div>
           {detail.note && (
-            <p className={`${textMuted} text-[10px] md:text-xs leading-snug mb-1.5 line-clamp-2 ${layout === 'stacked' ? 'text-left' : 'text-center'} break-words overflow-hidden`}>
+            <p className={`${textMuted} text-[10px] md:text-xs leading-snug mb-1.5 ${layout === 'stacked' ? 'text-left' : 'text-center'} break-words`}>
               {detail.note}
             </p>
           )}
           {!detail.note && detail.futureStatement && (
-            <p className={`${textMuted} text-[10px] md:text-xs italic leading-snug mb-1.5 line-clamp-2 text-center break-words overflow-hidden`}>
+            <p className={`${textMuted} text-[10px] md:text-xs italic leading-snug mb-1.5 text-center break-words`}>
               {detail.futureStatement}
             </p>
           )}
           {!['minimal', 'bubble', 'cards-row'].includes(layout) && detail.outcomes.filter(Boolean).length > 0 && (
             <ul className="space-y-0.5 mb-1.5">
               {detail.outcomes.filter(Boolean).slice(0, 3).map((o, oi) => (
-                <li key={oi} className={`flex items-start gap-1 text-[10px] ${textMuted} leading-tight overflow-hidden`}>
+                <li key={oi} className={`flex items-start gap-1 text-[10px] ${textMuted} leading-tight`}>
                   <span className={`mt-1 w-1 h-1 rounded-full ${isDark ? 'bg-white/40' : 'bg-gray-400'} flex-shrink-0`} />
-                  <span className="line-clamp-1 break-words min-w-0">{o}</span>
+                  <span className="break-words min-w-0">{o}</span>
                 </li>
               ))}
             </ul>
