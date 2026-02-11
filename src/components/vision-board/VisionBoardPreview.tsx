@@ -2,14 +2,13 @@ import React, { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Download, FileImage, FileText, Image as ImageIcon, ZoomIn, ZoomOut } from 'lucide-react';
 import { toast } from 'sonner';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import {
   VisionBoardData, ColorTheme, LayoutStyle, OutputSize, Quality, ExportFormat,
-  THEME_CONFIG,
+  THEME_CONFIG, LAYOUT_CONFIG, SIZE_DIMENSIONS, QUALITY_SCALE,
 } from './types';
 import VisionBoardCanvas from './VisionBoardCanvas';
 
@@ -46,12 +45,49 @@ const VisionBoardPreview: React.FC<Props> = ({ data, onDataChange, onBack }) => 
     setIsExporting(true);
 
     try {
-      const canvas = await html2canvas(canvasRef.current, {
-        scale: data.quality === '4k' ? 3 : data.quality === '2k' ? 2 : data.quality === 'print' ? 3 : 1.5,
+      const el = canvasRef.current;
+      const targetSize = SIZE_DIMENSIONS[data.selectedSizes[0] || 'a4'];
+      const qualityScale = QUALITY_SCALE[data.quality] || 2;
+
+      // Capture the canvas as-is (preserving all CSS/layout)
+      const captured = await html2canvas(el, {
+        scale: qualityScale,
         useCORS: true,
+        allowTaint: true,
         backgroundColor: null,
         logging: false,
       });
+
+      // Resize to target dimensions while preserving aspect ratio
+      const targetW = targetSize.width * qualityScale;
+      const targetH = targetSize.height * qualityScale;
+      const resized = document.createElement('canvas');
+      resized.width = targetW;
+      resized.height = targetH;
+      const ctx = resized.getContext('2d')!;
+
+      // Fill with the gradient background color as fallback
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, targetW, targetH);
+
+      // Scale source to fit target, centered
+      const srcRatio = captured.width / captured.height;
+      const tgtRatio = targetW / targetH;
+      let drawW: number, drawH: number, drawX: number, drawY: number;
+      if (srcRatio > tgtRatio) {
+        drawW = targetW;
+        drawH = targetW / srcRatio;
+        drawX = 0;
+        drawY = (targetH - drawH) / 2;
+      } else {
+        drawH = targetH;
+        drawW = targetH * srcRatio;
+        drawX = (targetW - drawW) / 2;
+        drawY = 0;
+      }
+      ctx.drawImage(captured, drawX, drawY, drawW, drawH);
+
+      const canvas = resized;
 
       if (format === 'pdf') {
         const imgData = canvas.toDataURL('image/png');
@@ -124,19 +160,19 @@ const VisionBoardPreview: React.FC<Props> = ({ data, onDataChange, onBack }) => 
           <Card className="border-border/50">
             <CardContent className="p-4 space-y-3">
               <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Color Theme</Label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-1">
                 {(Object.entries(THEME_CONFIG) as [ColorTheme, typeof THEME_CONFIG[ColorTheme]][]).map(([key, t]) => (
                   <button
                     key={key}
                     onClick={() => onDataChange({ colorTheme: key })}
-                    className={`p-3 rounded-xl border-2 text-left transition-all ${
+                    className={`p-2.5 rounded-xl border-2 text-left transition-all ${
                       data.colorTheme === key
                         ? 'border-primary shadow-md'
                         : 'border-border hover:border-primary/30'
                     }`}
                   >
-                    <div className={`w-full h-6 rounded-lg bg-gradient-to-r ${t.gradient} mb-2`} />
-                    <span className="text-xs font-medium">{t.name}</span>
+                    <div className={`w-full h-5 rounded-lg bg-gradient-to-r ${t.gradient} mb-1.5`} />
+                    <span className="text-[11px] font-medium">{t.name}</span>
                   </button>
                 ))}
               </div>
@@ -147,24 +183,19 @@ const VisionBoardPreview: React.FC<Props> = ({ data, onDataChange, onBack }) => 
           <Card className="border-border/50">
             <CardContent className="p-4 space-y-3">
               <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Layout Style</Label>
-              <div className="grid grid-cols-2 gap-2">
-                {([
-                  { key: 'classic-grid' as LayoutStyle, label: 'Classic Grid', icon: '⊞' },
-                  { key: 'collage' as LayoutStyle, label: 'Collage', icon: '🎨' },
-                  { key: 'minimal' as LayoutStyle, label: 'Minimal', icon: '◻️' },
-                  { key: 'photo-focused' as LayoutStyle, label: 'Photo Focus', icon: '📷' },
-                ]).map(opt => (
+              <div className="grid grid-cols-3 gap-2 max-h-48 overflow-y-auto pr-1">
+                {(Object.entries(LAYOUT_CONFIG) as [LayoutStyle, typeof LAYOUT_CONFIG[LayoutStyle]][]).map(([key, l]) => (
                   <button
-                    key={opt.key}
-                    onClick={() => onDataChange({ layoutStyle: opt.key })}
-                    className={`p-3 rounded-xl border-2 text-sm font-medium transition-all ${
-                      data.layoutStyle === opt.key
+                    key={key}
+                    onClick={() => onDataChange({ layoutStyle: key })}
+                    className={`p-2.5 rounded-xl border-2 text-center text-sm font-medium transition-all ${
+                      data.layoutStyle === key
                         ? 'border-primary bg-primary/10'
                         : 'border-border hover:border-primary/30'
                     }`}
                   >
-                    <span className="text-lg">{opt.icon}</span>
-                    <div className="text-xs mt-1">{opt.label}</div>
+                    <span className="text-lg">{l.icon}</span>
+                    <div className="text-[10px] mt-0.5">{l.name}</div>
                   </button>
                 ))}
               </div>

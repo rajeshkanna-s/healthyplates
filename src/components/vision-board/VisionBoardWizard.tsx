@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, ArrowRight, Sparkles, Target, Palette, Eye, Check, Plus, X } from 'lucide-react';
 import { VisionBoardData, Timeframe, TIMEFRAME_LABELS, CategoryDetail, DEFAULT_VISION_DATA } from './types';
 import { CATEGORY_GROUPS, ALL_CATEGORIES, SUGGESTED_QUOTES, AFFIRMATIONS } from './categoriesData';
@@ -22,7 +21,7 @@ const STEPS = [
 const VisionBoardWizard: React.FC = () => {
   const [step, setStep] = useState(0);
   const [data, setData] = useState<VisionBoardData>({ ...DEFAULT_VISION_DATA });
-  const [currentDetailIndex, setCurrentDetailIndex] = useState(0);
+  
 
   const updateData = useCallback((partial: Partial<VisionBoardData>) => {
     setData(prev => ({ ...prev, ...partial }));
@@ -50,11 +49,11 @@ const VisionBoardWizard: React.FC = () => {
           outcomes: ['', '', ''],
           actions: '',
           whyItMatters: '',
+          note: '',
           image: null,
         }));
       const kept = data.categoryDetails.filter(d => data.selectedCategories.includes(d.categoryId));
       updateData({ categoryDetails: [...kept, ...newDetails] });
-      setCurrentDetailIndex(0);
     }
     if (step < STEPS.length - 1) setStep(step + 1);
   };
@@ -172,137 +171,68 @@ const VisionBoardWizard: React.FC = () => {
     </div>
   );
 
+  const handleImageUpload = (index: number, file: File) => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      updateDetail(index, { image: ev.target?.result as string });
+    };
+    reader.readAsDataURL(file);
+  };
+
   const renderDetails = () => {
     if (data.categoryDetails.length === 0) return null;
-    const detail = data.categoryDetails[currentDetailIndex];
-    if (!detail) return null;
-    const catId = detail.categoryId;
 
     return (
       <div className="space-y-6 animate-in fade-in duration-500 max-w-2xl mx-auto">
         <div className="text-center space-y-2">
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground">
-            {getCategoryIcon(catId)} {getCategoryName(catId)}
-          </h2>
-          <p className="text-muted-foreground">
-            Area {currentDetailIndex + 1} of {data.categoryDetails.length}
-          </p>
-          {/* Category navigation pills */}
-          <div className="flex flex-wrap justify-center gap-1.5 mt-3">
-            {data.categoryDetails.map((d, i) => (
-              <button
-                key={d.categoryId}
-                onClick={() => setCurrentDetailIndex(i)}
-                className={`px-3 py-1 rounded-full text-xs transition-all ${
-                  i === currentDetailIndex
-                    ? 'bg-primary text-primary-foreground'
-                    : d.futureStatement.trim() ? 'bg-primary/20 text-foreground' : 'bg-muted text-muted-foreground'
-                }`}
-              >
-                {getCategoryIcon(d.categoryId)}
-              </button>
-            ))}
-          </div>
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground">Add Details & Images</h2>
+          <p className="text-muted-foreground">Add optional notes and inspiration images for each area</p>
         </div>
 
-        <Card className="border-border/50">
-          <CardContent className="p-6 space-y-5">
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">✨ Future Self Statement</Label>
-              <Textarea
-                placeholder={`How do you want to feel? e.g., "${getCategoryPlaceholder(catId)}"`}
-                value={detail.futureStatement}
-                onChange={e => updateDetail(currentDetailIndex, { futureStatement: e.target.value })}
-                rows={2}
-                className="resize-none"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">🎯 Key Outcomes (up to 3)</Label>
-              {detail.outcomes.map((outcome, oi) => (
-                <Input
-                  key={oi}
-                  placeholder={`Outcome ${oi + 1}`}
-                  value={outcome}
-                  onChange={e => {
-                    const outcomes = [...detail.outcomes];
-                    outcomes[oi] = e.target.value;
-                    updateDetail(currentDetailIndex, { outcomes });
-                  }}
-                />
-              ))}
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">📅 Daily/Weekly Actions</Label>
-              <Textarea
-                placeholder="Walk 8,000 steps daily, cook at home 5 days/week..."
-                value={detail.actions}
-                onChange={e => updateDetail(currentDetailIndex, { actions: e.target.value })}
-                rows={2}
-                className="resize-none"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">💖 Why This Matters</Label>
-              <Input
-                placeholder="So I can play with my kids and feel confident..."
-                value={detail.whyItMatters}
-                onChange={e => updateDetail(currentDetailIndex, { whyItMatters: e.target.value })}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">📷 Inspiration Image (optional)</Label>
-              <Input
-                type="file"
-                accept="image/*"
-                onChange={e => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    const reader = new FileReader();
-                    reader.onload = ev => {
-                      updateDetail(currentDetailIndex, { image: ev.target?.result as string });
-                    };
-                    reader.readAsDataURL(file);
-                  }
-                }}
-              />
-              {detail.image && (
-                <div className="relative inline-block">
-                  <img src={detail.image} alt="Inspiration" className="w-24 h-24 object-cover rounded-lg" />
-                  <button
-                    onClick={() => updateDetail(currentDetailIndex, { image: null })}
-                    className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
+        <div className="space-y-4">
+          {data.categoryDetails.map((detail, index) => (
+            <Card key={detail.categoryId} className="border-border/50">
+              <CardContent className="p-5 space-y-3">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">{getCategoryIcon(detail.categoryId)}</span>
+                  <span className="font-semibold text-foreground">{getCategoryName(detail.categoryId)}</span>
+                  <Input
+                    placeholder={`e.g., ${getCategoryPlaceholder(detail.categoryId)}`}
+                    value={detail.note}
+                    onChange={e => updateDetail(index, { note: e.target.value })}
+                    className="flex-1"
+                  />
                 </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="flex justify-between">
-          <Button
-            variant="outline"
-            onClick={() => setCurrentDetailIndex(Math.max(0, currentDetailIndex - 1))}
-            disabled={currentDetailIndex === 0}
-          >
-            <ArrowLeft className="w-4 h-4 mr-1" /> Previous Area
-          </Button>
-          <Button
-            onClick={() => {
-              if (currentDetailIndex < data.categoryDetails.length - 1) {
-                setCurrentDetailIndex(currentDetailIndex + 1);
-              }
-            }}
-            disabled={currentDetailIndex === data.categoryDetails.length - 1}
-          >
-            Next Area <ArrowRight className="w-4 h-4 ml-1" />
-          </Button>
+                <div>
+                  {detail.image ? (
+                    <div className="relative inline-block">
+                      <img src={detail.image} alt="Inspiration" className="w-20 h-20 object-cover rounded-lg" />
+                      <button
+                        onClick={() => updateDetail(index, { image: null })}
+                        className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full w-5 h-5 flex items-center justify-center"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ) : (
+                    <label className="inline-flex items-center gap-1.5 text-sm text-muted-foreground cursor-pointer hover:text-foreground transition-colors">
+                      <Plus className="w-4 h-4" />
+                      Add image (optional)
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={e => {
+                          const file = e.target.files?.[0];
+                          if (file) handleImageUpload(index, file);
+                        }}
+                      />
+                    </label>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </div>
     );
