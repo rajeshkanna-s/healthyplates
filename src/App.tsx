@@ -50,10 +50,7 @@ import ExpenseTracker from "./pages/ExpenseTracker";
 import Mindfulness from "./pages/Mindfulness";
 import DeveloperBio from "./pages/DeveloperBio";
 import ValentineDay from "./pages/ValentineDay";
-<<<<<<< HEAD
-=======
 import VisionBoard from "./pages/VisionBoard";
->>>>>>> source/main
 
 const queryClient = new QueryClient();
 
