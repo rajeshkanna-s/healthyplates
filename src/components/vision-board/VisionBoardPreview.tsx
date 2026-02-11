@@ -46,39 +46,48 @@ const VisionBoardPreview: React.FC<Props> = ({ data, onDataChange, onBack }) => 
 
     try {
       const el = canvasRef.current;
-      const size = SIZE_DIMENSIONS[data.selectedSizes[0] || 'a4'];
-      const scale = QUALITY_SCALE[data.quality] || 2;
+      const targetSize = SIZE_DIMENSIONS[data.selectedSizes[0] || 'a4'];
+      const qualityScale = QUALITY_SCALE[data.quality] || 2;
 
-      // Save original styles
-      const origWidth = el.style.width;
-      const origMinHeight = el.style.minHeight;
-      const origHeight = el.style.height;
-      const origMaxWidth = el.style.maxWidth;
-
-      // Apply export dimensions
-      el.style.width = `${size.width}px`;
-      el.style.minHeight = `${size.height}px`;
-      el.style.height = 'auto';
-      el.style.maxWidth = 'none';
-
-      // Wait for reflow
-      await new Promise(r => setTimeout(r, 200));
-
-      const canvas = await html2canvas(el, {
-        scale,
+      // Capture the canvas as-is (preserving all CSS/layout)
+      const captured = await html2canvas(el, {
+        scale: qualityScale,
         useCORS: true,
         allowTaint: true,
         backgroundColor: null,
         logging: false,
-        width: size.width,
-        windowWidth: size.width,
       });
 
-      // Restore original styles
-      el.style.width = origWidth;
-      el.style.minHeight = origMinHeight;
-      el.style.height = origHeight;
-      el.style.maxWidth = origMaxWidth;
+      // Resize to target dimensions while preserving aspect ratio
+      const targetW = targetSize.width * qualityScale;
+      const targetH = targetSize.height * qualityScale;
+      const resized = document.createElement('canvas');
+      resized.width = targetW;
+      resized.height = targetH;
+      const ctx = resized.getContext('2d')!;
+
+      // Fill with the gradient background color as fallback
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, targetW, targetH);
+
+      // Scale source to fit target, centered
+      const srcRatio = captured.width / captured.height;
+      const tgtRatio = targetW / targetH;
+      let drawW: number, drawH: number, drawX: number, drawY: number;
+      if (srcRatio > tgtRatio) {
+        drawW = targetW;
+        drawH = targetW / srcRatio;
+        drawX = 0;
+        drawY = (targetH - drawH) / 2;
+      } else {
+        drawH = targetH;
+        drawW = targetH * srcRatio;
+        drawX = (targetW - drawW) / 2;
+        drawY = 0;
+      }
+      ctx.drawImage(captured, drawX, drawY, drawW, drawH);
+
+      const canvas = resized;
 
       if (format === 'pdf') {
         const imgData = canvas.toDataURL('image/png');
