@@ -81,8 +81,15 @@ const VisionBoardCanvas = React.forwardRef<HTMLDivElement, Props>(({ data, class
                   </h3>
                 </div>
 
-                {/* Future statement */}
-                {detail.futureStatement && (
+                {/* Note */}
+                {detail.note && (
+                  <p className="text-gray-600 text-[10px] md:text-xs leading-snug mb-1.5 line-clamp-2 text-center break-words overflow-hidden">
+                    {detail.note}
+                  </p>
+                )}
+
+                {/* Future statement (legacy support) */}
+                {!detail.note && detail.futureStatement && (
                   <p className="text-gray-600 text-[10px] md:text-xs italic leading-snug mb-1.5 line-clamp-2 text-center break-words overflow-hidden">
                     {detail.futureStatement}
                   </p>
@@ -98,13 +105,6 @@ const VisionBoardCanvas = React.forwardRef<HTMLDivElement, Props>(({ data, class
                       </li>
                     ))}
                   </ul>
-                )}
-
-                {/* Why it matters */}
-                {detail.whyItMatters && isMinimal && (
-                  <p className="text-[10px] text-gray-500 italic text-center line-clamp-1 break-words overflow-hidden">
-                    💖 {detail.whyItMatters}
-                  </p>
                 )}
               </div>
             </div>
