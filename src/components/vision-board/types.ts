@@ -29,6 +29,7 @@ export interface CategoryDetail {
   outcomes: string[];
   actions: string;
   whyItMatters: string;
+  note: string;
   image?: string | null;
 }
 
