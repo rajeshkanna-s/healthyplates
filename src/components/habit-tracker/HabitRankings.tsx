@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Crown, Medal, Award, TrendingUp, Calendar } from 'lucide-react';
-import { format, differenceInDays, parseISO, subDays } from 'date-fns';
+import { differenceInDays, parseISO, subDays, format, isWithinInterval } from 'date-fns';
 
 interface Habit {
   id: string;
@@ -11,6 +11,7 @@ interface Habit {
   color: string;
   completedDates: string[];
   startDate: string;
+  endDate: string;
   archived: boolean;
 }
 
@@ -30,16 +31,23 @@ const HabitRankings: React.FC<HabitRankingsProps> = ({ habits }) => {
 
   const rankings = useMemo(() => {
     return activeHabits.map(habit => {
-      const totalDays = Math.max(1, differenceInDays(new Date(), parseISO(habit.startDate)) + 1);
-      const completionRate = Math.min(100, Math.round((habit.completedDates.length / totalDays) * 100));
+      const start = parseISO(habit.startDate);
+      const end = habit.endDate ? parseISO(habit.endDate) : new Date();
+      const totalDays = Math.max(1, differenceInDays(end, start) + 1);
 
-      // Current streak
+      const validDates = habit.completedDates
+        .filter(d => isWithinInterval(parseISO(d), { start, end }))
+        .sort();
+
+      const completionRate = Math.min(100, Math.round((validDates.length / totalDays) * 100));
+
+      // Current streak (from end date backwards)
       let currentStreak = 0;
-      const today = format(new Date(), 'yyyy-MM-dd');
-      const yesterday = format(subDays(new Date(), 1), 'yyyy-MM-dd');
-      const sorted = [...habit.completedDates].sort().reverse();
-      if (sorted.includes(today) || sorted.includes(yesterday)) {
-        let checkDate = sorted.includes(today) ? new Date() : subDays(new Date(), 1);
+      const endStr = format(end, 'yyyy-MM-dd');
+      const yesterdayStr = format(subDays(end, 1), 'yyyy-MM-dd');
+      const sorted = [...validDates].sort().reverse();
+      if (sorted.includes(endStr) || sorted.includes(yesterdayStr)) {
+        let checkDate = sorted.includes(endStr) ? end : subDays(end, 1);
         while (sorted.includes(format(checkDate, 'yyyy-MM-dd'))) {
           currentStreak++;
           checkDate = subDays(checkDate, 1);
@@ -49,9 +57,8 @@ const HabitRankings: React.FC<HabitRankingsProps> = ({ habits }) => {
       // Best streak
       let bestStreak = 0;
       let tempStreak = 1;
-      const asc = [...habit.completedDates].sort();
-      for (let i = 1; i < asc.length; i++) {
-        if (differenceInDays(parseISO(asc[i]), parseISO(asc[i - 1])) === 1) {
+      for (let i = 1; i < validDates.length; i++) {
+        if (differenceInDays(parseISO(validDates[i]), parseISO(validDates[i - 1])) === 1) {
           tempStreak++;
         } else {
           bestStreak = Math.max(bestStreak, tempStreak);
@@ -59,14 +66,14 @@ const HabitRankings: React.FC<HabitRankingsProps> = ({ habits }) => {
         }
       }
       bestStreak = Math.max(bestStreak, tempStreak, currentStreak);
-      if (asc.length === 0) bestStreak = 0;
+      if (validDates.length === 0) bestStreak = 0;
 
       return {
         ...habit,
         completionRate,
         currentStreak,
         bestStreak,
-        totalCheckins: habit.completedDates.length,
+        totalCheckins: validDates.length,
         totalDays,
       };
     }).sort((a, b) => b.completionRate - a.completionRate);
@@ -101,7 +108,7 @@ const HabitRankings: React.FC<HabitRankingsProps> = ({ habits }) => {
                 <div className="flex flex-wrap gap-2 text-xs">
                   <Badge variant="secondary" className="gap-1">
                     <TrendingUp className="w-3 h-3" />
-                    {habit.completionRate}% rate
+                    {habit.totalCheckins}/{habit.totalDays} days
                   </Badge>
                   <Badge variant="outline" className="gap-1">
                     🔥 {habit.currentStreak} streak
@@ -111,7 +118,7 @@ const HabitRankings: React.FC<HabitRankingsProps> = ({ habits }) => {
                   </Badge>
                   <Badge variant="outline" className="gap-1">
                     <Calendar className="w-3 h-3" />
-                    {habit.totalCheckins} check-ins
+                    {habit.completionRate}%
                   </Badge>
                 </div>
               </div>
