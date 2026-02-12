@@ -11,9 +11,14 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { CheckCircle2, Plus, Edit2, Trash2, Shield, Download, Upload, ChevronLeft, ChevronRight, Flame, Trophy } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { CheckCircle2, Plus, Edit2, Trash2, Shield, Download, Upload, ChevronLeft, ChevronRight, Flame, Trophy, BarChart3, CalendarDays, Medal, TrendingUp } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { format, startOfWeek, addDays, addWeeks, subWeeks, isSameDay, parseISO, differenceInDays } from 'date-fns';
+import HabitProgress from '@/components/habit-tracker/HabitProgress';
+import HabitTrends from '@/components/habit-tracker/HabitTrends';
+import HabitCalendar from '@/components/habit-tracker/HabitCalendar';
+import HabitRankings from '@/components/habit-tracker/HabitRankings';
 
 interface Habit {
   id: string;
@@ -585,9 +590,48 @@ const HabitTrackerPage = () => {
               </CardContent>
             </Card>
           )}
+
+          {/* Reports Section */}
+          <div className="mt-8">
+            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+              <BarChart3 className="w-6 h-6 text-primary" />
+              Reports & Analytics
+            </h2>
+            <Tabs defaultValue="progress" className="w-full">
+              <TabsList className="grid w-full grid-cols-4 mb-4">
+                <TabsTrigger value="progress" className="gap-1.5 text-xs sm:text-sm">
+                  <TrendingUp className="w-4 h-4" />
+                  <span className="hidden sm:inline">Progress</span>
+                </TabsTrigger>
+                <TabsTrigger value="trends" className="gap-1.5 text-xs sm:text-sm">
+                  <BarChart3 className="w-4 h-4" />
+                  <span className="hidden sm:inline">Trends</span>
+                </TabsTrigger>
+                <TabsTrigger value="calendar" className="gap-1.5 text-xs sm:text-sm">
+                  <CalendarDays className="w-4 h-4" />
+                  <span className="hidden sm:inline">Calendar</span>
+                </TabsTrigger>
+                <TabsTrigger value="rankings" className="gap-1.5 text-xs sm:text-sm">
+                  <Medal className="w-4 h-4" />
+                  <span className="hidden sm:inline">Rankings</span>
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="progress">
+                <HabitProgress habits={habits} />
+              </TabsContent>
+              <TabsContent value="trends">
+                <HabitTrends habits={habits} />
+              </TabsContent>
+              <TabsContent value="calendar">
+                <HabitCalendar habits={habits} />
+              </TabsContent>
+              <TabsContent value="rankings">
+                <HabitRankings habits={habits} />
+              </TabsContent>
+            </Tabs>
+          </div>
         </div>
       </div>
-
       {/* Import Dialog */}
       <AlertDialog open={showImportDialog} onOpenChange={setShowImportDialog}>
         <AlertDialogContent>
