@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { TrendingUp, TrendingDown, Minus, Target } from 'lucide-react';
-import { format, subDays, startOfWeek, endOfWeek, startOfMonth, endOfMonth, isWithinInterval, parseISO } from 'date-fns';
+import { differenceInDays, parseISO, isWithinInterval, format, subDays } from 'date-fns';
 
 interface Habit {
   id: string;
@@ -22,64 +22,90 @@ interface HabitProgressProps {
   habits: Habit[];
 }
 
-const getExpectedDays = (habit: Habit, startDate: Date, endDate: Date): number => {
-  const days = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-  if (habit.frequencyType === 'daily') return days;
-  if (habit.frequencyType === 'weekly') return Math.ceil(days / 7) * habit.timesPerWeek;
-  if (habit.frequencyType === 'specific') return Math.ceil(days / 7) * habit.daysOfWeek.length;
-  return days;
+const getDateRange = (habit: Habit) => {
+  const start = parseISO(habit.startDate);
+  const end = habit.endDate ? parseISO(habit.endDate) : new Date();
+  return { start, end };
 };
 
-const getCompletedInRange = (habit: Habit, start: Date, end: Date): number => {
+const getTotalDays = (habit: Habit): number => {
+  const { start, end } = getDateRange(habit);
+  return Math.max(1, differenceInDays(end, start) + 1);
+};
+
+const getCompletedInRange = (habit: Habit): number => {
+  const { start, end } = getDateRange(habit);
   return habit.completedDates.filter(d => {
     const date = parseISO(d);
     return isWithinInterval(date, { start, end });
   }).length;
 };
 
+const getStreakInRange = (habit: Habit): { current: number; best: number } => {
+  const { start, end } = getDateRange(habit);
+  const validDates = habit.completedDates
+    .filter(d => {
+      const date = parseISO(d);
+      return isWithinInterval(date, { start, end });
+    })
+    .sort();
+
+  if (validDates.length === 0) return { current: 0, best: 0 };
+
+  // Best streak
+  let bestStreak = 1;
+  let tempStreak = 1;
+  for (let i = 1; i < validDates.length; i++) {
+    if (differenceInDays(parseISO(validDates[i]), parseISO(validDates[i - 1])) === 1) {
+      tempStreak++;
+    } else {
+      bestStreak = Math.max(bestStreak, tempStreak);
+      tempStreak = 1;
+    }
+  }
+  bestStreak = Math.max(bestStreak, tempStreak);
+
+  // Current streak (from end date backwards)
+  let currentStreak = 0;
+  const endStr = format(end, 'yyyy-MM-dd');
+  const yesterdayStr = format(subDays(end, 1), 'yyyy-MM-dd');
+  const sorted = [...validDates].sort().reverse();
+  if (sorted.includes(endStr) || sorted.includes(yesterdayStr)) {
+    let checkDate = sorted.includes(endStr) ? end : subDays(end, 1);
+    while (sorted.includes(format(checkDate, 'yyyy-MM-dd'))) {
+      currentStreak++;
+      checkDate = subDays(checkDate, 1);
+    }
+  }
+
+  return { current: currentStreak, best: Math.max(bestStreak, currentStreak) };
+};
+
 const HabitProgress: React.FC<HabitProgressProps> = ({ habits }) => {
   const activeHabits = habits.filter(h => !h.archived);
-  const today = new Date();
-  const weekStart = startOfWeek(today, { weekStartsOn: 1 });
-  const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
-  const monthStart = startOfMonth(today);
-  const monthEnd = endOfMonth(today);
 
   const habitStats = useMemo(() => {
     return activeHabits.map(habit => {
-      const totalCompleted = habit.completedDates.length;
-      const habitStart = parseISO(habit.startDate);
-      const totalExpected = getExpectedDays(habit, habitStart, today);
-      const overallRate = totalExpected > 0 ? Math.min(100, Math.round((totalCompleted / totalExpected) * 100)) : 0;
-
-      const thisWeekCompleted = getCompletedInRange(habit, weekStart, weekEnd);
-      const weekExpected = getExpectedDays(habit, weekStart, today < weekEnd ? today : weekEnd);
-
-      const thisMonthCompleted = getCompletedInRange(habit, monthStart, monthEnd);
-      const monthExpected = getExpectedDays(habit, monthStart, today < monthEnd ? today : monthEnd);
-      const monthRate = monthExpected > 0 ? Math.min(100, Math.round((thisMonthCompleted / monthExpected) * 100)) : 0;
-
-      // Last week comparison
-      const lastWeekStart = subDays(weekStart, 7);
-      const lastWeekEnd = subDays(weekStart, 1);
-      const lastWeekCompleted = getCompletedInRange(habit, lastWeekStart, lastWeekEnd);
-      const trend = thisWeekCompleted - lastWeekCompleted;
+      const totalDays = getTotalDays(habit);
+      const completed = getCompletedInRange(habit);
+      const completionRate = Math.min(100, Math.round((completed / totalDays) * 100));
+      const streak = getStreakInRange(habit);
+      const remaining = totalDays - completed;
 
       return {
         ...habit,
-        totalCompleted,
-        overallRate,
-        thisWeekCompleted,
-        weekExpected,
-        thisMonthCompleted,
-        monthRate,
-        trend,
+        totalDays,
+        completed,
+        completionRate,
+        currentStreak: streak.current,
+        bestStreak: streak.best,
+        remaining: Math.max(0, remaining),
       };
     });
-  }, [activeHabits, today.toDateString()]);
+  }, [activeHabits]);
 
   const averageProgress = habitStats.length > 0
-    ? Math.round(habitStats.reduce((sum, h) => sum + h.overallRate, 0) / habitStats.length)
+    ? Math.round(habitStats.reduce((sum, h) => sum + h.completionRate, 0) / habitStats.length)
     : 0;
 
   if (activeHabits.length === 0) {
@@ -106,7 +132,7 @@ const HabitProgress: React.FC<HabitProgressProps> = ({ habits }) => {
           </div>
           <Progress value={averageProgress} className="h-3" />
           <p className="text-xs text-muted-foreground mt-2">
-            {habitStats.filter(h => h.overallRate >= 80).length} of {habitStats.length} habits on track
+            {habitStats.filter(h => h.completionRate >= 80).length} of {habitStats.length} habits on track
           </p>
         </CardContent>
       </Card>
@@ -120,26 +146,21 @@ const HabitProgress: React.FC<HabitProgressProps> = ({ habits }) => {
                 <div className="w-3 h-3 rounded-full" style={{ backgroundColor: stat.color }} />
                 <span className="font-medium text-sm">{stat.name}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-lg font-bold">{stat.overallRate}%</span>
-                {stat.trend > 0 && <TrendingUp className="w-4 h-4 text-green-500" />}
-                {stat.trend < 0 && <TrendingDown className="w-4 h-4 text-red-500" />}
-                {stat.trend === 0 && <Minus className="w-4 h-4 text-muted-foreground" />}
-              </div>
+              <span className="text-lg font-bold">{stat.completionRate}%</span>
             </div>
             <Progress
-              value={stat.overallRate}
-              className={`h-2.5 mb-3 ${stat.overallRate >= 80 ? '[&>div]:bg-green-500' : stat.overallRate >= 50 ? '[&>div]:bg-yellow-500' : '[&>div]:bg-red-500'}`}
+              value={stat.completionRate}
+              className={`h-2.5 mb-3 ${stat.completionRate >= 80 ? '[&>div]:bg-green-500' : stat.completionRate >= 50 ? '[&>div]:bg-yellow-500' : '[&>div]:bg-red-500'}`}
             />
-            <div className="flex gap-3 text-xs text-muted-foreground">
-              <span>This week: <strong className="text-foreground">{stat.thisWeekCompleted}/{stat.weekExpected}</strong></span>
-              <span>This month: <strong className="text-foreground">{stat.thisMonthCompleted}</strong> ({stat.monthRate}%)</span>
-              <span>Total: <strong className="text-foreground">{stat.totalCompleted}</strong></span>
-              {stat.trend !== 0 && (
-                <Badge variant={stat.trend > 0 ? 'default' : 'destructive'} className="text-[10px] h-4">
-                  {stat.trend > 0 ? '+' : ''}{stat.trend} vs last week
-                </Badge>
-              )}
+            <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+              <span>Completed: <strong className="text-foreground">{stat.completed}/{stat.totalDays} days</strong></span>
+              <span>Remaining: <strong className="text-foreground">{stat.remaining} days</strong></span>
+              <Badge variant="outline" className="text-[10px] h-4 gap-1">
+                🔥 {stat.currentStreak} streak
+              </Badge>
+              <Badge variant="outline" className="text-[10px] h-4 gap-1">
+                🏆 {stat.bestStreak} best
+              </Badge>
             </div>
           </CardContent>
         </Card>
