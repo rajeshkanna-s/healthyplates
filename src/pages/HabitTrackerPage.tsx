@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Progress } from '@/components/ui/progress';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
@@ -12,7 +13,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CheckCircle2, Plus, Edit2, Trash2, Shield, Download, Upload, ChevronLeft, ChevronRight, Flame, Trophy, BarChart3, CalendarDays, Medal, TrendingUp } from 'lucide-react';
+import { CheckCircle2, Plus, Edit2, Trash2, Shield, Download, Upload, ChevronLeft, ChevronRight, Flame, Trophy, BarChart3, CalendarDays, Medal, TrendingUp, X, Info } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { format, startOfWeek, addDays, addWeeks, subWeeks, isSameDay, parseISO, differenceInDays } from 'date-fns';
 import HabitProgress from '@/components/habit-tracker/HabitProgress';
@@ -68,6 +69,7 @@ const HabitTrackerPage = () => {
   const [importData, setImportData] = useState('');
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [selectedHabit, setSelectedHabit] = useState<Habit | null>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -207,30 +209,40 @@ const HabitTrackerPage = () => {
   }, [currentWeekStart]);
 
   const calculateStreak = (habit: Habit) => {
-    const sortedDates = [...habit.completedDates].sort().reverse();
-    if (sortedDates.length === 0) return { current: 0, best: 0 };
+    const endLimit = habit.endDate ? parseISO(habit.endDate) : new Date();
+    const start = parseISO(habit.startDate);
+    
+    // Filter dates within start-end range only
+    const validDates = habit.completedDates
+      .filter(d => {
+        const date = parseISO(d);
+        return date >= start && date <= endLimit;
+      })
+      .sort();
+
+    if (validDates.length === 0) return { current: 0, best: 0 };
 
     let currentStreak = 0;
     let bestStreak = 0;
     let tempStreak = 1;
 
-    const today = format(new Date(), 'yyyy-MM-dd');
-    const yesterday = format(addDays(new Date(), -1), 'yyyy-MM-dd');
+    const endStr = format(endLimit, 'yyyy-MM-dd');
+    const yesterdayStr = format(addDays(endLimit, -1), 'yyyy-MM-dd');
 
-    // Calculate current streak
-    if (sortedDates.includes(today) || sortedDates.includes(yesterday)) {
-      let checkDate = sortedDates.includes(today) ? new Date() : addDays(new Date(), -1);
-      while (sortedDates.includes(format(checkDate, 'yyyy-MM-dd'))) {
+    // Current streak from end date backwards
+    const sorted = [...validDates].sort().reverse();
+    if (sorted.includes(endStr) || sorted.includes(yesterdayStr)) {
+      let checkDate = sorted.includes(endStr) ? endLimit : addDays(endLimit, -1);
+      while (sorted.includes(format(checkDate, 'yyyy-MM-dd'))) {
         currentStreak++;
         checkDate = addDays(checkDate, -1);
       }
     }
 
-    // Calculate best streak
-    const allDates = [...habit.completedDates].sort();
-    for (let i = 1; i < allDates.length; i++) {
-      const prev = parseISO(allDates[i - 1]);
-      const curr = parseISO(allDates[i]);
+    // Best streak within range
+    for (let i = 1; i < validDates.length; i++) {
+      const prev = parseISO(validDates[i - 1]);
+      const curr = parseISO(validDates[i]);
       if (differenceInDays(curr, prev) === 1) {
         tempStreak++;
       } else {
@@ -542,7 +554,13 @@ const HabitTrackerPage = () => {
                         <div key={habit.id} className="grid grid-cols-[150px_repeat(7,44px)_56px] sm:grid-cols-[minmax(120px,160px)_repeat(7,minmax(44px,1fr))_minmax(60px,80px)] gap-1 sm:gap-2 items-center py-2 border-b last:border-0">
                           <div className="flex items-center gap-1 sm:gap-2">
                             <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full flex-shrink-0" style={{ backgroundColor: habit.color }} />
-                            <span className="text-xs sm:text-sm font-medium whitespace-nowrap">{habit.name}</span>
+                            <button
+                              type="button"
+                              className="text-xs sm:text-sm font-medium whitespace-nowrap hover:underline text-left cursor-pointer"
+                              onClick={() => setSelectedHabit(habit)}
+                            >
+                              {habit.name}
+                            </button>
                             <div className="flex gap-0.5 ml-auto flex-shrink-0">
                               <Button size="sm" variant="ghost" className="h-5 w-5 sm:h-6 sm:w-6 p-0" onClick={() => handleEdit(habit)}>
                                 <Edit2 className="w-3 h-3" />
@@ -632,6 +650,104 @@ const HabitTrackerPage = () => {
           </div>
         </div>
       </div>
+      {/* Habit Detail Dialog */}
+      <AlertDialog open={!!selectedHabit} onOpenChange={(open) => !open && setSelectedHabit(null)}>
+        <AlertDialogContent className="max-w-md">
+          <AlertDialogHeader>
+            <div className="flex items-center justify-between">
+              <AlertDialogTitle className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded-full" style={{ backgroundColor: selectedHabit?.color }} />
+                {selectedHabit?.name}
+              </AlertDialogTitle>
+            </div>
+          </AlertDialogHeader>
+          {selectedHabit && (() => {
+            const streak = calculateStreak(selectedHabit);
+            const start = parseISO(selectedHabit.startDate);
+            const end = selectedHabit.endDate ? parseISO(selectedHabit.endDate) : new Date();
+            const totalDays = Math.max(1, differenceInDays(end, start) + 1);
+            const completedInRange = selectedHabit.completedDates.filter(d => {
+              const date = parseISO(d);
+              return date >= start && date <= end;
+            }).length;
+            const completionRate = Math.min(100, Math.round((completedInRange / totalDays) * 100));
+
+            return (
+              <div className="space-y-3 text-sm">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-muted/50 rounded-lg p-3">
+                    <div className="text-muted-foreground text-xs">Category</div>
+                    <div className="font-medium">{selectedHabit.category}</div>
+                  </div>
+                  <div className="bg-muted/50 rounded-lg p-3">
+                    <div className="text-muted-foreground text-xs">Frequency</div>
+                    <div className="font-medium">
+                      {selectedHabit.frequencyType === 'daily' ? 'Daily' :
+                       selectedHabit.frequencyType === 'weekly' ? `${selectedHabit.timesPerWeek}x per week` :
+                       selectedHabit.daysOfWeek.join(', ')}
+                    </div>
+                  </div>
+                  <div className="bg-muted/50 rounded-lg p-3">
+                    <div className="text-muted-foreground text-xs">Start Date</div>
+                    <div className="font-medium">{format(start, 'MMM d, yyyy')}</div>
+                  </div>
+                  <div className="bg-muted/50 rounded-lg p-3">
+                    <div className="text-muted-foreground text-xs">End Date</div>
+                    <div className="font-medium">{selectedHabit.endDate ? format(end, 'MMM d, yyyy') : 'Ongoing'}</div>
+                  </div>
+                  <div className="bg-muted/50 rounded-lg p-3">
+                    <div className="text-muted-foreground text-xs">Time of Day</div>
+                    <div className="font-medium">{selectedHabit.timeOfDay}</div>
+                  </div>
+                  <div className="bg-muted/50 rounded-lg p-3">
+                    <div className="text-muted-foreground text-xs">Total Days</div>
+                    <div className="font-medium">{totalDays} days</div>
+                  </div>
+                </div>
+
+                <div className="border rounded-lg p-3 space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">Progress</span>
+                    <span className="font-bold text-primary">{completionRate}%</span>
+                  </div>
+                  <Progress value={completionRate} className="h-2.5" />
+                  <div className="text-xs text-muted-foreground">
+                    {completedInRange} of {totalDays} days completed
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="border rounded-lg p-3 text-center">
+                    <div className="flex items-center justify-center gap-1 mb-1">
+                      <Flame className="w-4 h-4 text-orange-500" />
+                      <span className="text-xl font-bold">{streak.current}</span>
+                    </div>
+                    <div className="text-xs text-muted-foreground">Current Streak</div>
+                  </div>
+                  <div className="border rounded-lg p-3 text-center">
+                    <div className="flex items-center justify-center gap-1 mb-1">
+                      <Trophy className="w-4 h-4 text-yellow-500" />
+                      <span className="text-xl font-bold">{streak.best}</span>
+                    </div>
+                    <div className="text-xs text-muted-foreground">Best Streak</div>
+                  </div>
+                </div>
+
+                {selectedHabit.notes && (
+                  <div className="bg-muted/50 rounded-lg p-3">
+                    <div className="text-muted-foreground text-xs mb-1">Notes</div>
+                    <div className="text-sm">{selectedHabit.notes}</div>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+          <AlertDialogFooter>
+            <AlertDialogCancel>Close</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {/* Import Dialog */}
       <AlertDialog open={showImportDialog} onOpenChange={setShowImportDialog}>
         <AlertDialogContent>
