@@ -51,6 +51,8 @@ import Mindfulness from "./pages/Mindfulness";
 import DeveloperBio from "./pages/DeveloperBio";
 import ValentineDay from "./pages/ValentineDay";
 import VisionBoard from "./pages/VisionBoard";
+import DiscoverYourPath from "./pages/DiscoverYourPath";
+import GoalChooser from "./pages/GoalChooser";
 
 const queryClient = new QueryClient();
 
@@ -99,6 +101,8 @@ const App = () => (
             <Route path="habit-tracker" element={<HabitTrackerPage />} />
             <Route path="expense-tracker" element={<ExpenseTracker />} />
             <Route path="vision-board" element={<VisionBoard />} />
+            <Route path="discover-your-path" element={<DiscoverYourPath />} />
+            <Route path="goal-chooser" element={<GoalChooser />} />
             <Route path="admin" element={<Admin />} />
             {/* Redirect old data-entry route to admin */}
             <Route path="data-entry" element={<Admin />} />
