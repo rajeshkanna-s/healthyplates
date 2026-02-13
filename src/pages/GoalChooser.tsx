@@ -213,7 +213,15 @@ const GoalChooser: React.FC = () => {
   };
 
   const handleSelect = (field: string, value: string) => {
-    setGoalData(prev => ({ ...prev, [field]: value }));
+    setGoalData(prev => {
+      const updated = { ...prev, [field]: value };
+      // Auto-advance to next step after selection
+      setTimeout(() => {
+        if (currentStep < totalSteps - 1) setCurrentStep(prev => prev + 1);
+        else setCurrentStep(totalSteps);
+      }, 300);
+      return updated;
+    });
   };
 
   const canProceed = () => !!goalData[baseSteps[currentStep]?.field];
