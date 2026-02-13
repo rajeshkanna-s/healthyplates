@@ -385,6 +385,8 @@ const DiscoverYourPath: React.FC = () => {
     else setCurrentStep(prev => Math.max(0, prev - 1));
   };
 
+  const strip = (s: string) => s.replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}\u{200D}\u{20E3}\u{E0020}-\u{E007F}\u{2B50}\u{2B06}\u{2934}\u{2935}\u{25AA}\u{25AB}\u{25FC}\u{25FB}\u{267B}\u{2728}\u{2705}\u{2714}\u{2716}\u{274C}\u{274E}\u{2764}\u{2763}\u{2753}\u{2757}\u{2049}\u{203C}\u{23F0}-\u{23FF}\u{2702}\u{2708}\u{2709}\u{270A}-\u{270F}\u{2733}\u{2734}\u{2744}\u{2747}\u{2795}-\u{2797}\u{27A1}\u{2934}\u{2935}\u{25B6}\u{25C0}\u{23E9}-\u{23EF}\u{23F0}-\u{23F4}\u{2639}\u{263A}\u{FE0F}]/gu, '').replace(/\s{2,}/g, ' ').trim();
+
   const downloadPDF = () => {
     if (!result) return;
     const doc = new jsPDF();
@@ -397,16 +399,16 @@ const DiscoverYourPath: React.FC = () => {
     doc.setFontSize(22);
     doc.text("My Personalized Growth Path", 105, 18, { align: "center" });
     doc.setFontSize(11);
-    doc.text(`Generated on ${new Date().toLocaleDateString()}`, 105, 28, { align: "center" });
+    doc.text("Generated on " + new Date().toLocaleDateString(), 105, 28, { align: "center" });
 
     let y = 50;
     doc.setTextColor(...burgundy);
     doc.setFontSize(16);
-    doc.text(`Recommended: ${result.primary.title}`, 15, y);
+    doc.text("Recommended: " + strip(result.primary.title), 15, y);
     y += 8;
     doc.setTextColor(100, 100, 100);
     doc.setFontSize(11);
-    doc.text(result.primary.subtitle, 15, y);
+    doc.text(strip(result.primary.subtitle), 15, y);
     y += 12;
 
     doc.setTextColor(...burgundy);
@@ -416,7 +418,7 @@ const DiscoverYourPath: React.FC = () => {
     doc.setTextColor(50, 50, 50);
     doc.setFontSize(10);
     result.primary.why.forEach(w => {
-      doc.text(`• ${w}`, 20, y);
+      doc.text("- " + strip(w), 20, y);
       y += 6;
     });
 
@@ -428,16 +430,16 @@ const DiscoverYourPath: React.FC = () => {
     doc.setTextColor(50, 50, 50);
     doc.setFontSize(10);
     result.primary.steps.forEach((s, i) => {
-      doc.text(`${i + 1}. ${s}`, 20, y);
+      doc.text((i + 1) + ". " + strip(s), 20, y);
       y += 6;
     });
 
     y += 6;
     doc.setTextColor(...gold);
     doc.setFontSize(11);
-    doc.text(`Timeline: ${result.primary.timeline}`, 15, y);
+    doc.text("Timeline: " + strip(result.primary.timeline), 15, y);
     y += 6;
-    doc.text(`Resources: ${result.primary.resources}`, 15, y);
+    doc.text("Resources: " + strip(result.primary.resources), 15, y);
 
     y += 14;
     doc.setTextColor(...burgundy);
@@ -447,7 +449,7 @@ const DiscoverYourPath: React.FC = () => {
     doc.setTextColor(50, 50, 50);
     doc.setFontSize(10);
     result.alternatives.forEach(alt => {
-      doc.text(`• ${alt.title} - ${alt.subtitle}`, 20, y);
+      doc.text("- " + strip(alt.title) + " - " + strip(alt.subtitle), 20, y);
       y += 6;
     });
 
@@ -458,12 +460,12 @@ const DiscoverYourPath: React.FC = () => {
     y += 8;
     doc.setTextColor(50, 50, 50);
     doc.setFontSize(10);
-    doc.text(`Age Group: ${userData.ageGroup}`, 20, y); y += 6;
-    doc.text(`Situation: ${userData.situation}`, 20, y); y += 6;
-    doc.text(`Interests: ${(userData.interests as string[] || []).join(', ')}`, 20, y, { maxWidth: 170 }); y += 10;
-    doc.text(`Strengths: ${(userData.strengths as string[] || []).join(', ')}`, 20, y, { maxWidth: 170 }); y += 10;
-    doc.text(`Motivations: ${(userData.motivation as string[] || []).join(', ')}`, 20, y, { maxWidth: 170 }); y += 10;
-    doc.text(`Challenges: ${(userData.challenges as string[] || []).join(', ')}`, 20, y, { maxWidth: 170 });
+    doc.text("Age Group: " + String(userData.ageGroup || ""), 20, y); y += 6;
+    doc.text("Situation: " + String(userData.situation || ""), 20, y); y += 6;
+    doc.text("Interests: " + (userData.interests as string[] || []).join(', '), 20, y, { maxWidth: 170 }); y += 10;
+    doc.text("Strengths: " + (userData.strengths as string[] || []).join(', '), 20, y, { maxWidth: 170 }); y += 10;
+    doc.text("Motivations: " + (userData.motivation as string[] || []).join(', '), 20, y, { maxWidth: 170 }); y += 10;
+    doc.text("Challenges: " + (userData.challenges as string[] || []).join(', '), 20, y, { maxWidth: 170 });
 
     doc.save("my-growth-path.pdf");
   };
