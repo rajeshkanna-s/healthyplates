@@ -241,10 +241,11 @@ const GoalChooser: React.FC = () => {
     { label: "Biggest Challenge", value: displayMaps.challenge[goalData.challenge] },
   ];
 
+  const strip = (s: string) => s.replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}\u{200D}\u{20E3}\u{E0020}-\u{E007F}\u{2B50}\u{2B06}\u{2934}\u{2935}\u{25AA}\u{25AB}\u{25FC}\u{25FB}\u{267B}\u{2728}\u{2705}\u{2714}\u{2716}\u{274C}\u{274E}\u{2764}\u{2763}\u{2753}\u{2757}\u{2049}\u{203C}\u{23F0}-\u{23FF}\u{2702}\u{2708}\u{2709}\u{270A}-\u{270F}\u{2733}\u{2734}\u{2744}\u{2747}\u{2795}-\u{2797}\u{27A1}\u{2934}\u{2935}\u{25B6}\u{25C0}\u{23E9}-\u{23EF}\u{23F0}-\u{23F4}\u{2639}\u{263A}\u{FE0F}]/gu, '').replace(/\s{2,}/g, ' ').trim();
+
   const downloadPDF = () => {
     const doc = new jsPDF();
     const teal: [number, number, number] = [120, 154, 153];
-    const peach: [number, number, number] = [255, 210, 194];
 
     doc.setFillColor(120, 154, 153);
     doc.rect(0, 0, 210, 40, 'F');
@@ -252,7 +253,7 @@ const GoalChooser: React.FC = () => {
     doc.setFontSize(22);
     doc.text("My Personalized Goal Plan", 105, 18, { align: "center" });
     doc.setFontSize(11);
-    doc.text(`Generated on ${new Date().toLocaleDateString()}`, 105, 28, { align: "center" });
+    doc.text("Generated on " + new Date().toLocaleDateString(), 105, 28, { align: "center" });
 
     let y = 55;
     summaryItems.forEach(item => {
@@ -261,7 +262,7 @@ const GoalChooser: React.FC = () => {
       doc.text(item.label, 15, y);
       doc.setTextColor(50, 50, 50);
       doc.setFontSize(11);
-      doc.text(item.value || "-", 15, y + 7);
+      doc.text(strip(item.value || "-"), 15, y + 7);
       y += 18;
     });
 
@@ -284,7 +285,7 @@ const GoalChooser: React.FC = () => {
       "Celebrate small wins along the way",
     ];
     nextSteps.forEach(s => {
-      doc.text(`✓ ${s}`, 20, y);
+      doc.text("- " + s, 20, y);
       y += 7;
     });
 
