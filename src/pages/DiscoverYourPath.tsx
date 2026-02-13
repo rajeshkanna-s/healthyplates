@@ -391,81 +391,129 @@ const DiscoverYourPath: React.FC = () => {
     if (!result) return;
     const doc = new jsPDF();
     const burgundy: [number, number, number] = [91, 14, 20];
-    const gold: [number, number, number] = [120, 100, 20];
+    const gold: [number, number, number] = [241, 225, 148];
+    const darkBurgundy: [number, number, number] = [58, 10, 14];
+    const white: [number, number, number] = [255, 255, 255];
+    const pageW = 210;
 
-    doc.setFillColor(91, 14, 20);
-    doc.rect(0, 0, 210, 40, 'F');
-    doc.setTextColor(241, 225, 148);
-    doc.setFontSize(22);
-    doc.text("My Personalized Growth Path", 105, 18, { align: "center" });
-    doc.setFontSize(11);
-    doc.text("Generated on " + new Date().toLocaleDateString(), 105, 28, { align: "center" });
+    // === Header ===
+    doc.setFillColor(...burgundy);
+    doc.rect(0, 0, pageW, 50, 'F');
+    doc.setFillColor(...gold);
+    doc.rect(0, 50, pageW, 4, 'F');
 
-    let y = 50;
-    doc.setTextColor(...burgundy);
-    doc.setFontSize(16);
-    doc.text("Recommended: " + strip(result.primary.title), 15, y);
-    y += 8;
-    doc.setTextColor(100, 100, 100);
-    doc.setFontSize(11);
-    doc.text(strip(result.primary.subtitle), 15, y);
-    y += 12;
-
-    doc.setTextColor(...burgundy);
-    doc.setFontSize(13);
-    doc.text("Why This Path Is Perfect For You:", 15, y);
-    y += 8;
-    doc.setTextColor(50, 50, 50);
-    doc.setFontSize(10);
-    result.primary.why.forEach(w => {
-      doc.text("- " + strip(w), 20, y);
-      y += 6;
-    });
-
-    y += 6;
-    doc.setTextColor(...burgundy);
-    doc.setFontSize(13);
-    doc.text("Your Action Plan:", 15, y);
-    y += 8;
-    doc.setTextColor(50, 50, 50);
-    doc.setFontSize(10);
-    result.primary.steps.forEach((s, i) => {
-      doc.text((i + 1) + ". " + strip(s), 20, y);
-      y += 6;
-    });
-
-    y += 6;
     doc.setTextColor(...gold);
+    doc.setFontSize(26);
+    doc.text("My Personalized Growth Path", pageW / 2, 22, { align: "center" });
     doc.setFontSize(11);
-    doc.text("Timeline: " + strip(result.primary.timeline), 15, y);
-    y += 6;
-    doc.text("Resources: " + strip(result.primary.resources), 15, y);
+    doc.setTextColor(...white);
+    doc.text("HealthyPlates - Discover Your Path", pageW / 2, 32, { align: "center" });
+    doc.setFontSize(9);
+    doc.setTextColor(gold[0], gold[1], gold[2]);
+    doc.text("Generated on " + new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }), pageW / 2, 42, { align: "center" });
 
-    y += 14;
+    let y = 66;
+
+    // === Recommended path highlight ===
+    doc.setFillColor(gold[0], gold[1], gold[2]);
+    doc.roundedRect(15, y - 6, 180, 24, 4, 4, 'F');
     doc.setTextColor(...burgundy);
-    doc.setFontSize(13);
-    doc.text("Alternative Paths Worth Considering:", 15, y);
-    y += 8;
-    doc.setTextColor(50, 50, 50);
     doc.setFontSize(10);
-    result.alternatives.forEach(alt => {
-      doc.text("- " + strip(alt.title) + " - " + strip(alt.subtitle), 20, y);
-      y += 6;
+    doc.text("YOUR RECOMMENDED PATH", pageW / 2, y + 2, { align: "center" });
+    doc.setFontSize(14);
+    doc.text(strip(result.primary.title), pageW / 2, y + 12, { align: "center" });
+    y += 28;
+
+    // === Why this path ===
+    doc.setFillColor(...burgundy);
+    doc.roundedRect(15, y - 4, 180, 10, 3, 3, 'F');
+    doc.setTextColor(...gold);
+    doc.setFontSize(12);
+    doc.text("WHY THIS PATH IS PERFECT FOR YOU", pageW / 2, y + 3, { align: "center" });
+    y += 14;
+
+    result.primary.why.forEach((w, i) => {
+      doc.setFillColor(gold[0], gold[1], gold[2]);
+      doc.circle(22, y - 1, 3, 'F');
+      doc.setTextColor(...burgundy);
+      doc.setFontSize(8);
+      doc.text(String(i + 1), 20.5, y + 1);
+      doc.setTextColor(60, 60, 60);
+      doc.setFontSize(10);
+      doc.text(strip(w), 28, y, { maxWidth: 165 });
+      y += 9;
     });
 
-    y += 10;
-    doc.setTextColor(...burgundy);
-    doc.setFontSize(13);
-    doc.text("Your Profile:", 15, y);
+    y += 4;
+
+    // === Action Plan ===
+    doc.setFillColor(...burgundy);
+    doc.roundedRect(15, y - 4, 180, 10, 3, 3, 'F');
+    doc.setTextColor(...gold);
+    doc.setFontSize(12);
+    doc.text("YOUR ACTION PLAN", pageW / 2, y + 3, { align: "center" });
+    y += 14;
+
+    result.primary.steps.forEach((s, i) => {
+      doc.setFillColor(gold[0], gold[1], gold[2]);
+      doc.circle(22, y - 1, 3, 'F');
+      doc.setTextColor(...burgundy);
+      doc.setFontSize(8);
+      doc.text(String(i + 1), 20.5, y + 1);
+      doc.setTextColor(60, 60, 60);
+      doc.setFontSize(10);
+      doc.text(strip(s), 28, y, { maxWidth: 165 });
+      y += 9;
+    });
+
+    y += 2;
+    // Timeline & Resources cards
+    const drawInfoCard = (x: number, yPos: number, label: string, value: string) => {
+      doc.setFillColor(245, 240, 220);
+      doc.roundedRect(x, yPos, 85, 18, 3, 3, 'F');
+      doc.setDrawColor(...burgundy);
+      doc.setLineWidth(0.3);
+      doc.roundedRect(x, yPos, 85, 18, 3, 3, 'S');
+      doc.setTextColor(...burgundy);
+      doc.setFontSize(8);
+      doc.text(label, x + 4, yPos + 7);
+      doc.setTextColor(60, 60, 60);
+      doc.setFontSize(10);
+      doc.text(strip(value), x + 4, yPos + 14, { maxWidth: 78 });
+    };
+    drawInfoCard(15, y, "TIMELINE", result.primary.timeline);
+    drawInfoCard(110, y, "RESOURCES", result.primary.resources);
+    y += 24;
+
+    // === Divider ===
+    doc.setDrawColor(gold[0], gold[1], gold[2]);
+    doc.setLineWidth(1.5);
+    doc.line(15, y, 195, y);
     y += 8;
-    doc.setTextColor(50, 50, 50);
-    doc.setFontSize(10);
-    doc.text("Age Group: " + String(userData.ageGroup || ""), 20, y); y += 6;
-    doc.text("Situation: " + String(userData.situation || ""), 20, y); y += 6;
-    doc.text("Interests: " + (userData.interests as string[] || []).join(', '), 20, y, { maxWidth: 170 }); y += 10;
-    doc.text("Strengths: " + (userData.strengths as string[] || []).join(', '), 20, y, { maxWidth: 170 }); y += 10;
-    doc.text("Motivations: " + (userData.motivation as string[] || []).join(', '), 20, y, { maxWidth: 170 }); y += 10;
-    doc.text("Challenges: " + (userData.challenges as string[] || []).join(', '), 20, y, { maxWidth: 170 });
+
+    // === Alternatives ===
+    doc.setTextColor(...burgundy);
+    doc.setFontSize(11);
+    doc.text("ALTERNATIVE PATHS WORTH CONSIDERING:", 15, y);
+    y += 8;
+    result.alternatives.forEach(alt => {
+      doc.setFillColor(245, 240, 220);
+      doc.roundedRect(15, y - 4, 180, 14, 3, 3, 'F');
+      doc.setTextColor(...burgundy);
+      doc.setFontSize(10);
+      doc.text(strip(alt.title), 20, y + 2);
+      doc.setTextColor(100, 100, 100);
+      doc.setFontSize(8);
+      doc.text(strip(alt.subtitle), 20, y + 8, { maxWidth: 170 });
+      y += 17;
+    });
+
+    // === Bottom bar ===
+    doc.setFillColor(...burgundy);
+    doc.rect(0, 287, pageW, 10, 'F');
+    doc.setTextColor(...gold);
+    doc.setFontSize(7);
+    doc.text("healthyplates.app | Your Wellness Journey Partner", pageW / 2, 293, { align: "center" });
 
     doc.save("my-growth-path.pdf");
   };

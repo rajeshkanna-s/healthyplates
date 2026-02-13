@@ -254,53 +254,118 @@ const GoalChooser: React.FC = () => {
   const downloadPDF = () => {
     const doc = new jsPDF();
     const teal: [number, number, number] = [120, 154, 153];
+    const peach: [number, number, number] = [255, 210, 194];
+    const darkTeal: [number, number, number] = [90, 122, 121];
+    const white: [number, number, number] = [255, 255, 255];
+    const pageW = 210;
 
-    doc.setFillColor(120, 154, 153);
-    doc.rect(0, 0, 210, 40, 'F');
-    doc.setTextColor(255, 210, 194);
-    doc.setFontSize(22);
-    doc.text("My Personalized Goal Plan", 105, 18, { align: "center" });
+    // === Full-width teal header ===
+    doc.setFillColor(...teal);
+    doc.rect(0, 0, pageW, 50, 'F');
+    // Decorative peach accent bar
+    doc.setFillColor(...peach);
+    doc.rect(0, 50, pageW, 4, 'F');
+
+    doc.setTextColor(...white);
+    doc.setFontSize(26);
+    doc.text("My Personalized Goal Plan", pageW / 2, 22, { align: "center" });
     doc.setFontSize(11);
-    doc.text("Generated on " + new Date().toLocaleDateString(), 105, 28, { align: "center" });
+    doc.text("HealthyPlates - Your Wellness Journey", pageW / 2, 32, { align: "center" });
+    doc.setFontSize(9);
+    doc.setTextColor(peach[0], peach[1], peach[2]);
+    doc.text("Generated on " + new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }), pageW / 2, 42, { align: "center" });
 
-    let y = 55;
-    summaryItems.forEach(item => {
+    let y = 66;
+
+    // === Goal highlight box ===
+    doc.setFillColor(peach[0], peach[1], peach[2]);
+    doc.roundedRect(15, y - 6, 180, 22, 4, 4, 'F');
+    doc.setTextColor(...darkTeal);
+    doc.setFontSize(10);
+    doc.text("MY GOAL", pageW / 2, y + 2, { align: "center" });
+    doc.setFontSize(14);
+    doc.text(strip(goalData.specificGoal || "-"), pageW / 2, y + 12, { align: "center" });
+    y += 28;
+
+    // === Profile & Details cards ===
+    const leftCol = summaryItems.filter((_, i) => i % 2 === 0);
+    const rightCol = summaryItems.filter((_, i) => i % 2 !== 0);
+
+    const drawCard = (x: number, yPos: number, label: string, value: string) => {
+      doc.setFillColor(245, 245, 245);
+      doc.roundedRect(x, yPos, 85, 20, 3, 3, 'F');
+      doc.setDrawColor(...teal);
+      doc.setLineWidth(0.3);
+      doc.roundedRect(x, yPos, 85, 20, 3, 3, 'S');
       doc.setTextColor(...teal);
-      doc.setFontSize(12);
-      doc.text(item.label, 15, y);
-      doc.setTextColor(50, 50, 50);
-      doc.setFontSize(11);
-      doc.text(strip(item.value || "-"), 15, y + 7);
-      y += 18;
-    });
+      doc.setFontSize(8);
+      doc.text(label.toUpperCase(), x + 4, yPos + 7);
+      doc.setTextColor(60, 60, 60);
+      doc.setFontSize(10);
+      doc.text(strip(value || "-"), x + 4, yPos + 15, { maxWidth: 78 });
+    };
 
-    y += 5;
-    doc.setDrawColor(...teal);
+    const maxRows = Math.max(leftCol.length, rightCol.length);
+    for (let i = 0; i < maxRows; i++) {
+      if (leftCol[i]) drawCard(15, y, leftCol[i].label, leftCol[i].value);
+      if (rightCol[i]) drawCard(110, y, rightCol[i].label, rightCol[i].value);
+      y += 24;
+    }
+
+    y += 4;
+
+    // === Divider ===
+    doc.setDrawColor(...peach);
+    doc.setLineWidth(1.5);
     doc.line(15, y, 195, y);
     y += 10;
 
-    doc.setTextColor(...teal);
-    doc.setFontSize(13);
-    doc.text("Recommended Next Steps:", 15, y);
-    y += 8;
-    doc.setTextColor(50, 50, 50);
-    doc.setFontSize(10);
+    // === Next Steps section ===
+    doc.setFillColor(...teal);
+    doc.roundedRect(15, y - 4, 180, 10, 3, 3, 'F');
+    doc.setTextColor(...white);
+    doc.setFontSize(12);
+    doc.text("RECOMMENDED NEXT STEPS", pageW / 2, y + 3, { align: "center" });
+    y += 14;
+
     const nextSteps = [
-      "Break your goal into smaller milestones",
-      "Create a weekly action plan",
-      "Find an accountability partner",
-      "Track your progress regularly",
-      "Celebrate small wins along the way",
+      "Break your goal into smaller, achievable milestones",
+      "Create a weekly action plan with specific tasks",
+      "Find an accountability partner or join a community",
+      "Track your progress daily using a journal or app",
+      "Celebrate small wins to stay motivated",
     ];
-    nextSteps.forEach(s => {
-      doc.text("- " + s, 20, y);
-      y += 7;
+    nextSteps.forEach((s, i) => {
+      // Numbered circle
+      doc.setFillColor(...peach);
+      doc.circle(22, y - 1, 3, 'F');
+      doc.setTextColor(...darkTeal);
+      doc.setFontSize(8);
+      doc.text(String(i + 1), 20.5, y + 1);
+      // Step text
+      doc.setTextColor(60, 60, 60);
+      doc.setFontSize(10);
+      doc.text(s, 28, y);
+      y += 9;
     });
 
-    y += 8;
-    doc.setTextColor(100, 100, 100);
+    y += 6;
+
+    // === Motivational footer box ===
+    doc.setFillColor(peach[0], peach[1], peach[2]);
+    doc.roundedRect(15, y, 180, 16, 4, 4, 'F');
+    doc.setTextColor(...darkTeal);
     doc.setFontSize(10);
-    doc.text("Remember: You've got this! Start today, stay consistent, and adjust as needed.", 15, y, { maxWidth: 180 });
+    doc.text("\"The secret of getting ahead is getting started.\" - Mark Twain", pageW / 2, y + 7, { align: "center" });
+    doc.setFontSize(8);
+    doc.text("You've got this! Start today, stay consistent, and adjust as needed.", pageW / 2, y + 13, { align: "center" });
+
+    // === Bottom bar ===
+    doc.setFillColor(...teal);
+    doc.rect(0, 287, pageW, 10, 'F');
+    doc.setTextColor(...peach);
+    doc.setFontSize(7);
+    doc.text("healthyplates.app | Your Wellness Journey Partner", pageW / 2, 293, { align: "center" });
 
     doc.save("my-goal-plan.pdf");
   };
