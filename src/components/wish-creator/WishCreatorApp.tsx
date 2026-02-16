@@ -8,7 +8,8 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { occasionCategories } from "./wishData";
 import { generateWishes } from "./wishTemplates";
-import { relationships, tones, lengths, type WishInput, type OccasionCategory, type Occasion } from "./types";
+import { relationships, tones, lengths, type OccasionCategory, type Occasion } from "./types";
+import SharePanel from "./SharePanel";
 
 const WishCreatorApp = () => {
   const [step, setStep] = useState(1);
@@ -358,20 +359,15 @@ const WishCreatorApp = () => {
                     </span>
                   </div>
                   <p className="text-white/90 text-sm leading-relaxed whitespace-pre-wrap">{wish}</p>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleCopy(wish)}
-                      className="px-3 py-1.5 rounded-lg bg-violet-500/20 border border-violet-500/30 text-violet-200 text-xs font-medium hover:bg-violet-500/30 transition-colors"
-                    >
-                      📋 Copy
-                    </button>
-                    <button
-                      onClick={() => handleShare(wish)}
-                      className="px-3 py-1.5 rounded-lg bg-indigo-500/20 border border-indigo-500/30 text-indigo-200 text-xs font-medium hover:bg-indigo-500/30 transition-colors"
-                    >
-                      📤 Share
-                    </button>
-                  </div>
+                  <SharePanel
+                    categoryId={selectedCategory?.id || "general"}
+                    wishText={wish}
+                    occasion={selectedOccasion?.label || ""}
+                    occasionEmoji={selectedOccasion?.emoji || "✨"}
+                    recipientName={recipientName}
+                    relationship={relationship}
+                    tone={tone}
+                  />
                 </div>
               ))}
 
