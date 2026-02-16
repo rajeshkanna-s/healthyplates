@@ -53,6 +53,7 @@ import ValentineDay from "./pages/ValentineDay";
 import VisionBoard from "./pages/VisionBoard";
 import DiscoverYourPath from "./pages/DiscoverYourPath";
 import GoalChooser from "./pages/GoalChooser";
+import SharedWish from "./pages/SharedWish";
 
 const queryClient = new QueryClient();
 
@@ -120,6 +121,7 @@ const App = () => (
           <Route path="/auth" element={<Auth />} />
           <Route path="/developer-bio" element={<DeveloperBio />} />
           <Route path="/ValentineDay" element={<ValentineDay />} />
+          <Route path="/wish/:encoded" element={<SharedWish />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
