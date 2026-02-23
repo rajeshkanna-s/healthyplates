@@ -49,6 +49,7 @@ export function encodeWishData(data: {
   tone: string;
   wishText: string;
   categoryId: string;
+  senderName?: string;
 }): string {
   const json = JSON.stringify(data);
   return btoa(unescape(encodeURIComponent(json)));
@@ -62,6 +63,7 @@ export function decodeWishData(encoded: string): {
   tone: string;
   wishText: string;
   categoryId: string;
+  senderName?: string;
 } | null {
   try {
     const json = decodeURIComponent(escape(atob(encoded)));

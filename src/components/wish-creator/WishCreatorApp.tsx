@@ -20,6 +20,7 @@ const WishCreatorApp = () => {
   const [tone, setTone] = useState("simple");
   const [length, setLength] = useState<"short" | "medium" | "long">("medium");
   const [extraDetails, setExtraDetails] = useState("");
+  const [senderName, setSenderName] = useState("");
   const [generatedWishes, setGeneratedWishes] = useState<string[]>([]);
 
   const handleGenerate = () => {
@@ -70,6 +71,7 @@ const WishCreatorApp = () => {
     setSelectedCategory(null);
     setSelectedOccasion(null);
     setRecipientName("");
+    setSenderName("");
     setRelationship("Friend");
     setTone("simple");
     setLength("medium");
@@ -199,6 +201,17 @@ const WishCreatorApp = () => {
           {/* Step 3: Details */}
           {step === 3 && (
             <div className="space-y-4">
+              <div className="space-y-1.5">
+                <Label className="text-violet-200 text-xs">Your Name (shown on shared wish)</Label>
+                <Input
+                  value={senderName}
+                  onChange={(e) => setSenderName(e.target.value)}
+                  placeholder="e.g., Priya"
+                  className="bg-white/10 border-violet-500/30 text-white placeholder:text-violet-300/40 focus-visible:ring-violet-500 h-10 text-sm"
+                  maxLength={30}
+                />
+              </div>
+
               <div className="space-y-1.5">
                 <Label className="text-violet-200 text-xs">Recipient's Name</Label>
                 <Input
@@ -367,6 +380,7 @@ const WishCreatorApp = () => {
                     recipientName={recipientName}
                     relationship={relationship}
                     tone={tone}
+                    senderName={senderName}
                   />
                 </div>
               ))}

@@ -20,6 +20,7 @@ interface SharePanelProps {
   recipientName: string;
   relationship: string;
   tone: string;
+  senderName?: string;
 }
 
 const SharePanel = ({
@@ -30,6 +31,7 @@ const SharePanel = ({
   recipientName,
   relationship,
   tone,
+  senderName,
 }: SharePanelProps) => {
   const platforms = SHARE_CONFIG[categoryId] || SHARE_CONFIG.general;
 
@@ -42,6 +44,7 @@ const SharePanel = ({
       tone,
       wishText,
       categoryId,
+      senderName,
     });
     return `${window.location.origin}/wish/${encoded}`;
   };
