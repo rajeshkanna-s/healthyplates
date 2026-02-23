@@ -54,6 +54,8 @@ import VisionBoard from "./pages/VisionBoard";
 import DiscoverYourPath from "./pages/DiscoverYourPath";
 import GoalChooser from "./pages/GoalChooser";
 import SharedWish from "./pages/SharedWish";
+import TaxesTracker from "./pages/TaxesTracker";
+import DebtTracker from "./pages/DebtTracker";
 
 const queryClient = new QueryClient();
 
@@ -101,6 +103,8 @@ const App = () => (
             <Route path="weekly-planner" element={<WeeklyPlanner />} />
             <Route path="habit-tracker" element={<HabitTrackerPage />} />
             <Route path="expense-tracker" element={<ExpenseTracker />} />
+            <Route path="taxes-tracker" element={<TaxesTracker />} />
+            <Route path="debt-tracker" element={<DebtTracker />} />
             <Route path="vision-board" element={<VisionBoard />} />
             <Route path="discover-your-path" element={<DiscoverYourPath />} />
             <Route path="goal-chooser" element={<GoalChooser />} />
