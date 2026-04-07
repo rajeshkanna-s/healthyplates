@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 
 interface RichTextEditorProps {
   value: string;
-  onChange: (value: string) => void;
+  onChange: (value: string) => void;  
   placeholder?: string;
   className?: string;
 }
