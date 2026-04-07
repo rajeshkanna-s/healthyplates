@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import PageHero from '@/components/shared/PageHero';
 
 interface BMIResult {
   bmi: number;
@@ -103,15 +104,15 @@ export default function BMICalculator() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
-      <div className="container mx-auto px-4 py-12">
-        {/* Header */}
-        <div className="text-center mb-8 animate-fade-in">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-orange-600 to-amber-500 bg-clip-text text-transparent">
-            BMI Calculator
-          </h1>
-          <p className="text-xl text-muted-foreground">Calculate your Body Mass Index to understand your weight category</p>
-        </div>
+    <div className="min-h-screen">
+      <PageHero
+        title="BMI Calculator"
+        subtitle="Calculate your Body Mass Index to understand your weight category"
+        icon={Calculator}
+        badge="Health Calculator"
+      />
+
+      <div className="container mx-auto px-4 -mt-8 relative z-10 pb-16">
 
         <div className="max-w-2xl mx-auto">
           {/* Header Card */}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Filter, Star, Heart, AlertCircle, CheckCircle, X, Package } from 'lucide-react';
+import { Search, Filter, Star, Heart, AlertCircle, CheckCircle, X, Package, Leaf } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Card } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import PageHero from '@/components/shared/PageHero';
 
 const FoodProducts = () => {
   const navigate = useNavigate();
@@ -82,10 +83,17 @@ const FoodProducts = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-subtle py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen">
+      <PageHero
+        title="Food Items Database"
+        subtitle="Explore our comprehensive database of natural ingredients, their benefits, and medicinal properties. Make informed choices for your health and wellness journey."
+        icon={Leaf}
+        badge="Nutrition Guide"
+      />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10 pb-16">
         {/* Medical Disclaimer */}
-        <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mb-8">
+        <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4 mb-8 shadow-sm">
           <div className="flex items-start gap-3">
             <AlertCircle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
             <p className="text-sm text-amber-800 dark:text-amber-300">
@@ -93,15 +101,6 @@ const FoodProducts = () => {
               Consult a healthcare professional before making dietary changes.
             </p>
           </div>
-        </div>
-
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-hero mb-6">Food Items Database</h1>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Explore our comprehensive database of natural ingredients, their benefits, and medicinal properties. 
-            Make informed choices for your health and wellness journey.
-          </p>
         </div>
 
         {/* Search and Filter */}
@@ -153,7 +152,7 @@ const FoodProducts = () => {
             {filteredProducts.map((product) => (
               <Card 
                 key={product.id} 
-                className="p-0 hover:shadow-health-lg transition-all duration-300 border border-border/50 hover:border-primary/30 overflow-hidden group"
+                className="p-0 hover:shadow-health-lg transition-all duration-300 border border-border/50 hover:border-primary/30 overflow-hidden group hover:-translate-y-1"
               >
                 <div className="flex flex-col md:flex-row relative">
                   {/* Product Image */}

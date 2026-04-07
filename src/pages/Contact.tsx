@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import PageHero from '@/components/shared/PageHero';
 
 const Contact = () => {
   const { toast } = useToast();
@@ -121,17 +122,15 @@ const Contact = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-subtle py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-hero mb-6">Get in Touch</h1>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Interested in promotions, advertisements, or receiving updates about our latest health articles? 
-            This contact form is exclusively for business inquiries, partnership opportunities, and newsletter subscriptions.
-          </p>
-        </div>
+    <div className="min-h-screen">
+      <PageHero
+        title="Get in Touch"
+        subtitle="Interested in promotions, advertisements, or receiving updates about our latest health articles? This contact form is exclusively for business inquiries, partnership opportunities, and newsletter subscriptions."
+        icon={Mail}
+        badge="Contact Us"
+      />
 
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10 pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Contact Information */}
           <div className="lg:col-span-1">
@@ -177,7 +176,7 @@ const Contact = () => {
               ))}
 
               {/* Contact Hours */}
-              <div className="card-health p-6" style={{ padding: "0.5rem" }}>
+              <div className="card-health p-6">
                 <h3 className="font-semibold text-foreground mb-4 flex items-center">
                   <Clock className="h-5 w-5 mr-2 text-health" />
                   Contact Hours

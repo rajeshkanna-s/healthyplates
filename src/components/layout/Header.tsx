@@ -169,13 +169,16 @@ const Header = () => {
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 relative ${
                     isActive(item.href)
-                      ? "bg-primary text-primary-foreground shadow-md"
+                      ? "text-primary font-semibold"
                       : "text-muted-foreground hover:text-foreground hover:bg-accent"
                   }`}
                 >
                   {item.name}
+                  {isActive(item.href) && (
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4/5 h-0.5 bg-primary rounded-full" />
+                  )}
                 </Link>
               ))}
             </nav>
@@ -186,7 +189,7 @@ const Header = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-10 w-10 p-0 ml-2 bg-green-700 hover:bg-green-800 text-white rounded-md"
+                  className="h-10 w-10 p-0 ml-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg"
                 >
                   <Menu className="h-5 w-5" />
                 </Button>

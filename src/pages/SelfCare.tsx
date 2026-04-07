@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
+import PageHero from '@/components/shared/PageHero';
 
 const SelfCare = () => {
   const navigate = useNavigate();
@@ -68,10 +69,17 @@ const SelfCare = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-subtle py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen">
+      <PageHero
+        title="Self-Care Procedures"
+        subtitle="Discover natural self-care routines that may support your skin, hair, and fitness goals. These procedures are shared for educational purposes to support your wellness journey."
+        icon={Sparkles}
+        badge="Wellness Guide"
+      />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10 pb-16">
         {/* Medical Disclaimer */}
-        <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mb-8">
+        <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4 mb-8 shadow-sm">
           <div className="flex items-start gap-3">
             <Sparkles className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
             <p className="text-sm text-amber-800 dark:text-amber-300">
@@ -79,15 +87,6 @@ const SelfCare = () => {
               If you have allergies or skin conditions, consult a dermatologist before trying new routines.
             </p>
           </div>
-        </div>
-
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-hero mb-6">Self-Care Procedures</h1>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Discover natural self-care routines that may support your skin, hair, and fitness goals. 
-            These procedures are shared for educational purposes to support your wellness journey.
-          </p>
         </div>
 
         {/* Category Tabs */}

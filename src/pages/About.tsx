@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, Heart, Leaf, BookOpen, Users, Target, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import PageHero from '@/components/shared/PageHero';
 
 const About = () => {
   const values = [
@@ -28,9 +29,15 @@ const About = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-subtle py-12">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
+    <div className="min-h-screen">
+      <PageHero
+        title="About HealthyPlates"
+        subtitle="An educational platform dedicated to spreading awareness about healthy eating, nutrition, and natural wellness practices."
+        icon={Leaf}
+        badge="Educational Health Resource"
+      />
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10 pb-16">
         <div className="mb-8">
           <Link to="/">
             <Button variant="ghost" className="mb-4">
@@ -38,13 +45,6 @@ const About = () => {
               Back to Home
             </Button>
           </Link>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="bg-gradient-health p-3 rounded-lg">
-              <Leaf className="h-6 w-6 text-white" />
-            </div>
-            <h1 className="text-4xl font-bold text-foreground">About HealthyPlates</h1>
-          </div>
-          <Badge className="bg-primary/10 text-primary border-primary/30">Educational Health Resource</Badge>
         </div>
 
         {/* Content */}
