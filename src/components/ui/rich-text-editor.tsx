@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import { cn } from '@/lib/utils';
 
 interface RichTextEditorProps {
@@ -23,9 +22,9 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
       [{ 'size': ['small', false, 'large', 'huge'] }],
       ['bold', 'italic', 'underline', 'strike'],
       [{ 'color': [] }, { 'background': [] }],
-      [{ 'script': 'sub'}, { 'script': 'super' }],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      [{ 'indent': '-1'}, { 'indent': '+1' }],
+      [{ 'script': 'sub' }, { 'script': 'super' }],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      [{ 'indent': '-1' }, { 'indent': '+1' }],
       [{ 'align': [] }],
       ['blockquote', 'code-block'],
       ['link', 'image', 'video'],
