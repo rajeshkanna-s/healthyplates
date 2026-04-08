@@ -112,7 +112,7 @@ const HeroBanner = () => {
                 </Button>
               </Link>
               <Link to="/blog">
-                <Button variant="outline" className="border-white/30 text-white hover:bg-white/10 hover:text-white px-6 py-4 rounded-xl text-lg backdrop-blur-sm">
+                <Button variant="outline" className="bg-transparent border-white/30 text-white hover:bg-white/10 hover:text-white px-6 py-4 rounded-xl text-lg backdrop-blur-sm">
                   Read Articles
                 </Button>
               </Link>
